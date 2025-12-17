@@ -14,7 +14,6 @@
   <meta property="og:image" content="https://files.catbox.moe/hfrx1u.jpeg" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-  <!-- ✅ Sau khi host, thay thành link web thật -->
   <meta property="og:url" content="https://ktra.thinhshop247.site/" />
 
   <!-- Twitter/X -->
@@ -68,12 +67,10 @@
     .title h1{margin:0 0 6px;font-size:20px;letter-spacing:.2px}
     .title p{margin:0;color:var(--muted);font-size:13px;line-height:1.35}
 
-    /* ✅ canh đẹp: 3 ô + tabs + 3 nút lên cao, đều */
     .rightCol{
       flex: 1 1 360px;
       min-width: 0;
       max-width: 560px;
-
       display:flex;
       flex-direction:column;
       gap:12px;
@@ -161,7 +158,6 @@
       font-size:11px;padding:2px 6px;border-radius:8px;border:1px solid #22305f;background: rgba(0,0,0,.25)
     }
 
-    /* Layout */
     .main{
       display:grid;
       grid-template-columns: 280px 1fr;
@@ -353,7 +349,7 @@
       <div class="resultBody" id="result"></div>
     </section>
 
-    <div class="foot">dev @truongthinh    ©2025</div>
+    <div class="foot">dev @truongthinh ©2025</div>
   </div>
 
 <script>
@@ -463,6 +459,37 @@ let state = {
   optionOrder: {},    // qIndex -> stable order per attempt
 };
 
+/* ========= PERSIST (KEEP AFTER REFRESH) ========= */
+const STORAGE_KEY = "quiz_ex1_ex3_v1";
+
+function saveState(){
+  try{
+    const data = {
+      filter: state.filter,
+      shuffle: state.shuffle,
+      submitted: state.submitted,
+      selections: state.selections,
+      optionOrder: state.optionOrder,
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  }catch(e){}
+}
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return;
+    const data = JSON.parse(raw);
+    if(!data || typeof data !== "object") return;
+
+    state.filter = data.filter || "all";
+    state.shuffle = !!data.shuffle;
+    state.submitted = !!data.submitted;
+    state.selections = data.selections || {};
+    state.optionOrder = data.optionOrder || {};
+  }catch(e){}
+}
+
 /* ========= ELS ========= */
 const elQuiz = document.getElementById("quiz");
 const elQList = document.getElementById("qList");
@@ -553,11 +580,10 @@ function render(){
   elQuiz.innerHTML = "";
   elQList.innerHTML = "";
 
-  // Sidebar buttons
   indices.forEach((qi, idx)=>{
     const btn = document.createElement("div");
     btn.className = "qBtn";
-    btn.textContent = (idx + 1); // numbering within view
+    btn.textContent = (idx + 1);
     if(state.selections[qi]) btn.classList.add("done");
     if(state.submitted) btn.classList.add("locked");
     btn.addEventListener("click", ()=>{
@@ -567,7 +593,6 @@ function render(){
     elQList.appendChild(btn);
   });
 
-  // Questions
   let lastSection = "";
   for(const qi of indices){
     const item = QUESTIONS[qi];
@@ -600,7 +625,7 @@ function render(){
       </div>
       <div class="opts">
         ${opts.map(opt=>{
-          const id = `q${qi}_${opt.k}`;
+          const id = \`q\${qi}_\${opt.k}\`;
           const checked = (chosen === opt.k) ? "checked" : "";
           const disabled = state.submitted ? "disabled" : "";
           return `
@@ -614,11 +639,11 @@ function render(){
     `;
     elQuiz.appendChild(wrap);
 
-    // bind change
-    wrap.querySelectorAll(`input[name="q${qi}"]`).forEach(r=>{
+    wrap.querySelectorAll(\`input[name="q\${qi}"]\`).forEach(r=>{
       r.addEventListener("change", (e)=>{
         if(state.submitted) return;
         state.selections[qi] = e.target.value;
+        saveState();
         updateMeta();
         renderSidebarOnly();
       });
@@ -626,6 +651,8 @@ function render(){
   }
 
   updateMeta();
+  // nếu refresh mà trước đó đã nộp bài, show kết quả lại
+  if(state.submitted) showResultFromSaved();
 }
 
 function renderSidebarOnly(){
@@ -650,7 +677,6 @@ function updateMeta(){
   const pct = Math.round((doneAll/totalAll)*100);
   elBar.style.width = pct + "%";
 
-  // yêu cầu làm đủ tất cả để nộp
   const allDone = doneAll === totalAll;
   elSubmit.disabled = !allDone || state.submitted;
 
@@ -665,11 +691,18 @@ function updateMeta(){
 
 function grade(){
   state.submitted = true;
+  saveState();
+  buildResultUI();
+  elShuffle.disabled = true;
+  render();
+  elResultCard.scrollIntoView({behavior:"smooth", block:"start"});
+}
 
+function buildResultUI(){
   const total = QUESTIONS.length;
   let correct = 0;
-
   const details = [];
+
   for(let i=0;i<total;i++){
     const q = QUESTIONS[i];
     const pick = state.selections[i] || "";
@@ -709,22 +742,28 @@ function grade(){
     `;
     rv.appendChild(item);
   });
+}
 
-  // khóa nút trộn sau khi nộp để tránh “đảo đáp án”
+function showResultFromSaved(){
+  // Nếu đã nộp bài (stored), hiển thị lại kết quả khi refresh
   elShuffle.disabled = true;
-
-  render();
-  elResultCard.scrollIntoView({behavior:"smooth", block:"start"});
+  buildResultUI();
 }
 
 function newAttempt(){
+  // reset sạch + xóa storage (chỉ khi bấm Bài mới)
+  localStorage.removeItem(STORAGE_KEY);
+
   state.selections = {};
   state.optionOrder = {};
   state.submitted = false;
+
   elShuffle.disabled = false;
 
   elResultCard.style.display = "none";
   elResult.innerHTML = "";
+
+  saveState();
   render();
   window.scrollTo({top:0,behavior:"smooth"});
 }
@@ -732,8 +771,9 @@ function newAttempt(){
 function toggleShuffle(){
   if(state.submitted) return;
   state.shuffle = !state.shuffle;
-  state.optionOrder = {}; // tạo lại thứ tự hiển thị 1 lần cho lượt làm
+  state.optionOrder = {}; // tạo lại thứ tự hiển thị cho lượt làm
   elShuffle.textContent = state.shuffle ? "Đã trộn đáp án !" : "Trộn đáp án";
+  saveState();
   render();
 }
 
@@ -742,12 +782,14 @@ elSubmit.addEventListener("click", grade);
 elNew.addEventListener("click", newAttempt);
 elShuffle.addEventListener("click", toggleShuffle);
 
-tabAll.addEventListener("click", ()=>{ state.filter="all"; render(); });
-tabEx1.addEventListener("click", ()=>{ state.filter="ex1"; render(); });
-tabEx3.addEventListener("click", ()=>{ state.filter="ex3"; render(); });
+tabAll.addEventListener("click", ()=>{ state.filter="all"; saveState(); render(); });
+tabEx1.addEventListener("click", ()=>{ state.filter="ex1"; saveState(); render(); });
+tabEx3.addEventListener("click", ()=>{ state.filter="ex3"; saveState(); render(); });
 
 /* ========= INIT ========= */
+loadState();
+elShuffle.textContent = state.shuffle ? "Đã trộn đáp án !" : "Trộn đáp án";
 render();
 </script>
 </body>
-  </html>
+          </html>
