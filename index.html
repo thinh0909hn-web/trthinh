@@ -1,0 +1,753 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+  <title>Quiz – Exercise 1 & 3 | Trắc nghiệm tiếng Anh</title>
+  <meta name="description" content="Web làm trắc nghiệm Exercise 1 & 3, nộp bài xem điểm và đáp án. Giao diện gọn, dễ học, dùng được trên điện thoại." />
+
+  <!-- Open Graph (Facebook/Zalo/Discord/...) -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Bài Ôn Của Giáo Viên Mới!" />
+  <meta property="og:description" content="giáo viên người ăn ru ru la! có 30 câu trắc nghiệm" />
+  <meta property="og:image" content="https://files.catbox.moe/hfrx1u.jpeg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <!-- ✅ Sau khi host, thay thành link web thật -->
+  <meta property="og:url" content="https://kiemtra.thinhshop247.site/" />
+
+  <!-- Twitter/X -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Quiz – Exercise 1 & 3 | Trắc nghiệm tiếng Anh" />
+  <meta name="twitter:description" content="Web trắc nghiệm tiếng Anh – nộp bài xem điểm + đáp án." />
+  <meta name="twitter:image" content="https://files.catbox.moe/hfrx1u.jpeg" />
+
+  <style>
+    :root{
+      --bg1:#070A12; --bg2:#0B1224;
+      --text:#eaf0ff;
+      --muted:#a9b6d6;
+      --line:#22305f;
+      --good:#35e2a0;
+      --bad:#ff5470;
+      --shadow: 0 20px 60px rgba(0,0,0,.45);
+      --r:18px;
+      --r2:14px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      color:var(--text);
+      background:
+        radial-gradient(1000px 700px at 15% 10%, #2a3cff33 0%, transparent 60%),
+        radial-gradient(900px 600px at 90% 20%, #00ffd533 0%, transparent 55%),
+        radial-gradient(900px 700px at 40% 100%, #ff4d7d22 0%, transparent 60%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+      overflow-x:hidden;
+    }
+    .wrap{max-width:1200px;margin:0 auto;padding:18px}
+    .header{
+      display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;
+      padding:16px 16px 12px;
+      border:1px solid #1a2550;
+      border-radius:var(--r);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      box-shadow: var(--shadow);
+      position:relative; overflow:hidden;
+    }
+    .header::before{
+      content:"";
+      position:absolute; inset:-2px;
+      background: radial-gradient(520px 220px at 18% 0%, rgba(53,226,160,.18), transparent 55%),
+                  radial-gradient(520px 260px at 95% 40%, rgba(79,140,255,.18), transparent 55%);
+      pointer-events:none;
+    }
+    .title h1{margin:0 0 6px;font-size:20px;letter-spacing:.2px}
+    .title p{margin:0;color:var(--muted);font-size:13px;line-height:1.35}
+
+    /* ✅ canh đẹp: 3 ô + tabs + 3 nút lên cao, đều */
+    .rightCol{
+      flex: 1 1 360px;
+      min-width: 0;
+      max-width: 560px;
+
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      padding-top:2px;
+    }
+    @media (max-width: 600px){
+      .rightCol{ flex: 1 1 100%; max-width: 100%; gap:10px; }
+    }
+
+    .chiprow{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:flex-start}
+    .pill{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:8px 12px;border-radius:999px;
+      border:1px solid #24326a;background: rgba(255,255,255,.04);
+      color:var(--muted);font-size:12px;
+      white-space:nowrap;
+    }
+
+    button{
+      appearance:none;border:1px solid #2a3a7a;
+      background: rgba(255,255,255,.06);
+      color:var(--text); padding:10px 12px;
+      border-radius:14px; font-weight:800;
+      cursor:pointer; transition: transform .12s ease, background .2s ease, border-color .2s ease, opacity .2s ease;
+      user-select:none;
+    }
+    button:hover{transform: translateY(-1px); border-color:#3d57c8; background: rgba(255,255,255,.09)}
+    button:active{transform: translateY(0px) scale(.99)}
+    button.primary{
+      border:none;
+      background: linear-gradient(90deg, rgba(79,140,255,.95), rgba(53,226,160,.95));
+      color:#061025;
+    }
+    button:disabled{opacity:.6;cursor:not-allowed;transform:none}
+
+    .seg{
+      display:flex;border:1px solid #2a3a7a;border-radius:999px;overflow:hidden;
+      background: rgba(0,0,0,.15);
+      width:100%;
+    }
+    .seg button{
+      flex:1 1 0;
+      border:none;border-radius:0;padding:10px 12px;background:transparent;
+      font-weight:900;color:var(--muted);
+    }
+    .seg button.active{
+      background: rgba(255,255,255,.08);
+      color:var(--text);
+    }
+
+    .btns{
+      width:100%;
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+      align-items:stretch;
+    }
+    #submitBtn{
+      grid-column: 1 / -1;
+      padding:12px 14px;
+      font-size:14px;
+      border-radius:16px;
+    }
+
+    .progress{
+      height:10px;border-radius:999px;overflow:hidden;
+      border:1px solid #22305f;background: rgba(0,0,0,.25);
+      margin-top:10px;
+    }
+    .bar{
+      height:100%;
+      width:0%;
+      background: linear-gradient(90deg, rgba(79,140,255,.95), rgba(53,226,160,.95));
+      transition: width .25s ease;
+    }
+    .hint{
+      margin-top:10px;
+      padding:10px 12px;border-radius:14px;
+      border:1px solid #22305f;background: rgba(0,0,0,.18);
+      color:var(--muted);font-size:12px;
+      line-height:1.35;
+    }
+    .kbd{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+      font-size:11px;padding:2px 6px;border-radius:8px;border:1px solid #22305f;background: rgba(0,0,0,.25)
+    }
+
+    /* Layout */
+    .main{
+      display:grid;
+      grid-template-columns: 280px 1fr;
+      gap:12px;
+      margin-top:12px;
+      align-items:start;
+    }
+    @media (max-width: 920px){
+      .main{grid-template-columns: 1fr}
+    }
+
+    .side, .content, .resultCard{
+      border:1px solid #1a2550;
+      border-radius:var(--r);
+      background: rgba(14, 22, 48, .55);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .panelHd{
+      padding:14px 14px 10px;
+      border-bottom:1px solid #1a2550;
+      display:flex;align-items:flex-start;justify-content:space-between;gap:10px;
+    }
+    .panelHd .small{color:var(--muted);font-size:12px;margin-bottom:4px}
+    .panelHd .big{font-weight:1000}
+    .tag{
+      font-size:11px;color:#061025;font-weight:1000;
+      background: linear-gradient(90deg, rgba(255,200,87,.95), rgba(255,84,112,.90));
+      padding:6px 10px;border-radius:999px;
+      white-space:nowrap;
+    }
+
+    .sideBody{padding:12px}
+    .qList{display:grid;grid-template-columns: repeat(5, 1fr);gap:8px;}
+    .qBtn{
+      border-radius:12px;
+      border:1px solid #22305f;
+      background: rgba(255,255,255,.04);
+      color:var(--muted);
+      padding:10px 0;
+      text-align:center;
+      font-weight:1000;
+      cursor:pointer;
+      transition: transform .12s ease, background .2s ease, border-color .2s ease;
+      user-select:none;
+    }
+    .qBtn:hover{transform: translateY(-1px); border-color:#3d57c8; background: rgba(255,255,255,.07)}
+    .qBtn.done{
+      color:#061025;
+      border-color: transparent;
+      background: linear-gradient(90deg, rgba(53,226,160,.9), rgba(79,140,255,.9));
+    }
+    .qBtn.locked{opacity:.6;cursor:default;transform:none}
+    .sideNote{margin-top:10px;color:var(--muted);font-size:12px;line-height:1.35}
+
+    .quizBody{padding:0}
+    .q{
+      padding:14px;
+      border-top:1px solid rgba(255,255,255,.04);
+      scroll-margin-top: 14px;
+      animation: pop .25s ease both;
+    }
+    @keyframes pop {from{transform:translateY(6px);opacity:.0}to{transform:translateY(0);opacity:1}}
+    .qhead{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+    .qtitle{margin:0;font-size:14px;line-height:1.35}
+    .qnum{
+      font-weight:1000; color:#0b1530;
+      background: linear-gradient(90deg, rgba(53,226,160,.9), rgba(79,140,255,.9));
+      padding:6px 10px;border-radius:999px;
+      min-width:44px;text-align:center;
+    }
+    .opts{display:grid;gap:10px;margin-top:10px}
+    .opt{
+      display:flex;gap:10px;align-items:flex-start;
+      padding:10px 12px;
+      border-radius:var(--r2);
+      border:1px solid #22305f;
+      background: rgba(255,255,255,.04);
+      cursor:pointer;
+      transition: background .2s ease, border-color .2s ease, transform .12s ease;
+    }
+    .opt:hover{border-color:#3d57c8;background: rgba(255,255,255,.06);transform: translateY(-1px)}
+    .opt input{margin-top:2px;transform:scale(1.1)}
+    .opt b{display:inline-block;min-width:18px}
+    .muted{color:var(--muted)}
+
+    .resultCard{margin-top:12px;display:none}
+    .resultBody{padding:14px;display:grid;gap:10px}
+    .scoreBox{
+      padding:14px;border-radius:16px;
+      border:1px solid #22305f;
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(0,0,0,.12));
+    }
+    .scoreBig{font-size:28px;font-weight:1100;letter-spacing:.3px}
+    .review{display:grid;gap:10px}
+    .item{
+      border:1px solid #22305f;
+      background: rgba(255,255,255,.03);
+      border-radius:16px;
+      padding:12px;
+    }
+    .badge{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:6px 10px;border-radius:999px;font-size:12px;font-weight:1000;
+      border:1px solid transparent;
+    }
+    .ok{background: rgba(53,226,160,.12); border-color: rgba(53,226,160,.35); color: var(--good)}
+    .no{background: rgba(255,84,112,.10); border-color: rgba(255,84,112,.35); color: var(--bad)}
+    .ansLine{margin-top:8px;color:var(--muted);font-size:12px;line-height:1.35}
+
+    .foot{margin:16px 0 6px;color:var(--muted);font-size:12px;text-align:center}
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="header">
+      <div class="title">
+        <h1>Quiz – Exercise 1 & 3</h1>
+        <p>Làm bài → xem điểm + đáp án. Có danh sách câu, lọc theo phần, trộn đáp án (ổn định), bài mới.</p>
+        <div class="progress"><div class="bar" id="bar"></div></div>
+        <div class="hint" id="statusText">
+          Chọn phần ở trên, làm từng câu. Khi làm đủ thì nút <b>Nộp bài</b> sẽ sáng.
+        </div>
+      </div>
+
+      <div class="rightCol">
+        <div class="chiprow">
+          <span class="pill">Tổng câu: <b id="totalQ">0</b></span>
+          <span class="pill">Đã chọn: <b id="doneQ">0</b></span>
+          <span class="pill">Đang xem: <b id="viewQ">0</b></span>
+        </div>
+
+        <div class="seg" aria-label="filter">
+          <button id="tabAll" class="active" type="button">Tất cả</button>
+          <button id="tabEx1" type="button">Exercise 1</button>
+          <button id="tabEx3" type="button">Exercise 3</button>
+        </div>
+
+        <div class="btns">
+          <button id="shuffleBtn" type="button">Trộn đáp án</button>
+          <button id="newBtn" type="button">Bài mới</button>
+          <button id="submitBtn" class="primary" type="button" disabled>Nộp bài</button>
+        </div>
+
+        <div class="hint">
+          Tip: bật <span class="kbd">Trộn đáp án</span> để luyện thật hơn (nhưng vẫn giữ thứ tự ổn định trong 1 lượt làm).
+        </div>
+      </div>
+    </div>
+
+    <div class="main">
+      <aside class="side">
+        <div class="panelHd">
+          <div>
+            <div class="small">Đi nhanh tới câu</div>
+            <div class="big">Danh sách câu</div>
+          </div>
+          <div class="tag" id="sideTag">All</div>
+        </div>
+        <div class="sideBody">
+          <div class="qList" id="qList"></div>
+          <div class="sideNote">
+            Ô <b>xanh</b> = đã chọn đáp án. Bấm vào số để nhảy tới câu đó.
+          </div>
+        </div>
+      </aside>
+
+      <section class="content">
+        <div class="panelHd">
+          <div>
+            <div class="small">Phần làm bài</div>
+            <div class="big" id="contentTitle">Exercise 1 + Exercise 3</div>
+          </div>
+          <div class="tag">Offline • 1 file</div>
+        </div>
+        <div class="quizBody" id="quiz"></div>
+      </section>
+    </div>
+
+    <section class="resultCard" id="resultCard">
+      <div class="panelHd">
+        <div>
+          <div class="small">Kết quả</div>
+          <div class="big">Chấm điểm + Review</div>
+        </div>
+        <div class="tag">Xem đáp án</div>
+      </div>
+      <div class="resultBody" id="result"></div>
+    </section>
+
+    <div class="foot">Chạy offline trên điện thoại & máy tính • 1 file HTML</div>
+  </div>
+
+<script>
+/* ========= DATA ========= */
+const QUESTIONS = [
+  // Exercise 1 – 10 questions
+  { section: "Exercise 1", q: "Circle the word whose underlined part differs from the other three in pronunciation.", options: [
+      {k:"A", t:"brick"}, {k:"B", t:"brown"}, {k:"C", t:"class"}, {k:"D", t:"break"}
+    ], answer:"C" },
+  { section: "Exercise 1", q: "Circle the word whose underlined part differs from the other three in pronunciation.", options: [
+      {k:"A", t:"crush"}, {k:"B", t:"tree"}, {k:"C", t:"crash"}, {k:"D", t:"crook"}
+    ], answer:"B" },
+  { section: "Exercise 1", q: "Circle the word whose underlined part differs from the other three in pronunciation.", options: [
+      {k:"A", t:"truck"}, {k:"B", t:"trick"}, {k:"C", t:"trace"}, {k:"D", t:"group"}
+    ], answer:"D" },
+  { section: "Exercise 1", q: "Circle the word whose underlined part differs from the other three in pronunciation.", options: [
+      {k:"A", t:"please"}, {k:"B", t:"place"}, {k:"C", t:"click"}, {k:"D", t:"plug"}
+    ], answer:"C" },
+  { section: "Exercise 1", q: "Circle the word whose underlined part differs from the other three in pronunciation.", options: [
+      {k:"A", t:"green"}, {k:"B", t:"grass"}, {k:"C", t:"grab"}, {k:"D", t:"cloud"}
+    ], answer:"D" },
+  { section: "Exercise 1", q: "Circle the word whose underlined part differs from the other three in pronunciation.", options: [
+      {k:"A", t:"claim"}, {k:"B", t:"trend"}, {k:"C", t:"clock"}, {k:"D", t:"club"}
+    ], answer:"B" },
+  { section: "Exercise 1", q: "Circle the word whose underlined part differs from the other three in pronunciation.", options: [
+      {k:"A", t:"breakfast"}, {k:"B", t:"breadwinner"}, {k:"C", t:"brush"}, {k:"D", t:"tread"}
+    ], answer:"D" },
+  { section: "Exercise 1", q: "Circle the word whose underlined part differs from the other three in pronunciation.", options: [
+      {k:"A", t:"crane"}, {k:"B", t:"train"}, {k:"C", t:"create"}, {k:"D", t:"crash"}
+    ], answer:"B" },
+  { section: "Exercise 1", q: "Circle the word whose underlined part differs from the other three in pronunciation.", options: [
+      {k:"A", t:"practise"}, {k:"B", t:"present"}, {k:"C", t:"play"}, {k:"D", t:"protect"}
+    ], answer:"C" },
+  { section: "Exercise 1", q: "Circle the word whose underlined part differs from the other three in pronunciation.", options: [
+      {k:"A", t:"club"}, {k:"B", t:"green"}, {k:"C", t:"group"}, {k:"D", t:"ground"}
+    ], answer:"A" },
+
+  // Exercise 3 – 20 questions
+  { section:"Exercise 3", q:"Parents should share household ______ so that no one feels overloaded.", options:[
+      {k:"A", t:"jobs"},{k:"B", t:"work"},{k:"C", t:"chores"},{k:"D", t:"duties"}
+    ], answer:"C"},
+  { section:"Exercise 3", q:"We should use public transport more often to help protect the ______.", options:[
+      {k:"A", t:"nature"},{k:"B", t:"air"},{k:"C", t:"planet"},{k:"D", t:"environment"}
+    ], answer:"D"},
+  { section:"Exercise 3", q:"My father is responsible for paying the bills and managing the family ______.", options:[
+      {k:"A", t:"income"},{k:"B", t:"house"},{k:"C", t:"chores"},{k:"D", t:"finances"}
+    ], answer:"D"},
+  { section:"Exercise 3", q:"Saving water is a simple way to reduce our ______ on the planet.", options:[
+      {k:"A", t:"duty"},{k:"B", t:"activity"},{k:"C", t:"impact"},{k:"D", t:"behavior"}
+    ], answer:"C"},
+  { section:"Exercise 3", q:"Children learn the value of teamwork when they do chores ______ with their parents.", options:[
+      {k:"A", t:"lonely"},{k:"B", t:"together"},{k:"C", t:"alone"},{k:"D", t:"single"}
+    ], answer:"B"},
+  { section:"Exercise 3", q:"In many families, mothers still take the main ______ in caring for the children.", options:[
+      {k:"A", t:"job"},{k:"B", t:"position"},{k:"C", t:"role"},{k:"D", t:"duty"}
+    ], answer:"C"},
+  { section:"Exercise 3", q:"We should recycle plastic bottles instead of throwing them into the ______.", options:[
+      {k:"A", t:"bin"},{k:"B", t:"land"},{k:"C", t:"park"},{k:"D", t:"rubbish"}
+    ], answer:"A"},
+  { section:"Exercise 3", q:"Families with strong ______ usually have better communication and understanding.", options:[
+      {k:"A", t:"rules"},{k:"B", t:"values"},{k:"C", t:"bonds"},{k:"D", t:"chores"}
+    ], answer:"C"},
+  { section:"Exercise 3", q:"Teenagers should learn to be more ______ by doing simple household tasks.", options:[
+      {k:"A", t:"careful"},{k:"B", t:"hardworking"},{k:"C", t:"responsible"},{k:"D", t:"patient"}
+    ], answer:"C"},
+  { section:"Exercise 3", q:"Turning off lights when leaving a room helps us save both energy and ______.", options:[
+      {k:"A", t:"electricity"},{k:"B", t:"environment"},{k:"C", t:"money"},{k:"D", t:"carbon"}
+    ], answer:"C"},
+  { section:"Exercise 3", q:"My brother can play the guitar and sing very well. He wants to become a famous ______.", options:[
+      {k:"A", t:"conductor"},{k:"B", t:"composer"},{k:"C", t:"judge"},{k:"D", t:"performer"}
+    ], answer:"D"},
+  { section:"Exercise 3", q:"Taylor Swift’s latest ______ has topped the music charts for weeks.", options:[
+      {k:"A", t:"song"},{k:"B", t:"playlist"},{k:"C", t:"album"},{k:"D", t:"rhythm"}
+    ], answer:"C"},
+  { section:"Exercise 3", q:"The orchestra will ______ a concert at the city theatre next month.", options:[
+      {k:"A", t:"compose"},{k:"B", t:"perform"},{k:"C", t:"produce"},{k:"D", t:"direct"}
+    ], answer:"B"},
+  { section:"Exercise 3", q:"The students were excited to hear live ______ at the school festival.", options:[
+      {k:"A", t:"sound"},{k:"B", t:"music"},{k:"C", t:"noise"},{k:"D", t:"melody"}
+    ], answer:"B"},
+  { section:"Exercise 3", q:"She has a wonderful voice and a great sense of ______.", options:[
+      {k:"A", t:"song"},{k:"B", t:"tone"},{k:"C", t:"sound"},{k:"D", t:"rhythm"}
+    ], answer:"D"},
+  { section:"Exercise 3", q:"Many people find it relaxing to listen to ______ music while studying.", options:[
+      {k:"A", t:"heavy"},{k:"B", t:"noisy"},{k:"C", t:"classical"},{k:"D", t:"electric"}
+    ], answer:"C"},
+  { section:"Exercise 3", q:"The song has a beautiful ______ that everyone remembers easily.", options:[
+      {k:"A", t:"note"},{k:"B", t:"chord"},{k:"C", t:"melody"},{k:"D", t:"sound"}
+    ], answer:"C"},
+  { section:"Exercise 3", q:"The music teacher asked the students to ______ the lyrics of the song.", options:[
+      {k:"A", t:"copy"},{k:"B", t:"sing"},{k:"C", t:"translate"},{k:"D", t:"memorize"}
+    ], answer:"D"},
+  { section:"Exercise 3", q:"The concert was so ______ that the audience gave the band a standing ovation.", options:[
+      {k:"A", t:"boring"},{k:"B", t:"amazing"},{k:"C", t:"silent"},{k:"D", t:"quiet"}
+    ], answer:"B"},
+  { section:"Exercise 3", q:"She loves to listen to soft piano ______ before going to bed.", options:[
+      {k:"A", t:"rhythm"},{k:"B", t:"tunes"},{k:"C", t:"voices"},{k:"D", t:"chords"}
+    ], answer:"B"},
+];
+
+/* ========= STATE ========= */
+let state = {
+  filter: "all",      // all | ex1 | ex3
+  shuffle: false,
+  submitted: false,
+  selections: {},     // qIndex -> "A/B/C/D"
+  optionOrder: {},    // qIndex -> stable order per attempt
+};
+
+/* ========= ELS ========= */
+const elQuiz = document.getElementById("quiz");
+const elQList = document.getElementById("qList");
+const elTotalQ = document.getElementById("totalQ");
+const elDoneQ = document.getElementById("doneQ");
+const elViewQ = document.getElementById("viewQ");
+const elBar = document.getElementById("bar");
+const elSubmit = document.getElementById("submitBtn");
+const elShuffle = document.getElementById("shuffleBtn");
+const elNew = document.getElementById("newBtn");
+const elStatus = document.getElementById("statusText");
+const elResultCard = document.getElementById("resultCard");
+const elResult = document.getElementById("result");
+const elSideTag = document.getElementById("sideTag");
+const elContentTitle = document.getElementById("contentTitle");
+
+const tabAll = document.getElementById("tabAll");
+const tabEx1 = document.getElementById("tabEx1");
+const tabEx3 = document.getElementById("tabEx3");
+
+function escapeHtml(s){
+  return String(s)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+function shuffled(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function filteredIndices(){
+  return QUESTIONS
+    .map((q, i)=>({q,i}))
+    .filter(({q})=>{
+      if(state.filter==="all") return true;
+      if(state.filter==="ex1") return q.section==="Exercise 1";
+      if(state.filter==="ex3") return q.section==="Exercise 3";
+      return true;
+    })
+    .map(x=>x.i);
+}
+
+function ensureOptionOrder(indices){
+  for(const qi of indices){
+    if(!state.optionOrder[qi]){
+      const keys = QUESTIONS[qi].options.map(o=>o.k);
+      state.optionOrder[qi] = state.shuffle ? shuffled(keys) : keys;
+    }
+  }
+}
+
+function getOptionsInOrder(qIndex){
+  const order = state.optionOrder[qIndex] || QUESTIONS[qIndex].options.map(o=>o.k);
+  const map = new Map(QUESTIONS[qIndex].options.map(o=>[o.k, o]));
+  return order.map(k=>map.get(k)).filter(Boolean);
+}
+
+function setTabsActive(){
+  tabAll.classList.toggle("active", state.filter==="all");
+  tabEx1.classList.toggle("active", state.filter==="ex1");
+  tabEx3.classList.toggle("active", state.filter==="ex3");
+
+  if(state.filter==="all"){
+    elSideTag.textContent = "All";
+    elContentTitle.textContent = "Exercise 1 + Exercise 3";
+  }else if(state.filter==="ex1"){
+    elSideTag.textContent = "Ex1";
+    elContentTitle.textContent = "Exercise 1 (Pronunciation)";
+  }else{
+    elSideTag.textContent = "Ex3";
+    elContentTitle.textContent = "Exercise 3 (Multiple choice)";
+  }
+}
+
+function render(){
+  const indices = filteredIndices();
+  ensureOptionOrder(indices);
+  setTabsActive();
+
+  elQuiz.innerHTML = "";
+  elQList.innerHTML = "";
+
+  // Sidebar buttons
+  indices.forEach((qi, idx)=>{
+    const btn = document.createElement("div");
+    btn.className = "qBtn";
+    btn.textContent = (idx + 1); // numbering within view
+    if(state.selections[qi]) btn.classList.add("done");
+    if(state.submitted) btn.classList.add("locked");
+    btn.addEventListener("click", ()=>{
+      const el = document.getElementById("q_" + qi);
+      if(el) el.scrollIntoView({behavior:"smooth", block:"start"});
+    });
+    elQList.appendChild(btn);
+  });
+
+  // Questions
+  let lastSection = "";
+  for(const qi of indices){
+    const item = QUESTIONS[qi];
+
+    if(item.section !== lastSection){
+      const sec = document.createElement("div");
+      sec.className = "q";
+      sec.innerHTML = `
+        <div class="muted" style="font-size:12px;margin-bottom:6px">Section</div>
+        <div style="font-weight:1100;font-size:16px">${escapeHtml(item.section)}</div>
+      `;
+      elQuiz.appendChild(sec);
+      lastSection = item.section;
+    }
+
+    const wrap = document.createElement("div");
+    wrap.className = "q";
+    wrap.id = "q_" + qi;
+
+    const chosen = state.selections[qi] || "";
+    const opts = getOptionsInOrder(qi);
+
+    wrap.innerHTML = `
+      <div class="qhead">
+        <div>
+          <p class="qtitle">${escapeHtml(item.q)}</p>
+          <div class="muted" style="font-size:12px;margin-top:6px">Chọn 1 đáp án</div>
+        </div>
+        <div class="qnum">${qi+1}</div>
+      </div>
+      <div class="opts">
+        ${opts.map(opt=>{
+          const id = `q${qi}_${opt.k}`;
+          const checked = (chosen === opt.k) ? "checked" : "";
+          const disabled = state.submitted ? "disabled" : "";
+          return `
+            <label class="opt" for="${id}" style="${state.submitted ? "opacity:.92;cursor:default" : ""}">
+              <input type="radio" name="q${qi}" id="${id}" value="${opt.k}" ${checked} ${disabled}/>
+              <div><b>${opt.k}.</b> ${escapeHtml(opt.t)}</div>
+            </label>
+          `;
+        }).join("")}
+      </div>
+    `;
+    elQuiz.appendChild(wrap);
+
+    // bind change
+    wrap.querySelectorAll(`input[name="q${qi}"]`).forEach(r=>{
+      r.addEventListener("change", (e)=>{
+        if(state.submitted) return;
+        state.selections[qi] = e.target.value;
+        updateMeta();
+        renderSidebarOnly();
+      });
+    });
+  }
+
+  updateMeta();
+}
+
+function renderSidebarOnly(){
+  const indices = filteredIndices();
+  const children = Array.from(elQList.children);
+  indices.forEach((qi, idx)=>{
+    const btn = children[idx];
+    if(!btn) return;
+    btn.classList.toggle("done", !!state.selections[qi]);
+  });
+}
+
+function updateMeta(){
+  const indices = filteredIndices();
+  const totalAll = QUESTIONS.length;
+  const doneAll = Object.keys(state.selections).length;
+
+  elTotalQ.textContent = totalAll;
+  elDoneQ.textContent = doneAll;
+  elViewQ.textContent = indices.length;
+
+  const pct = Math.round((doneAll/totalAll)*100);
+  elBar.style.width = pct + "%";
+
+  // yêu cầu làm đủ tất cả để nộp
+  const allDone = doneAll === totalAll;
+  elSubmit.disabled = !allDone || state.submitted;
+
+  if(state.submitted){
+    elStatus.innerHTML = `Đã nộp bài. Bấm <b>Bài mới</b> để làm lại lượt mới.`;
+  } else if(allDone){
+    elStatus.innerHTML = `Đã chọn đủ <b>${doneAll}/${totalAll}</b>. Bấm <b>Nộp bài</b> để chấm điểm ✅`;
+  } else {
+    elStatus.innerHTML = `Bạn đã chọn <b>${doneAll}/${totalAll}</b>. Còn <b>${totalAll-doneAll}</b> câu nữa.`;
+  }
+}
+
+function grade(){
+  state.submitted = true;
+
+  const total = QUESTIONS.length;
+  let correct = 0;
+
+  const details = [];
+  for(let i=0;i<total;i++){
+    const q = QUESTIONS[i];
+    const pick = state.selections[i] || "";
+    const ok = pick === q.answer;
+    if(ok) correct++;
+    details.push({ i, q, pick, ok });
+  }
+
+  const percent = Math.round((correct/total)*100);
+
+  elResultCard.style.display = "block";
+  elResult.innerHTML = `
+    <div class="scoreBox">
+      <div class="muted">Điểm của bạn</div>
+      <div class="scoreBig">${correct} / ${total} <span class="muted" style="font-size:14px">(${percent}%)</span></div>
+      <div class="muted" style="margin-top:6px;line-height:1.35">
+        Review bên dưới sẽ hiện <b>đáp án đúng</b> + đáp án bạn chọn.
+      </div>
+    </div>
+    <div class="review" id="review"></div>
+  `;
+
+  const rv = document.getElementById("review");
+  details.forEach(d=>{
+    const item = document.createElement("div");
+    item.className = "item";
+    item.innerHTML = `
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+        <div style="font-weight:1000">Câu ${d.i+1} <span class="muted" style="font-weight:600">• ${escapeHtml(d.q.section)}</span></div>
+        <span class="badge ${d.ok ? "ok":"no"}">${d.ok ? "✅ Đúng":"❌ Sai"}</span>
+      </div>
+      <div class="muted" style="margin-top:6px">${escapeHtml(d.q.q)}</div>
+      <div class="ansLine">
+        Bạn chọn: <b>${d.pick || "(chưa chọn)"}</b>
+        &nbsp;•&nbsp; Đáp án đúng: <b>${d.q.answer}</b>
+      </div>
+    `;
+    rv.appendChild(item);
+  });
+
+  // khóa nút trộn sau khi nộp để tránh “đảo đáp án”
+  elShuffle.disabled = true;
+
+  render();
+  elResultCard.scrollIntoView({behavior:"smooth", block:"start"});
+}
+
+function newAttempt(){
+  state.selections = {};
+  state.optionOrder = {};
+  state.submitted = false;
+  elShuffle.disabled = false;
+
+  elResultCard.style.display = "none";
+  elResult.innerHTML = "";
+  render();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function toggleShuffle(){
+  if(state.submitted) return;
+  state.shuffle = !state.shuffle;
+  state.optionOrder = {}; // tạo lại thứ tự hiển thị 1 lần cho lượt làm
+  elShuffle.textContent = state.shuffle ? "Đang trộn đáp án ✅" : "Trộn đáp án";
+  render();
+}
+
+/* ========= EVENTS ========= */
+elSubmit.addEventListener("click", grade);
+elNew.addEventListener("click", newAttempt);
+elShuffle.addEventListener("click", toggleShuffle);
+
+tabAll.addEventListener("click", ()=>{ state.filter="all"; render(); });
+tabEx1.addEventListener("click", ()=>{ state.filter="ex1"; render(); });
+tabEx3.addEventListener("click", ()=>{ state.filter="ex3"; render(); });
+
+/* ========= INIT ========= */
+render();
+</script>
+</body>
+</html>
