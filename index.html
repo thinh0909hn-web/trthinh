@@ -4,23 +4,22 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
 
-  <title>Exercise 1 & 3 | Trắc nghiệm tiếng Anh</title>
-  <meta name="description" content="Thầy Giáo Người Ăn Gô La" />
+  <title>Exercise 1, 3, 4 | Trắc nghiệm tiếng Anh</title>
+  <meta name="description" content="ĐỀ TIẾNG ANH 10 – 30+ câu trắc nghiệm (Ex1, Ex3, Ex4)" />
 
   <!-- Open Graph (Facebook/Zalo/Discord/...) -->
   <meta property="og:type" content="website" />
   <meta property="og:title" content="ĐỀ TIẾNG ANH 10" />
-  <meta property="og:description" content="Do đích thân thầy giáo mới người ăn gô la dậy đề gòm 30 câu trắc nghiệm" />
+  <meta property="og:description" content="Do đích thân thầy giáo mới người an gô la dạy đề có 70 câu làm cho sướng hahah!" />
   <meta property="og:image" content="https://files.catbox.moe/0uf5uv.jpeg" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-  <!-- ✅ Sau khi host, thay thành link web thật -->
   <meta property="og:url" content="https://ktra.thinhshop247.site/" />
 
   <!-- Twitter/X -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Quiz – Exercise 1 & 3 | Trắc nghiệm tiếng Anh" />
-  <meta name="twitter:description" content="Web trắc nghiệm tiếng Anh – nộp bài xem điểm + đáp án." />
+  <meta name="twitter:title" content="ĐỀ TIẾNG ANH 10 – Exercise 1, 3, 4" />
+  <meta name="twitter:description" content="Web trắc nghiệm – nộp bài xem điểm + gửi Telegram." />
   <meta name="twitter:image" content="https://files.catbox.moe/0uf5uv.jpeg" />
 
   <style>
@@ -68,12 +67,10 @@
     .title h1{margin:0 0 6px;font-size:20px;letter-spacing:.2px}
     .title p{margin:0;color:var(--muted);font-size:13px;line-height:1.35}
 
-    /* ✅ canh đẹp: 3 ô + tabs + 3 nút lên cao, đều */
     .rightCol{
       flex: 1 1 360px;
       min-width: 0;
       max-width: 560px;
-
       display:flex;
       flex-direction:column;
       gap:12px;
@@ -161,7 +158,6 @@
       font-size:11px;padding:2px 6px;border-radius:8px;border:1px solid #22305f;background: rgba(0,0,0,.25)
     }
 
-    /* Layout */
     .main{
       display:grid;
       grid-template-columns: 280px 1fr;
@@ -215,7 +211,6 @@
       background: linear-gradient(90deg, rgba(53,226,160,.9), rgba(79,140,255,.9));
     }
     .qBtn.locked{opacity:.6;cursor:default;transform:none}
-    .sideNote{margin-top:10px;color:var(--muted);font-size:12px;line-height:1.35}
 
     .quizBody{padding:0}
     .q{
@@ -273,6 +268,43 @@
     .ansLine{margin-top:8px;color:var(--muted);font-size:12px;line-height:1.35}
 
     .foot{margin:16px 0 6px;color:var(--muted);font-size:12px;text-align:center}
+
+    /* modal */
+    .modalBack{
+      position:fixed; inset:0; background: rgba(0,0,0,.55);
+      display:none; align-items:center; justify-content:center;
+      padding:18px;
+      z-index: 9999;
+    }
+    .modal{
+      width:min(520px, 100%);
+      border:1px solid #22305f;
+      background: rgba(14, 22, 48, .95);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .modalHd{padding:14px 14px 10px; border-bottom:1px solid #1a2550}
+    .modalHd b{font-size:14px}
+    .modalBd{padding:14px; display:grid; gap:10px}
+    .field{
+      display:grid; gap:6px;
+      font-size:12px; color: var(--muted);
+    }
+    .field input{
+      width:100%;
+      padding:12px 12px;
+      border-radius:14px;
+      border:1px solid #22305f;
+      outline:none;
+      background: rgba(0,0,0,.25);
+      color: var(--text);
+      font-weight:800;
+    }
+    .modalBtns{
+      display:grid; grid-template-columns: 1fr 1fr; gap:10px;
+      padding: 0 14px 14px;
+    }
   </style>
 </head>
 
@@ -280,8 +312,8 @@
   <div class="wrap">
     <div class="header">
       <div class="title">
-        <h1>Quiz – Exercise 1 & 3</h1>
-        <p>Làm bài → xem điểm + đáp án. Có danh sách câu, lọc theo phần, trộn đáp án (ổn định), bài mới.</p>
+        <h1>Quiz – Exercise 1, 3, 4</h1>
+        <p>Làm bài → xem điểm + đáp án. Có danh sách câu, lọc theo phần, trộn đáp án (ổn định). Dữ liệu <b>không mất khi F5</b>.</p>
         <div class="progress"><div class="bar" id="bar"></div></div>
         <div class="hint" id="statusText">
           Chọn phần ở trên, làm từng câu. Khi làm đủ thì nút <b>Nộp bài</b> sẽ sáng.
@@ -299,6 +331,7 @@
           <button id="tabAll" class="active" type="button">Tất cả</button>
           <button id="tabEx1" type="button">Exercise 1</button>
           <button id="tabEx3" type="button">Exercise 3</button>
+          <button id="tabEx4" type="button">Exercise 4</button>
         </div>
 
         <div class="btns">
@@ -309,6 +342,7 @@
 
         <div class="hint">
           Tip: bật <span class="kbd">Trộn đáp án</span> để luyện thật hơn (nhưng vẫn giữ thứ tự ổn định trong 1 lượt làm).
+          <br/>Nộp bài xong sẽ hỏi <b>Tên</b> rồi tự gửi kết quả về <b>Telegram</b>.
         </div>
       </div>
     </div>
@@ -324,7 +358,7 @@
         </div>
         <div class="sideBody">
           <div class="qList" id="qList"></div>
-          <div class="sideNote">
+          <div class="hint" style="margin-top:10px">
             Ô <b>xanh</b> = đã chọn đáp án. Bấm vào số để nhảy tới câu đó.
           </div>
         </div>
@@ -334,7 +368,7 @@
         <div class="panelHd">
           <div>
             <div class="small">Phần làm bài</div>
-            <div class="big" id="contentTitle">Exercise 1 + Exercise 3</div>
+            <div class="big" id="contentTitle">Exercise 1 + 3 + 4</div>
           </div>
           <div class="tag">©TRUONGTHINH</div>
         </div>
@@ -353,13 +387,40 @@
       <div class="resultBody" id="result"></div>
     </section>
 
-    <div class="foot">dev @truongthinh    ©2025</div>
+    <div class="foot">dev @truongthinh ©2025</div>
+  </div>
+
+  <!-- Modal nhập tên -->
+  <div class="modalBack" id="modalBack">
+    <div class="modal">
+      <div class="modalHd"><b>Nhập tên để nộp bài</b></div>
+      <div class="modalBd">
+        <div class="field">
+          <div>Tên của bạn (bắt buộc)</div>
+          <input id="nameInput" placeholder="VD: Trường Thịnh" maxlength="50" />
+        </div>
+        <div class="hint" id="sendHint" style="margin:0">
+          Sau khi bấm <b>Gửi</b>, web sẽ chấm điểm và gửi về Telegram.
+        </div>
+      </div>
+      <div class="modalBtns">
+        <button id="cancelSend" type="button">Hủy</button>
+        <button id="confirmSend" class="primary" type="button">Gửi</button>
+      </div>
+    </div>
   </div>
 
 <script>
+/* ================== CONFIG ================== */
+// ✅ DÁN LINK WORKER CỦA BẠN VÀO ĐÂY (KẾT THÚC BẰNG / HOẶC KHÔNG CŨNG ĐƯỢC)
+const WORKER_ENDPOINT = "https://tthinh.trthinh0904n.workers.dev/"; // <-- sửa dòng này
+
+// localStorage key
+const STORAGE_KEY = "ktra_thinhshop247_quiz_state_v2";
+
 /* ========= DATA ========= */
 const QUESTIONS = [
-  // Exercise 1 – 10 questions
+  // ===== Exercise 1 (10) =====
   { section: "Exercise 1", q: "Circle the word whose underlined part differs from the other three in pronunciation.", options: [
       {k:"A", t:"brick"}, {k:"B", t:"brown"}, {k:"C", t:"class"}, {k:"D", t:"break"}
     ], answer:"C" },
@@ -391,7 +452,7 @@ const QUESTIONS = [
       {k:"A", t:"club"}, {k:"B", t:"green"}, {k:"C", t:"group"}, {k:"D", t:"ground"}
     ], answer:"A" },
 
-  // Exercise 3 – 20 questions
+  // ===== Exercise 3 (20) =====
   { section:"Exercise 3", q:"Parents should share household ______ so that no one feels overloaded.", options:[
       {k:"A", t:"jobs"},{k:"B", t:"work"},{k:"C", t:"chores"},{k:"D", t:"duties"}
     ], answer:"C"},
@@ -452,15 +513,142 @@ const QUESTIONS = [
   { section:"Exercise 3", q:"She loves to listen to soft piano ______ before going to bed.", options:[
       {k:"A", t:"rhythm"},{k:"B", t:"tunes"},{k:"C", t:"voices"},{k:"D", t:"chords"}
     ], answer:"B"},
+
+  // ===== Exercise 4 (40) =====
+  { section:"Exercise 4", q:"My brother usually __________ to pop music while studying.", options:[
+      {k:"A", t:"listens"},{k:"B", t:"is listening"},{k:"C", t:"listened"},{k:"D", t:"has listened"}
+    ], answer:"A"},
+  { section:"Exercise 4", q:"Listen! The band __________ a new song on stage.", options:[
+      {k:"A", t:"play"},{k:"B", t:"plays"},{k:"C", t:"are playing"},{k:"D", t:"have played"}
+    ], answer:"C"},
+  { section:"Exercise 4", q:"She __________ the guitar very well.", options:[
+      {k:"A", t:"play"},{k:"B", t:"played"},{k:"C", t:"plays"},{k:"D", t:"is playing"}
+    ], answer:"C"},
+
+  { section:"Exercise 4", q:"Our music teacher __________ invited to judge many singing contests.", options:[
+      {k:"A", t:"is"},{k:"B", t:"has been"},{k:"C", t:"was"},{k:"D", t:"being"}
+    ], answer:"B"},
+  { section:"Exercise 4", q:"They __________ a concert next weekend to raise money for charity.", options:[
+      {k:"A", t:"are going to hold"},{k:"B", t:"will holding"},{k:"C", t:"hold"},{k:"D", t:"holding"}
+    ], answer:"A"},
+  { section:"Exercise 4", q:"I think the new song by Taylor Swift __________ a big hit.", options:[
+      {k:"A", t:"will be"},{k:"B", t:"is being"},{k:"C", t:"is going to be"},{k:"D", t:"be"}
+    ], answer:"A"},
+  { section:"Exercise 4", q:"At the moment, the students __________ how to read musical notes.", options:[
+      {k:"A", t:"learn"},{k:"B", t:"learns"},{k:"C", t:"are learning"},{k:"D", t:"learned"}
+    ], answer:"C"},
+  { section:"Exercise 4", q:"My sister __________ the piano since she was ten years old.", options:[
+      {k:"A", t:"plays"},{k:"B", t:"has played"},{k:"C", t:"played"},{k:"D", t:"is playing"}
+    ], answer:"B"},
+  { section:"Exercise 4", q:"Look! The audience __________ excitedly as the band appears.", options:[
+      {k:"A", t:"cheer"},{k:"B", t:"is cheering"},{k:"C", t:"cheers"},{k:"D", t:"cheered"}
+    ], answer:"B"},
+  { section:"Exercise 4", q:"We __________ to attend a live music festival next summer.", options:[
+      {k:"A", t:"are planning"},{k:"B", t:"plan"},{k:"C", t:"will plan"},{k:"D", t:"planned"}
+    ], answer:"A"},
+
+  { section:"Exercise 4", q:"Trees __________ every year to make the city greener.", options:[
+      {k:"A", t:"plant"},{k:"B", t:"are planted"},{k:"C", t:"were planted"},{k:"D", t:"will plant"}
+    ], answer:"B"},
+  { section:"Exercise 4", q:"Plastic bottles __________ into new products in many factories.", options:[
+      {k:"A", t:"recycle"},{k:"B", t:"are recycled"},{k:"C", t:"were recycled"},{k:"D", t:"will recycle"}
+    ], answer:"B"},
+  { section:"Exercise 4", q:"Hundreds of trees __________ last month to reduce air pollution.", options:[
+      {k:"A", t:"are planted"},{k:"B", t:"were planted"},{k:"C", t:"have been planted"},{k:"D", t:"will be planted"}
+    ], answer:"B"},
+  { section:"Exercise 4", q:"A lot of waste __________ into the river every day.", options:[
+      {k:"A", t:"is dumped"},{k:"B", t:"was dumped"},{k:"C", t:"dumped"},{k:"D", t:"will dump"}
+    ], answer:"A"},
+  { section:"Exercise 4", q:"Solar energy __________ by many countries in the future.", options:[
+      {k:"A", t:"will use"},{k:"B", t:"will be used"},{k:"C", t:"is used"},{k:"D", t:"was used"}
+    ], answer:"B"},
+  { section:"Exercise 4", q:"The recycling bins __________ at the moment.", options:[
+      {k:"A", t:"are emptied"},{k:"B", t:"were emptied"},{k:"C", t:"are being emptied"},{k:"D", t:"will be emptied"}
+    ], answer:"C"},
+  { section:"Exercise 4", q:"These plastic bags __________ for many years; they’re bad for the environment.", options:[
+      {k:"A", t:"were used"},{k:"B", t:"have been used"},{k:"C", t:"are used"},{k:"D", t:"will be used"}
+    ], answer:"B"},
+  { section:"Exercise 4", q:"The park __________ by volunteers yesterday morning.", options:[
+      {k:"A", t:"is cleaned"},{k:"B", t:"was cleaned"},{k:"C", t:"cleans"},{k:"D", t:"will clean"}
+    ], answer:"B"},
+  { section:"Exercise 4", q:"More public dustbins __________ in our city next month.", options:[
+      {k:"A", t:"are installed"},{k:"B", t:"were installed"},{k:"C", t:"will be installed"},{k:"D", t:"are being installed"}
+    ], answer:"C"},
+  { section:"Exercise 4", q:"Energy-saving campaigns __________ in schools every year.", options:[
+      {k:"A", t:"organize"},{k:"B", t:"are organized"},{k:"C", t:"were organized"},{k:"D", t:"will organize"}
+    ], answer:"B"},
+
+  { section:"Exercise 4", q:"She plays the guitar beautifully, ____ she can also compose her own songs.", options:[
+      {k:"A", t:"but"},{k:"B", t:"and"},{k:"C", t:"or"},{k:"D", t:"yet"}
+    ], answer:"B"},
+  { section:"Exercise 4", q:"Tom practices the piano every day, ____ he still finds it hard to perform in public.", options:[
+      {k:"A", t:"so"},{k:"B", t:"for"},{k:"C", t:"yet"},{k:"D", t:"or"}
+    ], answer:"C"},
+  { section:"Exercise 4", q:"The concert was canceled, ____ the fans were very disappointed.", options:[
+      {k:"A", t:"but"},{k:"B", t:"so"},{k:"C", t:"or"},{k:"D", t:"yet"}
+    ], answer:"B"},
+  { section:"Exercise 4", q:"You can download the song for free ____ buy the full album online.", options:[
+      {k:"A", t:"and"},{k:"B", t:"but"},{k:"C", t:"or"},{k:"D", t:"yet"}
+    ], answer:"C"},
+  { section:"Exercise 4", q:"The singer is talented ____ she needs more experience on stage.", options:[
+      {k:"A", t:"and"},{k:"B", t:"so"},{k:"C", t:"but"},{k:"D", t:"for"}
+    ], answer:"C"},
+  { section:"Exercise 4", q:"The band worked very hard, ____ they wanted to release a perfect album.", options:[
+      {k:"A", t:"so"},{k:"B", t:"or"},{k:"C", t:"yet"},{k:"D", t:"for"}
+    ], answer:"D"},
+  { section:"Exercise 4", q:"The sound system was broken, ____ the concert couldn’t go on.", options:[
+      {k:"A", t:"but"},{k:"B", t:"so"},{k:"C", t:"yet"},{k:"D", t:"for"}
+    ], answer:"B"},
+  { section:"Exercise 4", q:"I like listening to classical music, ____ my brother prefers rock.", options:[
+      {k:"A", t:"and"},{k:"B", t:"or"},{k:"C", t:"yet"},{k:"D", t:"for"}
+    ], answer:"C"},
+  { section:"Exercise 4", q:"Would you like to join the choir ____ play in the school band?", options:[
+      {k:"A", t:"and"},{k:"B", t:"or"},{k:"C", t:"but"},{k:"D", t:"for"}
+    ], answer:"B"},
+  { section:"Exercise 4", q:"She practices singing every morning, ____ she dreams of becoming a professional singer.", options:[
+      {k:"A", t:"so"},{k:"B", t:"but"},{k:"C", t:"yet"},{k:"D", t:"or"}
+    ], answer:"A"},
+
+  { section:"Exercise 4", q:"I want _______ how to play the guitar this summer.", options:[
+      {k:"A", t:"learn"},{k:"B", t:"learning"},{k:"C", t:"to learn"},{k:"D", t:"learned"}
+    ], answer:"C"},
+  { section:"Exercise 4", q:"My teacher made me _______ the song again because I sang it off-key.", options:[
+      {k:"A", t:"to sing"},{k:"B", t:"singing"},{k:"C", t:"sing"},{k:"D", t:"sang"}
+    ], answer:"C"},
+  { section:"Exercise 4", q:"She decided _______ a new piano for her music class.", options:[
+      {k:"A", t:"buy"},{k:"B", t:"buying"},{k:"C", t:"to buy"},{k:"D", t:"bought"}
+    ], answer:"C"},
+  { section:"Exercise 4", q:"We heard the band _______ their new song at the concert.", options:[
+      {k:"A", t:"to perform"},{k:"B", t:"performing"},{k:"C", t:"perform"},{k:"D", t:"performed"}
+    ], answer:"C"},
+  { section:"Exercise 4", q:"The music club plans _______ a charity concert next month.", options:[
+      {k:"A", t:"organizing"},{k:"B", t:"to organize"},{k:"C", t:"organize"},{k:"D", t:"to be organized"}
+    ], answer:"B"},
+  { section:"Exercise 4", q:"The students were happy _______ the music competition.", options:[
+      {k:"A", t:"join"},{k:"B", t:"to join"},{k:"C", t:"joining"},{k:"D", t:"joined"}
+    ], answer:"B"},
+  { section:"Exercise 4", q:"Let’s the choir _______ their song before we leave.", options:[
+      {k:"A", t:"to finish"},{k:"B", t:"finish"},{k:"C", t:"finished"},{k:"D", t:"finishing"}
+    ], answer:"B"},
+  { section:"Exercise 4", q:"She promised _______ her voice for the school concert.", options:[
+      {k:"A", t:"using"},{k:"B", t:"use"},{k:"C", t:"to use"},{k:"D", t:"used"}
+    ], answer:"C"},
+  { section:"Exercise 4", q:"I heard him _______ softly while he was composing a new melody.", options:[
+      {k:"A", t:"sing"},{k:"B", t:"to sing"},{k:"C", t:"singing"},{k:"D", t:"sang"}
+    ], answer:"C"},
+  { section:"Exercise 4", q:"My dream is _______ a famous music producer one day.", options:[
+      {k:"A", t:"become"},{k:"B", t:"becoming"},{k:"C", t:"to become"},{k:"D", t:"became"}
+    ], answer:"C"},
 ];
 
-/* ========= STATE ========= */
+/* ========= STATE (persist) ========= */
 let state = {
-  filter: "all",      // all | ex1 | ex3
+  filter: "all",      // all | ex1 | ex3 | ex4
   shuffle: false,
   submitted: false,
   selections: {},     // qIndex -> "A/B/C/D"
   optionOrder: {},    // qIndex -> stable order per attempt
+  lastSubmitAt: null
 };
 
 /* ========= ELS ========= */
@@ -482,7 +670,16 @@ const elContentTitle = document.getElementById("contentTitle");
 const tabAll = document.getElementById("tabAll");
 const tabEx1 = document.getElementById("tabEx1");
 const tabEx3 = document.getElementById("tabEx3");
+const tabEx4 = document.getElementById("tabEx4");
 
+// modal
+const modalBack = document.getElementById("modalBack");
+const nameInput = document.getElementById("nameInput");
+const cancelSend = document.getElementById("cancelSend");
+const confirmSend = document.getElementById("confirmSend");
+const sendHint = document.getElementById("sendHint");
+
+/* ========= helpers ========= */
 function escapeHtml(s){
   return String(s)
     .replaceAll("&","&amp;")
@@ -491,7 +688,6 @@ function escapeHtml(s){
     .replaceAll('"',"&quot;")
     .replaceAll("'","&#039;");
 }
-
 function shuffled(arr){
   const a = arr.slice();
   for(let i=a.length-1;i>0;i--){
@@ -500,7 +696,6 @@ function shuffled(arr){
   }
   return a;
 }
-
 function filteredIndices(){
   return QUESTIONS
     .map((q, i)=>({q,i}))
@@ -508,11 +703,11 @@ function filteredIndices(){
       if(state.filter==="all") return true;
       if(state.filter==="ex1") return q.section==="Exercise 1";
       if(state.filter==="ex3") return q.section==="Exercise 3";
+      if(state.filter==="ex4") return q.section==="Exercise 4";
       return true;
     })
     .map(x=>x.i);
 }
-
 function ensureOptionOrder(indices){
   for(const qi of indices){
     if(!state.optionOrder[qi]){
@@ -521,30 +716,66 @@ function ensureOptionOrder(indices){
     }
   }
 }
-
 function getOptionsInOrder(qIndex){
   const order = state.optionOrder[qIndex] || QUESTIONS[qIndex].options.map(o=>o.k);
   const map = new Map(QUESTIONS[qIndex].options.map(o=>[o.k, o]));
   return order.map(k=>map.get(k)).filter(Boolean);
 }
-
 function setTabsActive(){
   tabAll.classList.toggle("active", state.filter==="all");
   tabEx1.classList.toggle("active", state.filter==="ex1");
   tabEx3.classList.toggle("active", state.filter==="ex3");
+  tabEx4.classList.toggle("active", state.filter==="ex4");
 
   if(state.filter==="all"){
     elSideTag.textContent = "All";
-    elContentTitle.textContent = "Exercise 1 + Exercise 3";
+    elContentTitle.textContent = "Exercise 1 + 3 + 4";
   }else if(state.filter==="ex1"){
     elSideTag.textContent = "Ex1";
     elContentTitle.textContent = "Exercise 1 (Pronunciation)";
-  }else{
+  }else if(state.filter==="ex3"){
     elSideTag.textContent = "Ex3";
     elContentTitle.textContent = "Exercise 3 (Multiple choice)";
+  }else{
+    elSideTag.textContent = "Ex4";
+    elContentTitle.textContent = "Exercise 4 (Grammar)";
   }
 }
 
+/* ========= localStorage ========= */
+function saveState(){
+  const safe = {
+    filter: state.filter,
+    shuffle: state.shuffle,
+    submitted: state.submitted,
+    selections: state.selections,
+    optionOrder: state.optionOrder,
+    lastSubmitAt: state.lastSubmitAt
+  };
+  try{
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(safe));
+  }catch(e){}
+}
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return;
+    const s = JSON.parse(raw);
+    if(!s || typeof s !== "object") return;
+    state.filter = s.filter || "all";
+    state.shuffle = !!s.shuffle;
+    state.submitted = !!s.submitted;
+    state.selections = s.selections || {};
+    state.optionOrder = s.optionOrder || {};
+    state.lastSubmitAt = s.lastSubmitAt || null;
+    elShuffle.textContent = state.shuffle ? "Đã trộn đáp án" : "Trộn đáp án";
+  }catch(e){}
+}
+function clearState(){
+  try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
+}
+
+/* ========= render ========= */
 function render(){
   const indices = filteredIndices();
   ensureOptionOrder(indices);
@@ -557,7 +788,7 @@ function render(){
   indices.forEach((qi, idx)=>{
     const btn = document.createElement("div");
     btn.className = "qBtn";
-    btn.textContent = (idx + 1); // numbering within view
+    btn.textContent = (idx + 1);
     if(state.selections[qi]) btn.classList.add("done");
     if(state.submitted) btn.classList.add("locked");
     btn.addEventListener("click", ()=>{
@@ -567,7 +798,6 @@ function render(){
     elQList.appendChild(btn);
   });
 
-  // Questions
   let lastSection = "";
   for(const qi of indices){
     const item = QUESTIONS[qi];
@@ -614,11 +844,11 @@ function render(){
     `;
     elQuiz.appendChild(wrap);
 
-    // bind change
     wrap.querySelectorAll(`input[name="q${qi}"]`).forEach(r=>{
       r.addEventListener("change", (e)=>{
         if(state.submitted) return;
         state.selections[qi] = e.target.value;
+        saveState();
         updateMeta();
         renderSidebarOnly();
       });
@@ -650,7 +880,6 @@ function updateMeta(){
   const pct = Math.round((doneAll/totalAll)*100);
   elBar.style.width = pct + "%";
 
-  // yêu cầu làm đủ tất cả để nộp
   const allDone = doneAll === totalAll;
   elSubmit.disabled = !allDone || state.submitted;
 
@@ -663,23 +892,26 @@ function updateMeta(){
   }
 }
 
-function grade(){
-  state.submitted = true;
-
+/* ========= grade + send ========= */
+function buildDetailText(){
   const total = QUESTIONS.length;
   let correct = 0;
+  const lines = [];
 
-  const details = [];
   for(let i=0;i<total;i++){
     const q = QUESTIONS[i];
-    const pick = state.selections[i] || "";
+    const pick = state.selections[i] || "(chưa chọn)";
     const ok = pick === q.answer;
     if(ok) correct++;
-    details.push({ i, q, pick, ok });
+    lines.push(
+      `Câu ${i+1} (${q.section}): chọn ${pick} | đúng ${q.answer} ${ok ? "✅" : "❌"}`
+    );
   }
+  return { correct, total, detail: lines.join("\n") };
+}
 
+function showResult(correct, total){
   const percent = Math.round((correct/total)*100);
-
   elResultCard.style.display = "block";
   elResult.innerHTML = `
     <div class="scoreBox">
@@ -693,38 +925,81 @@ function grade(){
   `;
 
   const rv = document.getElementById("review");
-  details.forEach(d=>{
+  for(let i=0;i<QUESTIONS.length;i++){
+    const q = QUESTIONS[i];
+    const pick = state.selections[i] || "";
+    const ok = pick === q.answer;
+
     const item = document.createElement("div");
     item.className = "item";
     item.innerHTML = `
       <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
-        <div style="font-weight:1000">Câu ${d.i+1} <span class="muted" style="font-weight:600">• ${escapeHtml(d.q.section)}</span></div>
-        <span class="badge ${d.ok ? "ok":"no"}">${d.ok ? "✅ Đúng":"❌ Sai"}</span>
+        <div style="font-weight:1000">Câu ${i+1} <span class="muted" style="font-weight:600">• ${escapeHtml(q.section)}</span></div>
+        <span class="badge ${ok ? "ok":"no"}">${ok ? "✅ Đúng":"❌ Sai"}</span>
       </div>
-      <div class="muted" style="margin-top:6px">${escapeHtml(d.q.q)}</div>
+      <div class="muted" style="margin-top:6px">${escapeHtml(q.q)}</div>
       <div class="ansLine">
-        Bạn chọn: <b>${d.pick || "(chưa chọn)"}</b>
-        &nbsp;•&nbsp; Đáp án đúng: <b>${d.q.answer}</b>
+        Bạn chọn: <b>${pick || "(chưa chọn)"}</b>
+        &nbsp;•&nbsp; Đáp án đúng: <b>${q.answer}</b>
       </div>
     `;
     rv.appendChild(item);
-  });
-
-  // khóa nút trộn sau khi nộp để tránh “đảo đáp án”
-  elShuffle.disabled = true;
-
-  render();
-  elResultCard.scrollIntoView({behavior:"smooth", block:"start"});
+  }
 }
 
+async function sendToTelegram(name, correct, total, detail){
+  // nếu chưa sửa endpoint thì bỏ qua
+  if(!WORKER_ENDPOINT || WORKER_ENDPOINT.includes("YOUR-WORKER")){
+    return { ok:false, msg:"Bạn chưa dán WORKER_ENDPOINT (link Cloudflare Worker) vào file index.html." };
+  }
+
+  const url = WORKER_ENDPOINT.endsWith("/") ? WORKER_ENDPOINT : (WORKER_ENDPOINT + "/");
+
+  try{
+    const res = await fetch(url, {
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
+      body: JSON.stringify({
+        name,
+        score: correct,
+        total,
+        detail
+      })
+    });
+
+    if(!res.ok){
+      const t = await res.text().catch(()=> "");
+      return { ok:false, msg:`Worker trả lỗi HTTP ${res.status}. ${t ? ("Chi tiết: "+t) : ""}` };
+    }
+    return { ok:true, msg:"Đã gửi Telegram ✅" };
+  }catch(e){
+    return { ok:false, msg:"Không gọi được Worker. Kiểm tra WORKER_ENDPOINT + HTTPS + CORS." };
+  }
+}
+
+function openNameModal(){
+  nameInput.value = "";
+  sendHint.textContent = "Sau khi bấm Gửi, web sẽ chấm điểm và gửi về Telegram.";
+  modalBack.style.display = "flex";
+  setTimeout(()=>nameInput.focus(), 30);
+}
+function closeNameModal(){
+  modalBack.style.display = "none";
+}
+
+/* ========= actions ========= */
 function newAttempt(){
   state.selections = {};
   state.optionOrder = {};
   state.submitted = false;
+  state.lastSubmitAt = null;
   elShuffle.disabled = false;
 
   elResultCard.style.display = "none";
   elResult.innerHTML = "";
+
+  clearState();
+  saveState();
   render();
   window.scrollTo({top:0,behavior:"smooth"});
 }
@@ -734,20 +1009,72 @@ function toggleShuffle(){
   state.shuffle = !state.shuffle;
   state.optionOrder = {}; // tạo lại thứ tự hiển thị 1 lần cho lượt làm
   elShuffle.textContent = state.shuffle ? "Đã trộn đáp án" : "Trộn đáp án";
+  saveState();
   render();
 }
 
+async function submitFlow(){
+  // mở modal nhập tên
+  openNameModal();
+}
+
+cancelSend.addEventListener("click", closeNameModal);
+
+confirmSend.addEventListener("click", async ()=>{
+  const name = nameInput.value.trim();
+  if(!name){
+    sendHint.textContent = "Bạn chưa nhập tên.";
+    return;
+  }
+
+  confirmSend.disabled = true;
+  cancelSend.disabled = true;
+  sendHint.textContent = "Đang chấm điểm và gửi Telegram...";
+
+  // chấm điểm
+  const { correct, total, detail } = buildDetailText();
+
+  // khóa bài
+  state.submitted = true;
+  state.lastSubmitAt = Date.now();
+  elShuffle.disabled = true;
+  saveState();
+
+  // hiện kết quả
+  render();
+  showResult(correct, total);
+
+  // gửi Telegram
+  const r = await sendToTelegram(name, correct, total, detail);
+  sendHint.textContent = r.msg;
+
+  closeNameModal();
+  confirmSend.disabled = false;
+  cancelSend.disabled = false;
+
+  elResultCard.scrollIntoView({behavior:"smooth", block:"start"});
+});
+
 /* ========= EVENTS ========= */
-elSubmit.addEventListener("click", grade);
+elSubmit.addEventListener("click", submitFlow);
 elNew.addEventListener("click", newAttempt);
 elShuffle.addEventListener("click", toggleShuffle);
 
-tabAll.addEventListener("click", ()=>{ state.filter="all"; render(); });
-tabEx1.addEventListener("click", ()=>{ state.filter="ex1"; render(); });
-tabEx3.addEventListener("click", ()=>{ state.filter="ex3"; render(); });
+tabAll.addEventListener("click", ()=>{ state.filter="all"; saveState(); render(); });
+tabEx1.addEventListener("click", ()=>{ state.filter="ex1"; saveState(); render(); });
+tabEx3.addEventListener("click", ()=>{ state.filter="ex3"; saveState(); render(); });
+tabEx4.addEventListener("click", ()=>{ state.filter="ex4"; saveState(); render(); });
 
 /* ========= INIT ========= */
+loadState();
 render();
+
+// nếu trước đó đã nộp bài thì hiện lại kết quả
+if(state.submitted){
+  const { correct, total } = buildDetailText();
+  showResult(correct, total);
+  elShuffle.disabled = true;
+}
 </script>
 </body>
 </html>
