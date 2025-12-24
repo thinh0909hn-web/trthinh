@@ -25,6 +25,7 @@
       background-color: var(--bg);
       font-family: 'Times New Roman', serif;
       color: var(--txt);
+      touch-action: manipulation;
     }
 
     #canvas-container{ position:absolute; inset:0; z-index:1; }
@@ -70,7 +71,7 @@
 
     #title{
       margin:0;
-      padding: 0 98px 0 14px; /* chừa chỗ icon phải */
+      padding: 0 108px 0 14px;
       max-width:min(92vw, 880px);
       line-height:1.05;
       font-weight:400;
@@ -87,7 +88,7 @@
       opacity:.96;
     }
     @media (max-width:600px){
-      #title{ font-size:26px; letter-spacing:2px; padding-right:92px; }
+      #title{ font-size:26px; letter-spacing:2px; padding-right:104px; }
     }
     @media (min-width:601px){
       #title{ font-size:54px; }
@@ -118,12 +119,11 @@
       color: var(--gold);
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
       font-weight:700;
+      user-select:none;
     }
     .icon-btn:active{ transform: translateY(1px) scale(0.98); }
 
-    .icon{
-      width:18px; height:18px; position:relative;
-    }
+    .icon{ width:18px; height:18px; position:relative; }
     .icon.ham::before, .icon.ham::after, .icon.ham span{
       content:"";
       position:absolute; left:0; right:0;
@@ -228,7 +228,18 @@
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
     }
 
-    /* Drawer (Gallery + Slots) */
+    /* Drawer Backdrop */
+    #drawer-backdrop{
+      position:absolute; inset:0;
+      z-index:54;
+      opacity:0;
+      pointer-events:none;
+      background: rgba(0,0,0,0.28);
+      transition: opacity .18s ease;
+    }
+    #drawer-backdrop.open{ opacity:1; pointer-events:auto; }
+
+    /* Drawer (iOS-like) */
     #drawer{
       position:absolute;
       left: 12px;
@@ -243,24 +254,43 @@
       box-shadow: 0 22px 80px rgba(0,0,0,0.55);
       overflow:hidden;
 
-      transform: translateY(8px);
+      max-height: min(72vh, 720px);
+
+      transform: translateY(18px);
       opacity:0;
       pointer-events:none;
       transition: .22s ease;
+      display:flex;
+      flex-direction:column;
     }
     #drawer.open{
       transform: translateY(0);
       opacity:1;
       pointer-events:auto;
     }
+
     .drawer-head{
       display:flex;
       align-items:center;
       justify-content:space-between;
-      padding: 12px 12px 10px;
+      padding: 10px 12px 10px;
       border-bottom: 1px solid rgba(212,175,55,0.14);
       gap: 10px;
+      flex: 0 0 auto;
     }
+    .handle{
+      position:absolute;
+      top: 6px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 46px;
+      height: 5px;
+      border-radius: 999px;
+      background: rgba(252,238,167,0.25);
+      border: 1px solid rgba(212,175,55,0.12);
+      pointer-events:none;
+    }
+
     .drawer-title{
       font-family: 'Cinzel', serif;
       letter-spacing:2px;
@@ -268,6 +298,10 @@
       font-size:12px;
       color: rgba(252,238,167,0.95);
       user-select:none;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width: 40vw;
     }
     .drawer-actions{
       display:flex; gap:8px; align-items:center;
@@ -288,6 +322,7 @@
       display:flex;
       align-items:center;
       gap:8px;
+      white-space:nowrap;
     }
     .chip:active{ transform: translateY(1px); }
     .chip strong{
@@ -301,10 +336,13 @@
     }
 
     .drawer-body{
+      flex: 1 1 auto;
+      overflow:auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 12px;
       display:grid;
       grid-template-columns: 1fr;
       gap: 10px;
-      padding: 12px;
     }
 
     .section{
@@ -324,12 +362,17 @@
       align-items:center;
       margin-bottom: 10px;
       user-select:none;
+      gap: 10px;
     }
     .small{
       color: rgba(212,175,55,0.65);
       font-size:10px;
       letter-spacing:0.8px;
       text-transform:none;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width: 46vw;
     }
 
     /* Slots grid */
@@ -441,6 +484,7 @@
       text-overflow: ellipsis;
     }
     #toast.show{ opacity:1; transform: translateY(0); }
+
     input[type="file"]{ display:none; }
   </style>
 
@@ -459,6 +503,9 @@
 </head>
 
 <body>
+  <!-- 🎵 Autoplay BGM (no button) -->
+  <audio id="bgm" src="https://files.catbox.moe/7ibpf5.mp3" preload="auto" loop playsinline></audio>
+
   <div id="loader">
     <div class="spinner"></div>
     <div class="loader-text">Loading Scene</div>
@@ -489,19 +536,21 @@
       <button class="btn" id="btn-shuffle" type="button"><span>Shuffle Photos</span><span class="badge">⇄</span></button>
     </div>
     <div class="hint">
-      Logic: Chọn <b>khung (Slot)</b> → bấm <b>ảnh</b> trong Gallery để thay. <br/>
-      Tap slot lần nữa để bỏ chọn.
+      Tip: Bạn có thể <b>bấm thẳng vào khung ảnh trên cây</b> để chọn slot, rồi chọn ảnh để thay.
     </div>
   </div>
 
+  <!-- Drawer backdrop -->
+  <div id="drawer-backdrop"></div>
+
   <!-- Drawer -->
   <div id="drawer">
-    <div class="drawer-head">
+    <div class="handle"></div>
+    <div class="drawer-head" id="drawer-head">
       <div class="drawer-title">Photos — Slot Replace</div>
       <div class="drawer-actions">
         <label class="chip" title="Select files">
-          Upload
-          <strong id="count-badge">0</strong>
+          Upload <strong id="count-badge">0</strong>
           <input type="file" id="file-input" multiple accept="image/*" />
         </label>
         <button class="chip" id="btn-clear-slot" title="Clear selected slot">Clear<strong>DEL</strong></button>
@@ -509,7 +558,7 @@
       </div>
     </div>
 
-    <div class="drawer-body">
+    <div class="drawer-body" id="drawer-body">
       <div class="section">
         <div class="section-title">
           <span>Slots (khung trên cây)</span>
@@ -552,26 +601,28 @@
       },
       camera: { z: 50 },
       slots: {
-        count: 18,          // số khung trên cây (logic slot)
-        baseScale: 1.2,     // scale khung/ảnh
-        rOffset: 4.9,       // đẩy slot ra ngoài
+        count: 18,
+        baseScale: 1.2,
+        rOffset: 4.9,
         loops: 3.2
       },
       preloadThumbs: [
-        'https://images.unsplash.com/photo-1543589077-47d81606c1bf?q=80&w=800',
-        'https://images.unsplash.com/photo-1576919228236-a097c32a5cd4?q=80&w=800',
-        'https://images.unsplash.com/photo-1512389142860-9c449e58a543?q=80&w=800',
-        'https://images.unsplash.com/photo-1482638588057-dce9509db949?q=80&w=800'
+        'https://images.unsplash.com/photo-1543589077-47d81606c1bf?q=80&w=900',
+        'https://images.unsplash.com/photo-1576919228236-a097c32a5cd4?q=80&w=900',
+        'https://images.unsplash.com/photo-1512389142860-9c449e58a543?q=80&w=900',
+        'https://images.unsplash.com/photo-1482638588057-dce9509db949?q=80&w=900'
       ]
     };
 
     const STATE = {
       mode: 'TREE',
-      focusTarget: null,
       rotation: { x: 0, y: 0 },
       flags: { snow: true, uiHidden: false },
       selectedSlot: -1,
-      toastTimer: null
+      toastTimer: null,
+      drawerDragging: false,
+      drawerStartY: 0,
+      drawerDragDY: 0
     };
 
     // DOM
@@ -582,6 +633,7 @@
     const snowState = document.getElementById('snow-state');
 
     const drawer = document.getElementById('drawer');
+    const drawerBackdrop = document.getElementById('drawer-backdrop');
     const btnCloseDrawer = document.getElementById('btn-close-drawer');
     const fileInput = document.getElementById('file-input');
 
@@ -590,6 +642,12 @@
     const slotHint = document.getElementById('slot-hint');
     const countBadge = document.getElementById('count-badge');
     const toast = document.getElementById('toast');
+
+    const drawerHead = document.getElementById('drawer-head');
+    const drawerBody = document.getElementById('drawer-body');
+
+    // 🎵 BGM
+    const bgm = document.getElementById('bgm');
 
     // THREE
     let scene, camera, renderer, composer;
@@ -601,12 +659,16 @@
     let lightsMesh = null;
     let garlandMesh = null;
 
+    // Raycaster for click slot on tree
+    const raycaster = new THREE.Raycaster();
+    const pointer = new THREE.Vector2();
+
     // Slots system (3D)
-    const slotMeshes = [];      // each: { group, frame, photo, texture, assignedId }
+    const slotMeshes = [];      // each: { group, frame, photo, texture, assignedId, isEmpty, uiThumbEl }
     const slotTargets = [];     // Vector3 posTree per slot
 
     // Gallery
-    const gallery = [];         // { id, url, dataUrl, texture, thumbUrl }
+    const gallery = [];         // { id, dataUrl, texture, thumbUrl }
     let idCounter = 1;
 
     function showToast(msg){
@@ -614,6 +676,25 @@
       toast.classList.add('show');
       clearTimeout(STATE.toastTimer);
       STATE.toastTimer = setTimeout(()=>toast.classList.remove('show'), 1400);
+    }
+
+    async function safeAutoPlayBgm(){
+      try{
+        bgm.volume = 0.9;   // "to tí"
+        await bgm.play();
+      }catch(e){
+        // autoplay bị chặn -> play sau lần chạm đầu tiên (không cần nút)
+        const resume = async () => {
+          try{
+            bgm.volume = 0.9;
+            await bgm.play();
+          }catch(_){}
+          window.removeEventListener('pointerdown', resume, {capture:true});
+          window.removeEventListener('touchstart', resume, {capture:true});
+        };
+        window.addEventListener('pointerdown', resume, { once:true, capture:true });
+        window.addEventListener('touchstart', resume, { once:true, capture:true });
+      }
     }
 
     async function init() {
@@ -626,8 +707,8 @@
       createFairyLights();
       createGarland();
       createSnow();
-      createSlots3D();     // ✅ slot frames (empty)
-      preloadGallery();    // ✅ preload images to gallery
+      createSlots3D();     // slot frames
+      preloadGallery();    // preload images
       setupPostProcessing();
       setupEvents();
       buildSlotsUI();
@@ -636,6 +717,9 @@
       const loader = document.getElementById('loader');
       loader.style.opacity = 0;
       setTimeout(() => loader.remove(), 800);
+
+      // 🎵 try autoplay
+      safeAutoPlayBgm();
 
       animate();
     }
@@ -782,9 +866,8 @@
     }
 
     class Particle {
-      constructor(mesh, type, isDust = false) {
+      constructor(mesh, isDust = false) {
         this.mesh = mesh;
-        this.type = type;
         this.isDust = isDust;
 
         this.posTree = new THREE.Vector3();
@@ -823,26 +906,17 @@
         );
       }
 
-      update(dt, mode) {
-        let target = this.posTree;
-        if (mode === 'SCATTER') target = this.posScatter;
+      update(dt) {
+        this.mesh.position.lerp(this.posTree, 2.0 * dt);
 
-        this.mesh.position.lerp(target, 2.0 * dt);
-
-        if (mode === 'SCATTER') {
-          this.mesh.rotation.x += this.spinSpeed.x * dt;
-          this.mesh.rotation.y += this.spinSpeed.y * dt;
-          this.mesh.rotation.z += this.spinSpeed.z * dt;
-        } else {
-          this.mesh.rotation.x = THREE.MathUtils.lerp(this.mesh.rotation.x, 0, dt);
-          this.mesh.rotation.z = THREE.MathUtils.lerp(this.mesh.rotation.z, 0, dt);
-          this.mesh.rotation.y += 0.5 * dt;
-        }
+        this.mesh.rotation.x = THREE.MathUtils.lerp(this.mesh.rotation.x, 0, dt);
+        this.mesh.rotation.z = THREE.MathUtils.lerp(this.mesh.rotation.z, 0, dt);
+        this.mesh.rotation.y += 0.5 * dt;
 
         let s = this.baseScale;
         if (this.isDust) {
           s = this.baseScale * (0.8 + 0.4 * Math.sin(clock.elapsedTime * 4 + this.mesh.id));
-          if (mode === 'TREE') s = 0;
+          s = 0; // dust off on tree for luxury
         }
         this.mesh.scale.lerp(new THREE.Vector3(s, s, s), 4 * dt);
       }
@@ -895,7 +969,7 @@
         mesh.rotation.set(Math.random() * 6, Math.random() * 6, Math.random() * 6);
 
         mainGroup.add(mesh);
-        particleSystem.push(new Particle(mesh, 'DECOR', false));
+        particleSystem.push(new Particle(mesh, false));
       }
 
       // Star
@@ -929,15 +1003,7 @@
     }
 
     function createDust() {
-      const geo = new THREE.TetrahedronGeometry(0.08, 0);
-      const mat = new THREE.MeshBasicMaterial({ color: 0xffeebb, transparent: true, opacity: 0.8 });
-
-      for (let i = 0; i < CONFIG.particles.dustCount; i++) {
-        const mesh = new THREE.Mesh(geo, mat);
-        mesh.scale.setScalar(0.5 + Math.random());
-        mainGroup.add(mesh);
-        particleSystem.push(new Particle(mesh, 'DUST', true));
-      }
+      // intentionally minimized (perf)
     }
 
     // ✨ Fairy lights
@@ -1047,7 +1113,7 @@
     }
 
     // =========================
-    // ✅ SLOT SYSTEM (3D)
+    // SLOT SYSTEM (3D)
     // =========================
     function computeSlotTargets(){
       slotTargets.length = 0;
@@ -1073,55 +1139,6 @@
           y,
           Math.sin(angle) * r
         ));
-      }
-    }
-
-    function createSlots3D(){
-      computeSlotTargets();
-
-      const frameMat = new THREE.MeshStandardMaterial({
-        color: CONFIG.colors.champagneGold,
-        metalness: 1.0,
-        roughness: 0.12,
-        emissive: 0x332200,
-        emissiveIntensity: 0.25
-      });
-
-      const emptyTex = makeEmptyTexture();
-      const photoMatBase = new THREE.MeshBasicMaterial({ map: emptyTex, side: THREE.DoubleSide });
-
-      for (let i = 0; i < CONFIG.slots.count; i++){
-        const group = new THREE.Group();
-
-        // Frame
-        const frameGeo = new THREE.BoxGeometry(1.55, 1.55, 0.06);
-        const frame = new THREE.Mesh(frameGeo, frameMat);
-
-        // Photo plane
-        const photoGeo = new THREE.PlaneGeometry(1.42, 1.42);
-        const photoMat = photoMatBase.clone();
-        const photo = new THREE.Mesh(photoGeo, photoMat);
-        photo.position.z = 0.045;
-
-        group.add(frame);
-        group.add(photo);
-
-        const s = CONFIG.slots.baseScale;
-        group.scale.set(s, s, s);
-
-        // start positions
-        group.position.copy(slotTargets[i]);
-        group.lookAt(0, group.position.y, 0);
-        group.rotateY(Math.PI);
-
-        mainGroup.add(group);
-
-        slotMeshes.push({
-          group, frame, photo,
-          texture: emptyTex,
-          assignedId: null,
-          isEmpty: true
-        });
       }
     }
 
@@ -1154,6 +1171,54 @@
       return tex;
     }
 
+    function createSlots3D(){
+      computeSlotTargets();
+
+      const frameMat = new THREE.MeshStandardMaterial({
+        color: CONFIG.colors.champagneGold,
+        metalness: 1.0,
+        roughness: 0.12,
+        emissive: 0x332200,
+        emissiveIntensity: 0.25
+      });
+
+      for (let i = 0; i < CONFIG.slots.count; i++){
+        const group = new THREE.Group();
+        group.userData.slotIndex = i;
+
+        const frameGeo = new THREE.BoxGeometry(1.55, 1.55, 0.06);
+        const frame = new THREE.Mesh(frameGeo, frameMat);
+        frame.userData.slotIndex = i;
+
+        const emptyTex = makeEmptyTexture();
+        const photoGeo = new THREE.PlaneGeometry(1.42, 1.42);
+        const photoMat = new THREE.MeshBasicMaterial({ map: emptyTex, side: THREE.DoubleSide });
+        const photo = new THREE.Mesh(photoGeo, photoMat);
+        photo.position.z = 0.045;
+        photo.userData.slotIndex = i;
+
+        group.add(frame);
+        group.add(photo);
+
+        const s = CONFIG.slots.baseScale;
+        group.scale.set(s, s, s);
+
+        group.position.copy(slotTargets[i]);
+        group.lookAt(0, group.position.y, 0);
+        group.rotateY(Math.PI);
+
+        mainGroup.add(group);
+
+        slotMeshes.push({
+          group, frame, photo,
+          texture: emptyTex,
+          assignedId: null,
+          isEmpty: true,
+          uiThumbEl: null
+        });
+      }
+    }
+
     function setSlotTexture(slotIndex, texture, assignedId){
       const slot = slotMeshes[slotIndex];
       if (!slot) return;
@@ -1166,7 +1231,6 @@
       slot.assignedId = assignedId ?? null;
       slot.isEmpty = false;
 
-      // update UI slot thumb
       updateSlotUIThumb(slotIndex, assignedId);
     }
 
@@ -1177,6 +1241,7 @@
       const empty = makeEmptyTexture();
       slot.photo.material.map = empty;
       slot.photo.material.needsUpdate = true;
+
       slot.texture = empty;
       slot.assignedId = null;
       slot.isEmpty = true;
@@ -1185,8 +1250,24 @@
     }
 
     // =========================
-    // ✅ UI: SLOTS + GALLERY
+    // UI: SLOTS + GALLERY
     // =========================
+    function createEmptyThumbDataUrl(){
+      const c = document.createElement('canvas');
+      c.width = 220; c.height = 220;
+      const g = c.getContext('2d');
+      g.fillStyle = 'rgba(0,0,0,0.22)';
+      g.fillRect(0,0,220,220);
+      g.strokeStyle = 'rgba(212,175,55,0.38)';
+      g.lineWidth = 6;
+      g.strokeRect(14,14,192,192);
+      g.fillStyle = 'rgba(252,238,167,0.85)';
+      g.font = 'bold 18px ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial';
+      g.textAlign = 'center';
+      g.fillText('EMPTY', 110, 118);
+      return c.toDataURL('image/png');
+    }
+
     function buildSlotsUI(){
       slotsEl.innerHTML = '';
       for (let i = 0; i < CONFIG.slots.count; i++){
@@ -1204,27 +1285,27 @@
 
         const img = document.createElement('img');
         img.alt = `slot-${i+1}`;
-        img.src = ''; // filled later
+        img.src = createEmptyThumbDataUrl();
 
         div.appendChild(img);
         div.appendChild(num);
         div.appendChild(state);
 
-        div.addEventListener('click', () => {
-          toggleSelectSlot(i);
-        });
+        div.addEventListener('click', () => toggleSelectSlot(i));
 
         slotsEl.appendChild(div);
+
+        // store thumb element
+        slotMeshes[i].uiThumbEl = div;
       }
 
-      // init thumbs
       for (let i = 0; i < CONFIG.slots.count; i++){
         updateSlotUIThumb(i, null);
       }
     }
 
     function updateSlotUIThumb(slotIndex, assignedId){
-      const slotDiv = slotsEl.querySelector(`.slot[data-slot="${slotIndex}"]`);
+      const slotDiv = slotMeshes[slotIndex]?.uiThumbEl;
       if (!slotDiv) return;
 
       const img = slotDiv.querySelector('img');
@@ -1240,20 +1321,27 @@
       }
     }
 
-    function createEmptyThumbDataUrl(){
-      const c = document.createElement('canvas');
-      c.width = 220; c.height = 220;
-      const g = c.getContext('2d');
-      g.fillStyle = 'rgba(0,0,0,0.22)';
-      g.fillRect(0,0,220,220);
-      g.strokeStyle = 'rgba(212,175,55,0.38)';
-      g.lineWidth = 6;
-      g.strokeRect(14,14,192,192);
-      g.fillStyle = 'rgba(252,238,167,0.85)';
-      g.font = 'bold 18px ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial';
-      g.textAlign = 'center';
-      g.fillText('EMPTY', 110, 118);
-      return c.toDataURL('image/png');
+    function highlightSelectedSlot(){
+      slotsEl.querySelectorAll('.slot').forEach(el => {
+        const idx = Number(el.dataset.slot);
+        el.classList.toggle('selected', idx === STATE.selectedSlot);
+      });
+
+      // highlight on 3D too
+      for (let i = 0; i < slotMeshes.length; i++){
+        const s = slotMeshes[i];
+        const isSel = (i === STATE.selectedSlot);
+        // subtle glow via scale/emissive feel
+        s.group.scale.setScalar(CONFIG.slots.baseScale * (isSel ? 1.08 : 1.0));
+      }
+    }
+
+    function setSelectedSlot(i, source='ui'){
+      STATE.selectedSlot = i;
+      slotHint.textContent = `Đang chọn slot #${i+1} — tap ảnh trong Gallery để thay`;
+      highlightSelectedSlot();
+      if (!drawer.classList.contains('open')) openDrawer();
+      if (source === '3d') showToast(`Đã chọn slot #${i+1} (bấm ảnh để thay)`);
     }
 
     function toggleSelectSlot(i){
@@ -1261,17 +1349,9 @@
         STATE.selectedSlot = -1;
         slotHint.textContent = 'Chọn 1 slot để thay ảnh';
       } else {
-        STATE.selectedSlot = i;
-        slotHint.textContent = `Đang chọn slot #${i+1} — tap ảnh trong Gallery để thay`;
+        setSelectedSlot(i, 'ui');
       }
       highlightSelectedSlot();
-    }
-
-    function highlightSelectedSlot(){
-      slotsEl.querySelectorAll('.slot').forEach(el => {
-        const idx = Number(el.dataset.slot);
-        el.classList.toggle('selected', idx === STATE.selectedSlot);
-      });
     }
 
     function renderGalleryUI(){
@@ -1289,21 +1369,53 @@
         div.appendChild(img);
 
         div.addEventListener('click', () => {
+          // ✅ nếu chưa chọn slot -> auto chọn slot trống kế tiếp
           if (STATE.selectedSlot < 0){
-            showToast('Chọn 1 slot trước, rồi bấm ảnh để thay');
-            return;
+            const nextEmpty = findNextEmptySlot();
+            if (nextEmpty < 0){
+              setSelectedSlot(0);
+            } else {
+              setSelectedSlot(nextEmpty);
+            }
           }
-          // assign
+
           setSlotTexture(STATE.selectedSlot, item.texture, item.id);
           showToast(`Đã thay ảnh cho slot #${STATE.selectedSlot+1}`);
+
+          // ✅ auto nhảy slot tiếp theo để thay nhanh
+          const next = findNextSlotAfter(STATE.selectedSlot);
+          if (next >= 0){
+            STATE.selectedSlot = next;
+            slotHint.textContent = `Đang chọn slot #${next+1} — tap ảnh để thay`;
+            highlightSelectedSlot();
+          }
         });
 
         galleryEl.appendChild(div);
       });
     }
 
+    function findNextEmptySlot(){
+      for (let i = 0; i < slotMeshes.length; i++){
+        if (slotMeshes[i].isEmpty) return i;
+      }
+      return -1;
+    }
+
+    function findNextSlotAfter(cur){
+      // ưu tiên slot trống trước
+      for (let i = cur+1; i < slotMeshes.length; i++){
+        if (slotMeshes[i].isEmpty) return i;
+      }
+      for (let i = 0; i <= cur; i++){
+        if (slotMeshes[i].isEmpty) return i;
+      }
+      // nếu không còn trống thì quay vòng
+      return (cur + 1) % slotMeshes.length;
+    }
+
     // =========================
-    // ✅ Upload + Thumb generator
+    // Upload helpers
     // =========================
     async function fileToDataUrl(file){
       return await new Promise((resolve, reject) => {
@@ -1323,7 +1435,6 @@
       c.width = size; c.height = size;
       const g = c.getContext('2d');
 
-      // cover crop
       const iw = img.width, ih = img.height;
       const scale = Math.max(size/iw, size/ih);
       const w = iw*scale, h = ih*scale;
@@ -1334,14 +1445,13 @@
       g.fillRect(0,0,size,size);
       g.drawImage(img, x, y, w, h);
 
-      // subtle vignette
-      const grd = g.createRadialGradient(size/2,size/2, size*0.15, size/2,size/2, size*0.7);
+      const grd = g.createRadialGradient(size/2,size/2, size*0.15, size/2,size/2, size*0.72);
       grd.addColorStop(0,'rgba(255,255,255,0.05)');
-      grd.addColorStop(1,'rgba(0,0,0,0.22)');
+      grd.addColorStop(1,'rgba(0,0,0,0.24)');
       g.fillStyle = grd;
       g.fillRect(0,0,size,size);
 
-      return c.toDataURL('image/jpeg', 0.85);
+      return c.toDataURL('image/jpeg', 0.86);
     }
 
     function dataUrlToTexture(dataUrl){
@@ -1368,8 +1478,6 @@
       };
       gallery.unshift(item);
       renderGalleryUI();
-
-      // auto fill empty slots (đẹp + logic)
       autoFillEmptySlots();
     }
 
@@ -1381,7 +1489,6 @@
       if (!empties.length) return;
 
       for (const e of empties){
-        // pick first gallery item not used or just first
         const item = gallery.find(g => !slotMeshes.some(sm => sm.assignedId === g.id)) || gallery[0];
         if (!item) break;
         setSlotTexture(e.idx, item.texture, item.id);
@@ -1389,7 +1496,7 @@
     }
 
     async function handleUploadFiles(files){
-      const arr = Array.from(files).filter(f => f.type.startsWith('image/'));
+      const arr = Array.from(files || []).filter(f => f.type.startsWith('image/'));
       if (!arr.length) return;
 
       showToast(`Đang nạp ${arr.length} ảnh...`);
@@ -1397,11 +1504,10 @@
         const dataUrl = await fileToDataUrl(f);
         await addToGalleryFromDataUrl(dataUrl);
       }
-      showToast('Xong! Chọn slot để thay ảnh bất kỳ');
+      showToast('Xong! Bấm vào khung trên cây để chọn slot');
     }
 
     async function preloadGallery(){
-      // preload sample images (optional)
       for (const url of CONFIG.preloadThumbs){
         try{
           const dataUrl = await fetchToDataUrl(url);
@@ -1422,7 +1528,7 @@
     }
 
     // =========================
-    // Controls
+    // Menu & Drawer
     // =========================
     function openMenu(){ menuPanel.classList.add('open'); menuBackdrop.classList.add('open'); }
     function closeMenu(){ menuPanel.classList.remove('open'); menuBackdrop.classList.remove('open'); }
@@ -1430,10 +1536,15 @@
 
     function openDrawer(){
       drawer.classList.add('open');
-      showToast('Chọn slot → tap ảnh để thay');
+      drawerBackdrop.classList.add('open');
     }
     function closeDrawer(){
       drawer.classList.remove('open');
+      drawerBackdrop.classList.remove('open');
+      // reset drag transform
+      drawer.style.transform = '';
+      drawer.style.transition = '';
+      STATE.drawerDragDY = 0;
     }
     function toggleDrawer(){
       drawer.classList.contains('open') ? closeDrawer() : openDrawer();
@@ -1446,18 +1557,15 @@
     }
 
     function resetView(){
-      STATE.mode = 'TREE';
       STATE.rotation.x = 0;
       STATE.rotation.y = 0;
       closeMenu();
     }
 
     function shuffleSlots(){
-      // shuffle assigned photos among slots
       const ids = slotMeshes.map(s => s.assignedId).filter(Boolean);
       if (!ids.length) { showToast('Không có ảnh để shuffle'); return; }
 
-      // shuffle ids
       for (let i = ids.length - 1; i > 0; i--){
         const j = Math.floor(Math.random() * (i + 1));
         [ids[i], ids[j]] = [ids[j], ids[i]];
@@ -1475,6 +1583,73 @@
       closeMenu();
     }
 
+    // Drawer drag-to-close (iOS-ish)
+    function setupDrawerDrag(){
+      const start = (y) => {
+        if (!drawer.classList.contains('open')) return;
+        STATE.drawerDragging = true;
+        STATE.drawerStartY = y;
+        STATE.drawerDragDY = 0;
+        drawer.style.transition = 'none';
+      };
+      const move = (y) => {
+        if (!STATE.drawerDragging) return;
+        const dy = Math.max(0, y - STATE.drawerStartY);
+        STATE.drawerDragDY = dy;
+        drawer.style.transform = `translateY(${dy}px)`;
+      };
+      const end = () => {
+        if (!STATE.drawerDragging) return;
+        STATE.drawerDragging = false;
+        drawer.style.transition = '0.18s ease';
+        if (STATE.drawerDragDY > 90) closeDrawer();
+        else drawer.style.transform = `translateY(0px)`;
+      };
+
+      drawerHead.addEventListener('touchstart', (e)=> start(e.touches[0].clientY), {passive:true});
+      drawerHead.addEventListener('touchmove', (e)=> move(e.touches[0].clientY), {passive:true});
+      drawerHead.addEventListener('touchend', end, {passive:true});
+
+      drawerHead.addEventListener('pointerdown', (e)=> start(e.clientY));
+      window.addEventListener('pointermove', (e)=> move(e.clientY));
+      window.addEventListener('pointerup', end);
+    }
+
+    // =========================
+    // Click on 3D slots
+    // =========================
+    function onCanvasPointerDown(e){
+      // ignore when clicking UI
+      if (drawer.classList.contains('open')) return;
+      if (menuPanel.classList.contains('open')) return;
+
+      const rect = renderer.domElement.getBoundingClientRect();
+      const x = ( (e.clientX - rect.left) / rect.width ) * 2 - 1;
+      const y = - ( (e.clientY - rect.top) / rect.height ) * 2 + 1;
+      pointer.set(x, y);
+
+      raycaster.setFromCamera(pointer, camera);
+
+      // collect clickable objects (photo + frame)
+      const clickables = [];
+      for (const s of slotMeshes){
+        clickables.push(s.photo);
+        clickables.push(s.frame);
+      }
+
+      const hits = raycaster.intersectObjects(clickables, true);
+      if (hits.length){
+        const idx = hits[0].object.userData.slotIndex;
+        if (typeof idx === 'number'){
+          setSelectedSlot(idx, '3d');
+          openDrawer();
+        }
+      }
+    }
+
+    // =========================
+    // Events
+    // =========================
     function setupEvents(){
       window.addEventListener('resize', () => {
         camera.aspect = window.innerWidth / window.innerHeight;
@@ -1482,6 +1657,9 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
         composer.setSize(window.innerWidth, window.innerHeight);
       });
+
+      // canvas tap for slot select
+      renderer.domElement.addEventListener('pointerdown', onCanvasPointerDown);
 
       // menu
       menuBtn.addEventListener('click', (e)=>{ e.stopPropagation(); toggleMenu(); });
@@ -1492,6 +1670,8 @@
       // drawer
       drawerBtn.addEventListener('click', (e)=>{ e.stopPropagation(); toggleDrawer(); closeMenu(); });
       btnCloseDrawer.addEventListener('click', closeDrawer);
+      drawerBackdrop.addEventListener('click', closeDrawer);
+      setupDrawerDrag();
 
       // menu buttons
       document.getElementById('btn-snow').addEventListener('click', () => {
@@ -1534,22 +1714,22 @@
       requestAnimationFrame(animate);
       const dt = clock.getDelta();
 
-      // idle rotation
-      STATE.rotation.y += (STATE.mode === 'TREE' ? 0.22 : 0.08) * dt;
+      STATE.rotation.y += 0.22 * dt;
       STATE.rotation.x += (0 - STATE.rotation.x) * 2.0 * dt;
 
       mainGroup.rotation.y = STATE.rotation.y;
       mainGroup.rotation.x = STATE.rotation.x;
 
-      // keep slots facing outward nice
+      // make slots face out nicely
       for (let i = 0; i < slotMeshes.length; i++){
         const g = slotMeshes[i].group;
-        // very subtle sway
         g.rotation.z = 0.02 * Math.sin(clock.elapsedTime * 0.8 + i);
         g.rotation.x = 0.02 * Math.cos(clock.elapsedTime * 0.7 + i);
+        g.lookAt(0, g.position.y, 0);
+        g.rotateY(Math.PI);
       }
 
-      particleSystem.forEach(p => p.update(dt, STATE.mode));
+      particleSystem.forEach(p => p.update(dt));
       updateFairyLights(dt);
       updateGarland(dt);
       updateSnow();
