@@ -3,52 +3,54 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Grand Luxury Tree — Slots Edition</title>
+  <title>Luxury Christmas Tree — Slots</title>
 
   <style>
     :root{
       --bg:#050d1a;
+      --gold:#d4af37;
+      --gold2:#fceea7;
       --panel: rgba(10,10,10,0.62);
       --line: rgba(212,175,55,0.22);
-      --gold: rgba(212,175,55,0.95);
-      --gold2: rgba(252,238,167,0.95);
-      --txt: rgba(252,238,167,0.92);
-      --muted: rgba(212,175,55,0.55);
       --shadow: rgba(0,0,0,0.55);
+      --txt: rgba(252,238,167,0.92);
+      --muted: rgba(212,175,55,0.62);
     }
     *{ box-sizing:border-box; }
-
+    html, body{ height:100%; }
     body{
       margin:0;
       overflow:hidden;
       background: radial-gradient(circle at center, #0f2027 0%, #203a43 50%, #2c5364 100%);
       background-color: var(--bg);
-      font-family: 'Times New Roman', serif;
       color: var(--txt);
+      font-family: 'Times New Roman', serif;
       touch-action: manipulation;
     }
 
     #canvas-container{ position:absolute; inset:0; z-index:1; }
 
-    /* Loader */
+    /* LOADER */
     #loader{
       position:absolute; inset:0;
       background: var(--bg);
       z-index:200;
-      display:flex; flex-direction:column;
-      align-items:center; justify-content:center;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
       transition: opacity .8s ease-out;
     }
     .spinner{
-      width:44px; height:44px;
-      border:1px solid rgba(212,175,55,0.2);
+      width:46px; height:46px;
+      border:1px solid rgba(212,175,55,0.22);
       border-top:1px solid rgba(212,175,55,1);
       border-radius:50%;
       animation: spin 1s linear infinite;
     }
     .loader-text{
       margin-top:18px;
-      color: var(--gold);
+      color: rgba(212,175,55,0.95);
       font-size:12px;
       letter-spacing:4px;
       text-transform:uppercase;
@@ -56,49 +58,47 @@
     }
     @keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
 
-    /* Top UI */
-    #ui-layer{
+    /* TOP HUD */
+    #ui{
       position:absolute; inset:0;
       z-index:10;
       pointer-events:none;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      padding-top: calc(env(safe-area-inset-top, 0px) + 14px);
-      transition: opacity .25s ease;
     }
-    .ui-hidden{ opacity:0 !important; pointer-events:none !important; }
+    #topbar{
+      position:absolute;
+      top: calc(env(safe-area-inset-top, 0px) + 10px);
+      left: 12px;
+      right: 12px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      pointer-events:none;
+    }
 
     #title{
+      pointer-events:none;
       margin:0;
-      padding: 0 108px 0 14px;
-      max-width:min(92vw, 880px);
-      line-height:1.05;
-      font-weight:400;
-      letter-spacing:3px;
-      text-shadow: 0 0 42px rgba(252,238,167,0.45);
-      background: linear-gradient(to bottom, #fff, #eebb66);
-      -webkit-background-clip:text;
-      -webkit-text-fill-color:transparent;
-      font-family: 'Cinzel', 'Times New Roman', serif;
+      padding: 10px 12px;
+      max-width: min(70vw, 740px);
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
-      user-select:none;
-      opacity:.96;
-    }
-    @media (max-width:600px){
-      #title{ font-size:26px; letter-spacing:2px; padding-right:104px; }
-    }
-    @media (min-width:601px){
-      #title{ font-size:54px; }
+      border-radius: 18px;
+      border: 1px solid rgba(212,175,55,0.18);
+      background: rgba(10,10,10,0.35);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 22px 60px rgba(0,0,0,0.25);
+      font-family: 'Cinzel', serif;
+      font-weight:400;
+      letter-spacing: 2px;
+      font-size: clamp(18px, 4vw, 42px);
+      background-image: linear-gradient(to bottom, #fff, #eebb66);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
-    #top-controls{
-      position:absolute;
-      top: calc(env(safe-area-inset-top, 0px) + 10px);
-      right: 12px;
-      z-index:30;
+    #controls{
       pointer-events:auto;
       display:flex;
       gap:10px;
@@ -106,37 +106,67 @@
     }
 
     .icon-btn{
-      width:44px; height:44px;
-      border-radius:14px;
+      width:46px; height:46px;
+      border-radius:16px;
       border:1px solid rgba(212,175,55,0.45);
       background: rgba(20,20,20,0.55);
-      backdrop-filter: blur(10px);
-      box-shadow: 0 12px 34px rgba(0,0,0,0.35);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 18px 55px rgba(0,0,0,0.35);
       cursor:pointer;
       -webkit-tap-highlight-color:transparent;
       display:grid; place-items:center;
       transition: .18s ease;
-      color: var(--gold);
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
-      font-weight:700;
+      color: rgba(212,175,55,0.96);
       user-select:none;
+      font-size:18px;
     }
-    .icon-btn:active{ transform: translateY(1px) scale(0.98); }
+    .icon-btn:active{ transform: translateY(1px) scale(0.985); }
 
-    .icon{ width:18px; height:18px; position:relative; }
-    .icon.ham::before, .icon.ham::after, .icon.ham span{
+    .ham{
+      width:18px; height:14px;
+      position:relative;
+    }
+    .ham::before, .ham::after, .ham span{
       content:"";
       position:absolute; left:0; right:0;
       height:2px;
-      background: rgba(212,175,55,0.92);
+      background: rgba(212,175,55,0.95);
       border-radius:2px;
     }
-    .icon.ham::before{ top:2px; }
-    .icon.ham span{ top:8px; }
-    .icon.ham::after{ top:14px; }
+    .ham::before{ top:0; }
+    .ham span{ top:6px; }
+    .ham::after{ top:12px; }
 
-    /* Menu */
-    #menu-backdrop{
+    /* TOAST */
+    #toast{
+      position:absolute;
+      left: 12px;
+      top: calc(env(safe-area-inset-top, 0px) + 76px);
+      z-index:80;
+      pointer-events:none;
+      opacity:0;
+      transform: translateY(-6px);
+      transition: .22s ease;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(212,175,55,0.22);
+      background: rgba(10,10,10,0.58);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 22px 70px rgba(0,0,0,0.55);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      font-size: 11px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: rgba(252,238,167,0.95);
+      max-width: 90vw;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    #toast.show{ opacity:1; transform: translateY(0); }
+
+    /* MENU POPOVER */
+    #menuBackdrop{
       position:absolute; inset:0;
       z-index:39;
       opacity:0;
@@ -144,19 +174,19 @@
       background: rgba(0,0,0,0.18);
       transition: opacity .18s ease;
     }
-    #menu-backdrop.open{ opacity:1; pointer-events:auto; }
+    #menuBackdrop.open{ opacity:1; pointer-events:auto; }
 
-    #menu-panel{
+    #menu{
       position:absolute;
-      top: calc(env(safe-area-inset-top, 0px) + 62px);
+      top: calc(env(safe-area-inset-top, 0px) + 66px);
       right: 12px;
+      width: min(360px, 92vw);
       z-index:40;
-      width: min(340px, 92vw);
-      border-radius: 18px;
-      background: rgba(10,10,10,0.62);
+      border-radius: 20px;
       border: 1px solid rgba(212,175,55,0.22);
+      background: rgba(10,10,10,0.62);
       backdrop-filter: blur(14px);
-      box-shadow: 0 22px 70px rgba(0,0,0,0.55);
+      box-shadow: 0 26px 90px rgba(0,0,0,0.6);
       padding: 10px;
       transform-origin: top right;
       transform: translateY(-6px) scale(0.97);
@@ -164,21 +194,20 @@
       pointer-events: none;
       transition: .2s ease;
     }
-    #menu-panel.open{
+    #menu.open{
       opacity:1;
       transform: translateY(0) scale(1);
       pointer-events:auto;
     }
     .menu-title{
+      padding: 8px 10px 10px;
       color: rgba(252,238,167,0.95);
       font-family: 'Cinzel', serif;
       letter-spacing:2px;
-      font-size:12px;
       text-transform:uppercase;
-      padding: 6px 10px 10px;
+      font-size:12px;
       user-select:none;
     }
-
     .menu-grid{
       display:grid;
       grid-template-columns: 1fr 1fr;
@@ -204,32 +233,29 @@
       letter-spacing:1px;
       text-transform:uppercase;
     }
-    .btn:hover{
-      background: rgba(212,175,55,0.13);
-      border-color: rgba(212,175,55,0.42);
-    }
+    .btn:hover{ background: rgba(212,175,55,0.12); border-color: rgba(212,175,55,0.42); }
     .btn:active{ transform: translateY(1px); }
-    .badge{
+    .pill{
       font-size:10px;
       letter-spacing:1px;
-      opacity:0.75;
+      opacity:0.78;
       padding: 4px 8px;
       border-radius:999px;
       border: 1px solid rgba(212,175,55,0.22);
       background: rgba(0,0,0,0.12);
-      flex: 0 0 auto;
       text-transform:none;
+      flex:0 0 auto;
     }
-    .hint{
-      padding: 8px 10px 6px;
+    .menu-hint{
+      padding: 10px 10px 8px;
       color: rgba(212,175,55,0.60);
       font-size:10px;
       line-height:1.35;
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
     }
 
-    /* Drawer Backdrop */
-    #drawer-backdrop{
+    /* DRAWER (Bottom sheet, nhưng không che quá nhiều) */
+    #drawerBackdrop{
       position:absolute; inset:0;
       z-index:54;
       opacity:0;
@@ -237,25 +263,23 @@
       background: rgba(0,0,0,0.28);
       transition: opacity .18s ease;
     }
-    #drawer-backdrop.open{ opacity:1; pointer-events:auto; }
+    #drawerBackdrop.open{ opacity:1; pointer-events:auto; }
 
-    /* Drawer (iOS-like) */
     #drawer{
       position:absolute;
       left: 12px;
       right: 12px;
       bottom: calc(env(safe-area-inset-bottom, 0px) + 12px);
       z-index:55;
-      pointer-events:auto;
-      border-radius: 22px;
+
+      border-radius: 24px;
       border: 1px solid rgba(212,175,55,0.22);
       background: rgba(10,10,10,0.58);
       backdrop-filter: blur(14px);
-      box-shadow: 0 22px 80px rgba(0,0,0,0.55);
+      box-shadow: 0 26px 95px rgba(0,0,0,0.6);
       overflow:hidden;
 
-      max-height: min(72vh, 720px);
-
+      max-height: min(60vh, 640px); /* ít che cây */
       transform: translateY(18px);
       opacity:0;
       pointer-events:none;
@@ -268,19 +292,9 @@
       opacity:1;
       pointer-events:auto;
     }
-
-    .drawer-head{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      padding: 10px 12px 10px;
-      border-bottom: 1px solid rgba(212,175,55,0.14);
-      gap: 10px;
-      flex: 0 0 auto;
-    }
     .handle{
       position:absolute;
-      top: 6px;
+      top: 8px;
       left: 50%;
       transform: translateX(-50%);
       width: 46px;
@@ -290,21 +304,31 @@
       border: 1px solid rgba(212,175,55,0.12);
       pointer-events:none;
     }
-
+    .drawer-head{
+      padding: 16px 12px 10px;
+      border-bottom: 1px solid rgba(212,175,55,0.14);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex:0 0 auto;
+    }
     .drawer-title{
-      font-family: 'Cinzel', serif;
+      font-family:'Cinzel', serif;
       letter-spacing:2px;
       text-transform:uppercase;
       font-size:12px;
       color: rgba(252,238,167,0.95);
-      user-select:none;
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
-      max-width: 40vw;
+      max-width: 55vw;
+      user-select:none;
     }
     .drawer-actions{
-      display:flex; gap:8px; align-items:center;
+      display:flex;
+      gap:8px;
+      align-items:center;
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
     }
     .chip{
@@ -334,6 +358,7 @@
       background: rgba(0,0,0,0.14);
       letter-spacing:1px;
     }
+    input[type="file"]{ display:none; }
 
     .drawer-body{
       flex: 1 1 auto;
@@ -344,7 +369,6 @@
       grid-template-columns: 1fr;
       gap: 10px;
     }
-
     .section{
       border: 1px solid rgba(212,175,55,0.14);
       background: rgba(255,255,255,0.03);
@@ -372,10 +396,10 @@
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
-      max-width: 46vw;
+      max-width: 55vw;
     }
 
-    /* Slots grid */
+    /* SLOTS GRID */
     #slots{
       display:grid;
       grid-template-columns: repeat(6, 1fr);
@@ -396,18 +420,12 @@
       -webkit-tap-highlight-color:transparent;
     }
     .slot.selected{
-      border-color: rgba(212,175,55,0.70);
-      box-shadow: 0 0 0 2px rgba(212,175,55,0.20), inset 0 0 0 1px rgba(255,255,255,0.03);
+      border-color: rgba(212,175,55,0.78);
+      box-shadow: 0 0 0 2px rgba(212,175,55,0.18), inset 0 0 0 1px rgba(255,255,255,0.03);
     }
-    .slot img{
-      width:100%; height:100%;
-      object-fit: cover;
-      display:block;
-      filter: saturate(1.05) contrast(1.02);
-    }
+    .slot img{ width:100%; height:100%; object-fit:cover; display:block; filter:saturate(1.05) contrast(1.02); }
     .slot .num{
-      position:absolute;
-      top:6px; left:6px;
+      position:absolute; top:6px; left:6px;
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
       font-size:10px;
       color: rgba(252,238,167,0.9);
@@ -417,8 +435,7 @@
       border-radius: 999px;
     }
     .slot .state{
-      position:absolute;
-      right:6px; bottom:6px;
+      position:absolute; right:6px; bottom:6px;
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
       font-size:10px;
       letter-spacing:1px;
@@ -430,7 +447,7 @@
       border-radius: 999px;
     }
 
-    /* Gallery */
+    /* GALLERY */
     #gallery{
       display:grid;
       grid-template-columns: repeat(7, 1fr);
@@ -453,39 +470,33 @@
       width:100%; height:100%;
       object-fit: cover;
       display:block;
-      filter: saturate(1.05) contrast(1.02);
+      filter:saturate(1.05) contrast(1.02);
       transform: scale(1.02);
     }
     .thumb:hover{ border-color: rgba(212,175,55,0.45); }
 
-    #toast{
+    /* MINI STATUS (music) */
+    #musicState{
       position:absolute;
-      left: 12px;
-      top: calc(env(safe-area-inset-top, 0px) + 70px);
-      z-index:80;
+      right: 12px;
+      top: calc(env(safe-area-inset-top, 0px) + 76px);
+      z-index:75;
       pointer-events:none;
-      opacity:0;
-      transform: translateY(-6px);
-      transition: .22s ease;
-      padding: 10px 12px;
-      border-radius: 14px;
-      border: 1px solid rgba(212,175,55,0.22);
-      background: rgba(10,10,10,0.58);
-      backdrop-filter: blur(12px);
-      box-shadow: 0 18px 60px rgba(0,0,0,0.55);
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(212,175,55,0.18);
+      background: rgba(10,10,10,0.40);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 18px 60px rgba(0,0,0,0.25);
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
-      font-size: 11px;
+      font-size: 10px;
       letter-spacing: 1px;
       text-transform: uppercase;
-      color: rgba(252,238,167,0.95);
-      max-width: 88vw;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      color: rgba(212,175,55,0.85);
+      opacity:.95;
     }
-    #toast.show{ opacity:1; transform: translateY(0); }
 
-    input[type="file"]{ display:none; }
+    .hidden{ display:none !important; }
   </style>
 
   <style>
@@ -503,66 +514,68 @@
 </head>
 
 <body>
-  <!-- 🎵 Autoplay BGM (no button) -->
+  <!-- 🎵 Autoplay: start muted (iOS allows) then unmute on first user interaction -->
   <audio id="bgm" src="https://files.catbox.moe/7ibpf5.mp3" preload="auto" loop playsinline></audio>
 
   <div id="loader">
     <div class="spinner"></div>
-    <div class="loader-text">Loading Scene</div>
+    <div class="loader-text">Loading Luxury Tree</div>
   </div>
 
   <div id="canvas-container"></div>
 
-  <div id="ui-layer">
-    <h1 id="title">Merry Christmas</h1>
-    <div id="top-controls">
-      <button class="icon-btn" id="btn-drawer" title="Photos">🖼</button>
-      <button class="icon-btn" id="btn-menu" aria-label="Menu">
-        <div class="icon ham"><span></span></div>
-      </button>
-    </div>
-  </div>
-
-  <div id="toast"></div>
-
-  <!-- Menu -->
-  <div id="menu-backdrop"></div>
-  <div id="menu-panel">
-    <div class="menu-title">Controls</div>
-    <div class="menu-grid">
-      <button class="btn" id="btn-snow" type="button"><span>Snow</span><span class="badge" id="snow-state">ON</span></button>
-      <button class="btn" id="btn-reset" type="button"><span>Reset View</span><span class="badge">R</span></button>
-      <button class="btn" id="btn-ui-toggle" type="button"><span>Hide UI</span><span class="badge">H</span></button>
-      <button class="btn" id="btn-shuffle" type="button"><span>Shuffle Photos</span><span class="badge">⇄</span></button>
-    </div>
-    <div class="hint">
-      Tip: Bạn có thể <b>bấm thẳng vào khung ảnh trên cây</b> để chọn slot, rồi chọn ảnh để thay.
-    </div>
-  </div>
-
-  <!-- Drawer backdrop -->
-  <div id="drawer-backdrop"></div>
-
-  <!-- Drawer -->
-  <div id="drawer">
-    <div class="handle"></div>
-    <div class="drawer-head" id="drawer-head">
-      <div class="drawer-title">Photos — Slot Replace</div>
-      <div class="drawer-actions">
-        <label class="chip" title="Select files">
-          Upload <strong id="count-badge">0</strong>
-          <input type="file" id="file-input" multiple accept="image/*" />
-        </label>
-        <button class="chip" id="btn-clear-slot" title="Clear selected slot">Clear<strong>DEL</strong></button>
-        <button class="chip" id="btn-close-drawer" title="Close">Close<strong>✕</strong></button>
+  <div id="ui">
+    <div id="topbar">
+      <h1 id="title">Merry Christmas</h1>
+      <div id="controls">
+        <button class="icon-btn" id="btnDrawer" title="Photos">🖼</button>
+        <button class="icon-btn" id="btnMenu" aria-label="Menu" title="Menu">
+          <div class="ham"><span></span></div>
+        </button>
       </div>
     </div>
 
-    <div class="drawer-body" id="drawer-body">
+    <div id="toast"></div>
+    <div id="musicState">Music: LOADING…</div>
+  </div>
+
+  <!-- MENU -->
+  <div id="menuBackdrop"></div>
+  <div id="menu">
+    <div class="menu-title">Controls</div>
+    <div class="menu-grid">
+      <button class="btn" id="btnSnow"><span>Snow</span><span class="pill" id="snowState">ON</span></button>
+      <button class="btn" id="btnReset"><span>Reset</span><span class="pill">R</span></button>
+      <button class="btn" id="btnHideUI"><span>Hide UI</span><span class="pill">H</span></button>
+      <button class="btn" id="btnShuffle"><span>Shuffle</span><span class="pill">⇄</span></button>
+    </div>
+    <div class="menu-hint">
+      Tip: <b>Tap trực tiếp vào khung ảnh trên cây</b> để chọn slot, rồi chọn ảnh để thay.
+      <br/>iOS: nhạc sẽ “có tiếng” sau lần chạm đầu tiên (không cần nút).
+    </div>
+  </div>
+
+  <!-- DRAWER -->
+  <div id="drawerBackdrop"></div>
+  <div id="drawer">
+    <div class="handle"></div>
+    <div class="drawer-head" id="drawerHead">
+      <div class="drawer-title">Photos — Replace Slots</div>
+      <div class="drawer-actions">
+        <label class="chip" title="Chọn ảnh">
+          Upload <strong id="countBadge">0</strong>
+          <input type="file" id="fileInput" multiple accept="image/*" />
+        </label>
+        <button class="chip" id="btnClear" title="Clear slot">Clear<strong>DEL</strong></button>
+        <button class="chip" id="btnClose" title="Close">Close<strong>✕</strong></button>
+      </div>
+    </div>
+
+    <div class="drawer-body">
       <div class="section">
         <div class="section-title">
           <span>Slots (khung trên cây)</span>
-          <span class="small" id="slot-hint">Chọn 1 slot để thay ảnh</span>
+          <span class="small" id="slotHint">Chọn 1 slot để thay ảnh</span>
         </div>
         <div id="slots"></div>
       </div>
@@ -584,6 +597,9 @@
     import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
     import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
+    // ===========================
+    // CONFIG
+    // ===========================
     const CONFIG = {
       colors: {
         bg: 0x050d1a,
@@ -592,21 +608,39 @@
         deepGreen: 0x03180a,
         accentRed: 0x990000,
       },
-      particles: {
-        count: 1450,
-        dustCount: 1800,
-        snowCount: 950,
-        treeHeight: 24,
-        treeRadius: 8
+      tree: {
+        height: 24,
+        radius: 8
       },
-      camera: { z: 50 },
+      camera: {
+        z: 50
+      },
+      // ornaments
+      ornaments: {
+        count: 1500
+      },
+      snow: {
+        count: 1000
+      },
+      // slot frames
       slots: {
         count: 18,
-        baseScale: 1.2,
+        scale: 1.25,      // ✅ ảnh to hơn
         rOffset: 4.9,
         loops: 3.2
       },
-      preloadThumbs: [
+      // garland
+      garland: {
+        loops: 7.6,
+        radiusMul: 1.07,
+        tubeRadius: 0.13
+      },
+      // fairy lights
+      lights: {
+        count: 560,
+        size: 0.23
+      },
+      preload: [
         'https://images.unsplash.com/photo-1543589077-47d81606c1bf?q=80&w=900',
         'https://images.unsplash.com/photo-1576919228236-a097c32a5cd4?q=80&w=900',
         'https://images.unsplash.com/photo-1512389142860-9c449e58a543?q=80&w=900',
@@ -615,61 +649,51 @@
     };
 
     const STATE = {
-      mode: 'TREE',
-      rotation: { x: 0, y: 0 },
-      flags: { snow: true, uiHidden: false },
+      snowOn: true,
+      uiHidden: false,
       selectedSlot: -1,
       toastTimer: null,
+
       drawerDragging: false,
       drawerStartY: 0,
-      drawerDragDY: 0
+      drawerDY: 0,
+
+      music: { ready:false, playing:false, unmuted:false }
     };
 
+    // ===========================
     // DOM
-    const menuBtn = document.getElementById('btn-menu');
-    const drawerBtn = document.getElementById('btn-drawer');
-    const menuPanel = document.getElementById('menu-panel');
-    const menuBackdrop = document.getElementById('menu-backdrop');
-    const snowState = document.getElementById('snow-state');
+    // ===========================
+    const loaderEl = document.getElementById('loader');
+
+    const btnMenu = document.getElementById('btnMenu');
+    const btnDrawer = document.getElementById('btnDrawer');
+    const menu = document.getElementById('menu');
+    const menuBackdrop = document.getElementById('menuBackdrop');
 
     const drawer = document.getElementById('drawer');
-    const drawerBackdrop = document.getElementById('drawer-backdrop');
-    const btnCloseDrawer = document.getElementById('btn-close-drawer');
-    const fileInput = document.getElementById('file-input');
+    const drawerBackdrop = document.getElementById('drawerBackdrop');
+    const drawerHead = document.getElementById('drawerHead');
 
+    const fileInput = document.getElementById('fileInput');
     const slotsEl = document.getElementById('slots');
     const galleryEl = document.getElementById('gallery');
-    const slotHint = document.getElementById('slot-hint');
-    const countBadge = document.getElementById('count-badge');
+    const slotHint = document.getElementById('slotHint');
+    const countBadge = document.getElementById('countBadge');
+
+    const snowState = document.getElementById('snowState');
     const toast = document.getElementById('toast');
+    const musicState = document.getElementById('musicState');
 
-    const drawerHead = document.getElementById('drawer-head');
-    const drawerBody = document.getElementById('drawer-body');
+    const btnSnow = document.getElementById('btnSnow');
+    const btnReset = document.getElementById('btnReset');
+    const btnHideUI = document.getElementById('btnHideUI');
+    const btnShuffle = document.getElementById('btnShuffle');
 
-    // 🎵 BGM
+    const btnClear = document.getElementById('btnClear');
+    const btnClose = document.getElementById('btnClose');
+
     const bgm = document.getElementById('bgm');
-
-    // THREE
-    let scene, camera, renderer, composer;
-    let mainGroup;
-    let clock = new THREE.Clock();
-    let particleSystem = [];
-    let caneTexture;
-    let snowSystem;
-    let lightsMesh = null;
-    let garlandMesh = null;
-
-    // Raycaster for click slot on tree
-    const raycaster = new THREE.Raycaster();
-    const pointer = new THREE.Vector2();
-
-    // Slots system (3D)
-    const slotMeshes = [];      // each: { group, frame, photo, texture, assignedId, isEmpty, uiThumbEl }
-    const slotTargets = [];     // Vector3 posTree per slot
-
-    // Gallery
-    const gallery = [];         // { id, dataUrl, texture, thumbUrl }
-    let idCounter = 1;
 
     function showToast(msg){
       toast.textContent = msg;
@@ -678,62 +702,87 @@
       STATE.toastTimer = setTimeout(()=>toast.classList.remove('show'), 1400);
     }
 
-    async function safeAutoPlayBgm(){
+    // ===========================
+    // MUSIC (Autoplay muted -> unmute on first touch)
+    // ===========================
+    async function startMusicMuted(){
       try{
-        bgm.volume = 0.9;   // "to tí"
+        bgm.volume = 0.95;     // ✅ to hơn
+        bgm.muted = true;      // ✅ iOS allows autoplay when muted
         await bgm.play();
+        STATE.music.ready = true;
+        STATE.music.playing = true;
+        musicState.textContent = 'Music: READY (tap once for sound)';
       }catch(e){
-        // autoplay bị chặn -> play sau lần chạm đầu tiên (không cần nút)
-        const resume = async () => {
-          try{
-            bgm.volume = 0.9;
-            await bgm.play();
-          }catch(_){}
-          window.removeEventListener('pointerdown', resume, {capture:true});
-          window.removeEventListener('touchstart', resume, {capture:true});
-        };
-        window.addEventListener('pointerdown', resume, { once:true, capture:true });
-        window.addEventListener('touchstart', resume, { once:true, capture:true });
+        // if even muted play fails, fallback: user gesture start
+        STATE.music.ready = false;
+        musicState.textContent = 'Music: TAP TO START';
       }
     }
 
-    async function init() {
-      initThree();
-      setupEnvironment();
-      setupLights();
-      createTextures();
-      createParticles();
-      createDust();
-      createFairyLights();
-      createGarland();
-      createSnow();
-      createSlots3D();     // slot frames
-      preloadGallery();    // preload images
-      setupPostProcessing();
-      setupEvents();
-      buildSlotsUI();
-      renderGalleryUI();
-
-      const loader = document.getElementById('loader');
-      loader.style.opacity = 0;
-      setTimeout(() => loader.remove(), 800);
-
-      // 🎵 try autoplay
-      safeAutoPlayBgm();
-
-      animate();
+    async function unmuteMusicOnFirstGesture(){
+      if (STATE.music.unmuted) return;
+      try{
+        // Make sure it is playing then unmute
+        if (bgm.paused) await bgm.play();
+        bgm.muted = false;
+        bgm.volume = 0.95;
+        STATE.music.unmuted = true;
+        STATE.music.playing = true;
+        musicState.textContent = 'Music: PLAYING';
+        // hide badge after a while (optional)
+        setTimeout(()=>{ musicState.classList.add('hidden'); }, 1400);
+      }catch(e){
+        // keep hint visible
+        musicState.textContent = 'Music: TAP AGAIN';
+      }
     }
 
-    function initThree() {
+    function bindGlobalGestureForMusic(){
+      const handler = async () => {
+        await unmuteMusicOnFirstGesture();
+        // remove after unmuted
+        if (STATE.music.unmuted){
+          window.removeEventListener('pointerdown', handler, {capture:true});
+          window.removeEventListener('touchstart', handler, {capture:true});
+          window.removeEventListener('keydown', handler, {capture:true});
+        }
+      };
+      window.addEventListener('pointerdown', handler, {capture:true});
+      window.addEventListener('touchstart', handler, {capture:true});
+      window.addEventListener('keydown', handler, {capture:true});
+    }
+
+    // ===========================
+    // THREE
+    // ===========================
+    let scene, camera, renderer, composer;
+    let mainGroup;
+    const clock = new THREE.Clock();
+
+    let snowSystem = null;
+    let lightsMesh = null;
+    let garlandMesh = null;
+
+    const raycaster = new THREE.Raycaster();
+    const pointer = new THREE.Vector2();
+
+    const slotMeshes = []; // { group, frame, photo, assignedId, isEmpty, uiEl }
+    const slotTargets = [];
+
+    const gallery = [];    // { id, dataUrl, thumbUrl, texture }
+    let idCounter = 1;
+
+    function initThree(){
       const container = document.getElementById('canvas-container');
       scene = new THREE.Scene();
       scene.background = new THREE.Color(CONFIG.colors.bg);
       scene.fog = new THREE.FogExp2(CONFIG.colors.fog, 0.015);
 
-      camera = new THREE.PerspectiveCamera(42, window.innerWidth / window.innerHeight, 0.1, 1000);
+      camera = new THREE.PerspectiveCamera(42, window.innerWidth/window.innerHeight, 0.1, 1000);
       camera.position.set(0, 2, CONFIG.camera.z);
 
-      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
+      renderer = new THREE.WebGLRenderer({ antialias:true, alpha:true, powerPreference:"high-performance" });
       renderer.setSize(window.innerWidth, window.innerHeight);
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       renderer.toneMapping = THREE.ReinhardToneMapping;
@@ -744,17 +793,17 @@
       scene.add(mainGroup);
     }
 
-    function setupEnvironment() {
-      const pmremGenerator = new THREE.PMREMGenerator(renderer);
-      scene.environment = pmremGenerator.fromScene(new RoomEnvironment(), 0.04).texture;
+    function setupEnvironment(){
+      const pmrem = new THREE.PMREMGenerator(renderer);
+      scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
     }
 
-    function setupLights() {
+    function setupLights(){
       scene.add(new THREE.AmbientLight(0xffffff, 0.6));
 
-      const innerLight = new THREE.PointLight(0xffaa00, 2, 22);
-      innerLight.position.set(0, 5, 0);
-      mainGroup.add(innerLight);
+      const inner = new THREE.PointLight(0xffaa00, 2.1, 24);
+      inner.position.set(0, 5, 0);
+      mainGroup.add(inner);
 
       const spotGold = new THREE.SpotLight(0xffcc66, 1200);
       spotGold.position.set(30, 40, 40);
@@ -762,7 +811,7 @@
       spotGold.penumbra = 0.5;
       scene.add(spotGold);
 
-      const spotBlue = new THREE.SpotLight(0x6688ff, 800);
+      const spotBlue = new THREE.SpotLight(0x6688ff, 820);
       spotBlue.position.set(-30, 20, -30);
       scene.add(spotBlue);
 
@@ -771,169 +820,91 @@
       scene.add(fill);
     }
 
-    function setupPostProcessing() {
-      const renderScene = new RenderPass(scene, camera);
-      const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
-      bloomPass.threshold = 0.62;
-      bloomPass.strength = 0.65;
-      bloomPass.radius = 0.55;
+    function setupPost(){
+      const renderPass = new RenderPass(scene, camera);
+      const bloom = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
+      bloom.threshold = 0.62;
+      bloom.strength  = 0.7;
+      bloom.radius    = 0.58;
 
       composer = new EffectComposer(renderer);
-      composer.addPass(renderScene);
-      composer.addPass(bloomPass);
+      composer.addPass(renderPass);
+      composer.addPass(bloom);
     }
 
-    function createTextures() {
-      const canvas = document.createElement('canvas');
-      canvas.width = 128; canvas.height = 128;
-      const ctx = canvas.getContext('2d');
-      ctx.fillStyle = '#ffffff';
-      ctx.fillRect(0, 0, 128, 128);
-      ctx.fillStyle = '#880000';
-      ctx.beginPath();
-      for (let i = -128; i < 256; i += 32) {
-        ctx.moveTo(i, 0); ctx.lineTo(i + 32, 128); ctx.lineTo(i + 16, 128); ctx.lineTo(i - 16, 0);
-      }
-      ctx.fill();
-      caneTexture = new THREE.CanvasTexture(canvas);
-      caneTexture.wrapS = THREE.RepeatWrapping;
-      caneTexture.wrapT = THREE.RepeatWrapping;
-      caneTexture.repeat.set(3, 3);
-    }
-
-    function createSnow() {
+    function createSnow(){
       const geometry = new THREE.BufferGeometry();
       const vertices = [];
       const velocities = [];
 
-      const canvas = document.createElement('canvas');
-      canvas.width = 32; canvas.height = 32;
-      const context = canvas.getContext('2d');
-      context.fillStyle = 'white';
-      context.beginPath();
-      context.arc(16, 16, 16, 0, Math.PI * 2);
-      context.fill();
-      const snowTexture = new THREE.CanvasTexture(canvas);
+      const c = document.createElement('canvas');
+      c.width = 32; c.height = 32;
+      const g = c.getContext('2d');
+      g.fillStyle = 'white';
+      g.beginPath();
+      g.arc(16,16,16,0,Math.PI*2);
+      g.fill();
+      const snowTex = new THREE.CanvasTexture(c);
 
-      for (let i = 0; i < CONFIG.particles.snowCount; i++) {
+      for (let i=0;i<CONFIG.snow.count;i++){
         vertices.push(
           THREE.MathUtils.randFloatSpread(100),
           THREE.MathUtils.randFloatSpread(60),
-          THREE.MathUtils.randFloatSpread(60),
+          THREE.MathUtils.randFloatSpread(60)
         );
-        velocities.push(Math.random() * 0.2 + 0.1, Math.random() * 0.05);
+        velocities.push(Math.random()*0.2+0.1, Math.random()*0.05);
       }
 
       geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
       geometry.setAttribute('userData', new THREE.Float32BufferAttribute(velocities, 2));
 
-      const material = new THREE.PointsMaterial({
+      const mat = new THREE.PointsMaterial({
         color: 0xffffff,
-        size: 0.4,
-        map: snowTexture,
-        transparent: true,
-        opacity: 0.8,
-        blending: THREE.AdditiveBlending,
-        depthWrite: false
+        size: 0.42,
+        map: snowTex,
+        transparent:true,
+        opacity:0.8,
+        blending:THREE.AdditiveBlending,
+        depthWrite:false
       });
 
-      snowSystem = new THREE.Points(geometry, material);
+      snowSystem = new THREE.Points(geometry, mat);
       scene.add(snowSystem);
     }
 
-    function updateSnow() {
+    function updateSnow(){
       if (!snowSystem) return;
-      snowSystem.visible = STATE.flags.snow;
-      if (!STATE.flags.snow) return;
+      snowSystem.visible = STATE.snowOn;
+      if (!STATE.snowOn) return;
 
-      const positions = snowSystem.geometry.attributes.position.array;
-      const userData = snowSystem.geometry.attributes.userData.array;
+      const pos = snowSystem.geometry.attributes.position.array;
+      const ud  = snowSystem.geometry.attributes.userData.array;
 
-      for (let i = 0; i < CONFIG.particles.snowCount; i++) {
-        const fallSpeed = userData[i * 2];
-        positions[i * 3 + 1] -= fallSpeed;
+      for (let i=0;i<CONFIG.snow.count;i++){
+        const fall = ud[i*2];
+        pos[i*3+1] -= fall;
 
-        const swaySpeed = userData[i * 2 + 1];
-        positions[i * 3] += Math.sin(clock.elapsedTime * 2 + i) * swaySpeed * 0.1;
+        const sway = ud[i*2+1];
+        pos[i*3] += Math.sin(clock.elapsedTime*2 + i)*sway*0.1;
 
-        if (positions[i * 3 + 1] < -30) {
-          positions[i * 3 + 1] = 30;
-          positions[i * 3] = THREE.MathUtils.randFloatSpread(100);
-          positions[i * 3 + 2] = THREE.MathUtils.randFloatSpread(60);
+        if (pos[i*3+1] < -30){
+          pos[i*3+1] = 30;
+          pos[i*3]   = THREE.MathUtils.randFloatSpread(100);
+          pos[i*3+2] = THREE.MathUtils.randFloatSpread(60);
         }
       }
       snowSystem.geometry.attributes.position.needsUpdate = true;
     }
 
-    class Particle {
-      constructor(mesh, isDust = false) {
-        this.mesh = mesh;
-        this.isDust = isDust;
-
-        this.posTree = new THREE.Vector3();
-        this.posScatter = new THREE.Vector3();
-        this.baseScale = mesh.scale.x;
-
-        const speedMult = 2.0;
-        this.spinSpeed = new THREE.Vector3(
-          (Math.random() - 0.5) * speedMult,
-          (Math.random() - 0.5) * speedMult,
-          (Math.random() - 0.5) * speedMult
-        );
-        this.calculatePositions();
-      }
-
-      calculatePositions() {
-        const h = CONFIG.particles.treeHeight;
-        const halfH = h / 2;
-        let t = Math.pow(Math.random(), 0.8);
-        const y = (t * h) - halfH;
-
-        let rMax = CONFIG.particles.treeRadius * (1.0 - t);
-        if (rMax < 0.5) rMax = 0.5;
-
-        const angle = t * 50 * Math.PI + Math.random() * Math.PI;
-        const r = rMax * (0.8 + Math.random() * 0.4);
-        this.posTree.set(Math.cos(angle) * r, y, Math.sin(angle) * r);
-
-        let rScatter = this.isDust ? (12 + Math.random() * 20) : (9 + Math.random() * 14);
-        const theta = Math.random() * Math.PI * 2;
-        const phi = Math.acos(2 * Math.random() - 1);
-        this.posScatter.set(
-          rScatter * Math.sin(phi) * Math.cos(theta),
-          rScatter * Math.sin(phi) * Math.sin(theta),
-          rScatter * Math.cos(phi)
-        );
-      }
-
-      update(dt) {
-        this.mesh.position.lerp(this.posTree, 2.0 * dt);
-
-        this.mesh.rotation.x = THREE.MathUtils.lerp(this.mesh.rotation.x, 0, dt);
-        this.mesh.rotation.z = THREE.MathUtils.lerp(this.mesh.rotation.z, 0, dt);
-        this.mesh.rotation.y += 0.5 * dt;
-
-        let s = this.baseScale;
-        if (this.isDust) {
-          s = this.baseScale * (0.8 + 0.4 * Math.sin(clock.elapsedTime * 4 + this.mesh.id));
-          s = 0; // dust off on tree for luxury
-        }
-        this.mesh.scale.lerp(new THREE.Vector3(s, s, s), 4 * dt);
-      }
-    }
-
-    function createParticles() {
+    // ✅ “cây thông đẹp hơn”: ornaments + star + lights + garland
+    function createTreeOrnaments(){
       const sphereGeo = new THREE.SphereGeometry(0.5, 32, 32);
-      const boxGeo = new THREE.BoxGeometry(0.55, 0.55, 0.55);
-      const curve = new THREE.CatmullRomCurve3([
-        new THREE.Vector3(0, -0.5, 0), new THREE.Vector3(0, 0.3, 0),
-        new THREE.Vector3(0.1, 0.5, 0), new THREE.Vector3(0.3, 0.4, 0)
-      ]);
-      const candyGeo = new THREE.TubeGeometry(curve, 16, 0.08, 8, false);
+      const boxGeo    = new THREE.BoxGeometry(0.55, 0.55, 0.55);
 
       const goldMat = new THREE.MeshStandardMaterial({
         color: CONFIG.colors.champagneGold,
-        metalness: 1.0, roughness: 0.1,
+        metalness: 1.0,
+        roughness: 0.1,
         envMapIntensity: 2.0,
         emissive: 0x443300,
         emissiveIntensity: 0.35
@@ -941,204 +912,201 @@
 
       const greenMat = new THREE.MeshStandardMaterial({
         color: CONFIG.colors.deepGreen,
-        metalness: 0.2, roughness: 0.85,
+        metalness: 0.25,
+        roughness: 0.85,
         emissive: 0x002200,
-        emissiveIntensity: 0.2
+        emissiveIntensity: 0.22
       });
 
       const redMat = new THREE.MeshPhysicalMaterial({
         color: CONFIG.colors.accentRed,
-        metalness: 0.3, roughness: 0.2, clearcoat: 1.0,
+        metalness: 0.35,
+        roughness: 0.18,
+        clearcoat: 1.0,
         emissive: 0x330000
       });
 
-      const candyMat = new THREE.MeshStandardMaterial({ map: caneTexture, roughness: 0.4 });
+      for (let i=0;i<CONFIG.ornaments.count;i++){
+        const t = Math.pow(Math.random(), 0.82);
+        const y = t*CONFIG.tree.height - CONFIG.tree.height/2;
 
-      for (let i = 0; i < CONFIG.particles.count; i++) {
-        const rand = Math.random();
+        let rMax = CONFIG.tree.radius*(1.0 - t);
+        rMax = Math.max(rMax, 0.55);
+
+        const angle = t*50*Math.PI + Math.random()*Math.PI;
+        const r = rMax*(0.8 + Math.random()*0.45);
+
+        const pick = Math.random();
         let mesh;
+        if (pick < 0.45) mesh = new THREE.Mesh(boxGeo, greenMat);
+        else if (pick < 0.82) mesh = new THREE.Mesh(boxGeo, goldMat);
+        else if (pick < 0.94) mesh = new THREE.Mesh(sphereGeo, goldMat);
+        else mesh = new THREE.Mesh(sphereGeo, redMat);
 
-        if (rand < 0.40) mesh = new THREE.Mesh(boxGeo, greenMat);
-        else if (rand < 0.70) mesh = new THREE.Mesh(boxGeo, goldMat);
-        else if (rand < 0.92) mesh = new THREE.Mesh(sphereGeo, goldMat);
-        else if (rand < 0.97) mesh = new THREE.Mesh(sphereGeo, redMat);
-        else mesh = new THREE.Mesh(candyGeo, candyMat);
-
-        const s = 0.4 + Math.random() * 0.5;
-        mesh.scale.set(s, s, s);
-        mesh.rotation.set(Math.random() * 6, Math.random() * 6, Math.random() * 6);
+        const s = 0.36 + Math.random()*0.55;
+        mesh.scale.set(s,s,s);
+        mesh.position.set(Math.cos(angle)*r, y, Math.sin(angle)*r);
+        mesh.rotation.set(Math.random()*6, Math.random()*6, Math.random()*6);
 
         mainGroup.add(mesh);
-        particleSystem.push(new Particle(mesh, false));
       }
 
       // Star
       const starShape = new THREE.Shape();
-      const points = 5, outerRadius = 1.5, innerRadius = 0.7;
-      for (let i = 0; i < points * 2; i++) {
-        const angle = (i * Math.PI) / points + Math.PI / 2;
-        const r = (i % 2 === 0) ? outerRadius : innerRadius;
-        const x = Math.cos(angle) * r;
-        const y = Math.sin(angle) * r;
-        if (i === 0) starShape.moveTo(x, y);
-        else starShape.lineTo(x, y);
+      const points = 5, outerRadius = 1.55, innerRadius = 0.72;
+      for (let i=0;i<points*2;i++){
+        const a = (i*Math.PI)/points + Math.PI/2;
+        const rr = (i%2===0)? outerRadius : innerRadius;
+        const x = Math.cos(a)*rr;
+        const y = Math.sin(a)*rr;
+        if (i===0) starShape.moveTo(x,y);
+        else starShape.lineTo(x,y);
       }
       starShape.closePath();
 
       const starGeo = new THREE.ExtrudeGeometry(starShape, {
-        depth: 0.4, bevelEnabled: true, bevelThickness: 0.1, bevelSize: 0.1, bevelSegments: 2
+        depth: 0.42,
+        bevelEnabled:true,
+        bevelThickness:0.1,
+        bevelSize:0.1,
+        bevelSegments:2
       });
       starGeo.center();
 
       const starMat = new THREE.MeshStandardMaterial({
         color: 0xffdd88,
         emissive: 0xffaa00,
-        emissiveIntensity: 1.15,
-        metalness: 1.0, roughness: 0
+        emissiveIntensity: 1.2,
+        metalness:1.0,
+        roughness:0
       });
 
       const star = new THREE.Mesh(starGeo, starMat);
-      star.position.set(0, CONFIG.particles.treeHeight / 2 + 1.2, 0);
+      star.position.set(0, CONFIG.tree.height/2 + 1.35, 0);
       mainGroup.add(star);
     }
 
-    function createDust() {
-      // intentionally minimized (perf)
-    }
+    function createFairyLights(){
+      const count = CONFIG.lights.count;
+      const pos = new Float32Array(count*3);
+      const col = new Float32Array(count*3);
 
-    // ✨ Fairy lights
-    function createFairyLights() {
-      const count = 520;
-      const positions = new Float32Array(count * 3);
-      const colors = new Float32Array(count * 3);
+      const h = CONFIG.tree.height*0.98;
+      const halfH = h/2;
 
-      const h = CONFIG.particles.treeHeight * 0.98;
-      const halfH = h / 2;
+      for (let i=0;i<count;i++){
+        const t = i/(count-1);
+        const y = t*h - halfH;
 
-      for (let i = 0; i < count; i++) {
-        const t = i / (count - 1);
-        const y = t * h - halfH;
-
-        let rMax = CONFIG.particles.treeRadius * (1.0 - t);
+        let rMax = CONFIG.tree.radius*(1.0 - t);
         rMax = Math.max(rMax, 0.6);
 
-        const loops = 10.5;
-        const angle = t * Math.PI * 2 * loops;
+        const loops = 10.8;
+        const angle = t*Math.PI*2*loops;
+        const r = rMax*1.02;
 
-        const r = rMax * 1.02;
+        pos[i*3+0] = Math.cos(angle)*r;
+        pos[i*3+1] = y;
+        pos[i*3+2] = Math.sin(angle)*r;
 
-        positions[i * 3 + 0] = Math.cos(angle) * r;
-        positions[i * 3 + 1] = y;
-        positions[i * 3 + 2] = Math.sin(angle) * r;
-
-        const isRed = (i % 7 === 0);
-        colors[i * 3 + 0] = 1.0;
-        colors[i * 3 + 1] = isRed ? 0.25 : 0.85;
-        colors[i * 3 + 2] = isRed ? 0.18 : 0.35;
+        const red = (i%7===0);
+        col[i*3+0] = 1.0;
+        col[i*3+1] = red ? 0.25 : 0.85;
+        col[i*3+2] = red ? 0.18 : 0.35;
       }
 
       const geo = new THREE.BufferGeometry();
-      geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-      geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+      geo.setAttribute('position', new THREE.BufferAttribute(pos,3));
+      geo.setAttribute('color', new THREE.BufferAttribute(col,3));
 
       const mat = new THREE.PointsMaterial({
-        size: 0.22,
-        vertexColors: true,
-        transparent: true,
-        opacity: 0.95,
-        blending: THREE.AdditiveBlending,
-        depthWrite: false
+        size: CONFIG.lights.size,
+        vertexColors:true,
+        transparent:true,
+        opacity:0.95,
+        blending:THREE.AdditiveBlending,
+        depthWrite:false
       });
 
       lightsMesh = new THREE.Points(geo, mat);
       mainGroup.add(lightsMesh);
     }
 
-    function updateFairyLights(dt) {
+    function updateFairyLights(dt){
       if (!lightsMesh) return;
       const t = clock.elapsedTime;
-      lightsMesh.material.opacity = 0.72 + 0.22 * Math.sin(t * 2.2);
-      lightsMesh.rotation.y += 0.12 * dt;
+      lightsMesh.material.opacity = 0.72 + 0.22*Math.sin(t*2.2);
+      lightsMesh.rotation.y += 0.12*dt;
     }
 
-    // ✨ Garland tube spiral
-    function createGarland() {
-      const h = CONFIG.particles.treeHeight * 0.98;
-      const halfH = h / 2;
+    // ✅ Garland “dây kim tuyến” tube spiral ánh vàng
+    function createGarland(){
+      const h = CONFIG.tree.height*0.98;
+      const halfH = h/2;
 
-      const loops = 7.5;
       const segments = 520;
       const points = [];
+      for (let i=0;i<=segments;i++){
+        const t = i/segments;
+        const y = t*h - halfH;
 
-      for (let i = 0; i <= segments; i++) {
-        const t = i / segments;
-        const y = t * h - halfH;
-
-        let rMax = CONFIG.particles.treeRadius * (1.0 - t);
+        let rMax = CONFIG.tree.radius*(1.0 - t);
         rMax = Math.max(rMax, 0.65);
 
-        const r = rMax * 1.07;
-        const angle = t * Math.PI * 2 * loops + Math.PI / 6;
+        const angle = t*Math.PI*2*CONFIG.garland.loops + Math.PI/6;
+        const r = rMax * CONFIG.garland.radiusMul;
 
-        points.push(new THREE.Vector3(
-          Math.cos(angle) * r,
-          y,
-          Math.sin(angle) * r
-        ));
+        points.push(new THREE.Vector3(Math.cos(angle)*r, y, Math.sin(angle)*r));
       }
 
       const path = new THREE.CatmullRomCurve3(points);
-      const tubeGeo = new THREE.TubeGeometry(path, 900, 0.12, 10, false);
+      const tubeGeo = new THREE.TubeGeometry(path, 900, CONFIG.garland.tubeRadius, 10, false);
 
-      const garlandMat = new THREE.MeshPhysicalMaterial({
+      const mat = new THREE.MeshPhysicalMaterial({
         color: 0xffd37a,
         metalness: 1.0,
         roughness: 0.18,
         clearcoat: 1.0,
         clearcoatRoughness: 0.15,
         emissive: 0x553300,
-        emissiveIntensity: 0.6
+        emissiveIntensity: 0.62
       });
 
-      garlandMesh = new THREE.Mesh(tubeGeo, garlandMat);
+      garlandMesh = new THREE.Mesh(tubeGeo, mat);
       garlandMesh.renderOrder = 2;
       mainGroup.add(garlandMesh);
     }
 
-    function updateGarland(dt) {
+    function updateGarland(dt){
       if (!garlandMesh) return;
       const t = clock.elapsedTime;
-      garlandMesh.material.emissiveIntensity = 0.55 + 0.25 * Math.sin(t * 2.6);
-      garlandMesh.rotation.y += 0.05 * dt;
+      garlandMesh.material.emissiveIntensity = 0.55 + 0.25*Math.sin(t*2.6);
+      garlandMesh.rotation.y += 0.05*dt;
     }
 
-    // =========================
-    // SLOT SYSTEM (3D)
-    // =========================
+    // ===========================
+    // SLOT SYSTEM (3D + UI)
+    // ===========================
     function computeSlotTargets(){
       slotTargets.length = 0;
       const count = CONFIG.slots.count;
-      const h = CONFIG.particles.treeHeight * 0.92;
-      const bottomY = -h / 2;
+
+      const h = CONFIG.tree.height * 0.92;
+      const bottomY = -h/2;
       const stepY = h / count;
-      const loops = CONFIG.slots.loops;
 
-      for (let i = 0; i < count; i++) {
-        const y = bottomY + stepY * i + stepY / 2;
-        const fullH = CONFIG.particles.treeHeight;
-        const normalizedH = (y + fullH / 2) / fullH;
+      for (let i=0;i<count;i++){
+        const y = bottomY + stepY*i + stepY/2;
+        const fullH = CONFIG.tree.height;
+        const nh = (y + fullH/2) / fullH;
 
-        let rMax = CONFIG.particles.treeRadius * (1.0 - normalizedH);
-        if (rMax < 1.0) rMax = 1.0;
+        let rMax = CONFIG.tree.radius * (1.0 - nh);
+        rMax = Math.max(rMax, 1.0);
 
         const r = rMax + CONFIG.slots.rOffset;
-        const angle = normalizedH * Math.PI * 2 * loops + (Math.PI / 4);
+        const angle = nh*Math.PI*2*CONFIG.slots.loops + (Math.PI/4);
 
-        slotTargets.push(new THREE.Vector3(
-          Math.cos(angle) * r,
-          y,
-          Math.sin(angle) * r
-        ));
+        slotTargets.push(new THREE.Vector3(Math.cos(angle)*r, y, Math.sin(angle)*r));
       }
     }
 
@@ -1153,11 +1121,11 @@
       g.fillStyle = grd;
       g.fillRect(0,0,256,256);
 
-      g.strokeStyle = 'rgba(212,175,55,0.38)';
+      g.strokeStyle = 'rgba(212,175,55,0.45)';
       g.lineWidth = 6;
       g.strokeRect(14,14,228,228);
 
-      g.fillStyle = 'rgba(252,238,167,0.85)';
+      g.fillStyle = 'rgba(252,238,167,0.9)';
       g.font = 'bold 22px Cinzel, serif';
       g.textAlign = 'center';
       g.fillText('TAP SLOT', 128, 124);
@@ -1179,29 +1147,29 @@
         metalness: 1.0,
         roughness: 0.12,
         emissive: 0x332200,
-        emissiveIntensity: 0.25
+        emissiveIntensity: 0.28
       });
 
-      for (let i = 0; i < CONFIG.slots.count; i++){
+      for (let i=0;i<CONFIG.slots.count;i++){
         const group = new THREE.Group();
         group.userData.slotIndex = i;
 
-        const frameGeo = new THREE.BoxGeometry(1.55, 1.55, 0.06);
+        const frameGeo = new THREE.BoxGeometry(1.6, 1.6, 0.065);
         const frame = new THREE.Mesh(frameGeo, frameMat);
         frame.userData.slotIndex = i;
 
         const emptyTex = makeEmptyTexture();
-        const photoGeo = new THREE.PlaneGeometry(1.42, 1.42);
+        const photoGeo = new THREE.PlaneGeometry(1.48, 1.48);
         const photoMat = new THREE.MeshBasicMaterial({ map: emptyTex, side: THREE.DoubleSide });
         const photo = new THREE.Mesh(photoGeo, photoMat);
-        photo.position.z = 0.045;
+        photo.position.z = 0.048;
         photo.userData.slotIndex = i;
 
         group.add(frame);
         group.add(photo);
 
-        const s = CONFIG.slots.baseScale;
-        group.scale.set(s, s, s);
+        const s = CONFIG.slots.scale;
+        group.scale.set(s,s,s);
 
         group.position.copy(slotTargets[i]);
         group.lookAt(0, group.position.y, 0);
@@ -1211,57 +1179,23 @@
 
         slotMeshes.push({
           group, frame, photo,
-          texture: emptyTex,
           assignedId: null,
           isEmpty: true,
-          uiThumbEl: null
+          uiEl: null
         });
       }
     }
 
-    function setSlotTexture(slotIndex, texture, assignedId){
-      const slot = slotMeshes[slotIndex];
-      if (!slot) return;
-
-      texture.colorSpace = THREE.SRGBColorSpace;
-      slot.photo.material.map = texture;
-      slot.photo.material.needsUpdate = true;
-
-      slot.texture = texture;
-      slot.assignedId = assignedId ?? null;
-      slot.isEmpty = false;
-
-      updateSlotUIThumb(slotIndex, assignedId);
-    }
-
-    function clearSlot(slotIndex){
-      const slot = slotMeshes[slotIndex];
-      if (!slot) return;
-
-      const empty = makeEmptyTexture();
-      slot.photo.material.map = empty;
-      slot.photo.material.needsUpdate = true;
-
-      slot.texture = empty;
-      slot.assignedId = null;
-      slot.isEmpty = true;
-
-      updateSlotUIThumb(slotIndex, null);
-    }
-
-    // =========================
-    // UI: SLOTS + GALLERY
-    // =========================
     function createEmptyThumbDataUrl(){
       const c = document.createElement('canvas');
       c.width = 220; c.height = 220;
       const g = c.getContext('2d');
       g.fillStyle = 'rgba(0,0,0,0.22)';
       g.fillRect(0,0,220,220);
-      g.strokeStyle = 'rgba(212,175,55,0.38)';
+      g.strokeStyle = 'rgba(212,175,55,0.42)';
       g.lineWidth = 6;
       g.strokeRect(14,14,192,192);
-      g.fillStyle = 'rgba(252,238,167,0.85)';
+      g.fillStyle = 'rgba(252,238,167,0.88)';
       g.font = 'bold 18px ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial';
       g.textAlign = 'center';
       g.fillText('EMPTY', 110, 118);
@@ -1270,7 +1204,7 @@
 
     function buildSlotsUI(){
       slotsEl.innerHTML = '';
-      for (let i = 0; i < CONFIG.slots.count; i++){
+      for (let i=0;i<CONFIG.slots.count;i++){
         const div = document.createElement('div');
         div.className = 'slot';
         div.dataset.slot = String(i);
@@ -1291,74 +1225,113 @@
         div.appendChild(num);
         div.appendChild(state);
 
-        div.addEventListener('click', () => toggleSelectSlot(i));
-
+        div.addEventListener('click', ()=>toggleSelectSlot(i));
         slotsEl.appendChild(div);
 
-        // store thumb element
-        slotMeshes[i].uiThumbEl = div;
+        slotMeshes[i].uiEl = div;
       }
-
-      for (let i = 0; i < CONFIG.slots.count; i++){
-        updateSlotUIThumb(i, null);
+      for (let i=0;i<CONFIG.slots.count;i++){
+        updateSlotUI(i);
       }
     }
 
-    function updateSlotUIThumb(slotIndex, assignedId){
-      const slotDiv = slotMeshes[slotIndex]?.uiThumbEl;
-      if (!slotDiv) return;
-
-      const img = slotDiv.querySelector('img');
-      const state = slotDiv.querySelector('.state');
-
-      if (!assignedId){
-        img.src = createEmptyThumbDataUrl();
-        state.textContent = 'EMPTY';
-      } else {
-        const item = gallery.find(x => x.id === assignedId);
-        img.src = item?.thumbUrl || createEmptyThumbDataUrl();
-        state.textContent = 'SET';
-      }
-    }
-
-    function highlightSelectedSlot(){
-      slotsEl.querySelectorAll('.slot').forEach(el => {
+    function highlightSelected(){
+      slotsEl.querySelectorAll('.slot').forEach(el=>{
         const idx = Number(el.dataset.slot);
-        el.classList.toggle('selected', idx === STATE.selectedSlot);
+        el.classList.toggle('selected', idx===STATE.selectedSlot);
       });
-
-      // highlight on 3D too
-      for (let i = 0; i < slotMeshes.length; i++){
-        const s = slotMeshes[i];
-        const isSel = (i === STATE.selectedSlot);
-        // subtle glow via scale/emissive feel
-        s.group.scale.setScalar(CONFIG.slots.baseScale * (isSel ? 1.08 : 1.0));
+      for (let i=0;i<slotMeshes.length;i++){
+        const sel = i===STATE.selectedSlot;
+        const base = CONFIG.slots.scale;
+        slotMeshes[i].group.scale.setScalar(base*(sel?1.08:1.0));
       }
     }
 
     function setSelectedSlot(i, source='ui'){
       STATE.selectedSlot = i;
       slotHint.textContent = `Đang chọn slot #${i+1} — tap ảnh trong Gallery để thay`;
-      highlightSelectedSlot();
+      highlightSelected();
       if (!drawer.classList.contains('open')) openDrawer();
-      if (source === '3d') showToast(`Đã chọn slot #${i+1} (bấm ảnh để thay)`);
+      if (source==='3d') showToast(`Đã chọn slot #${i+1}`);
     }
 
     function toggleSelectSlot(i){
-      if (STATE.selectedSlot === i){
+      if (STATE.selectedSlot===i){
         STATE.selectedSlot = -1;
         slotHint.textContent = 'Chọn 1 slot để thay ảnh';
-      } else {
-        setSelectedSlot(i, 'ui');
+      }else{
+        setSelectedSlot(i,'ui');
       }
-      highlightSelectedSlot();
+      highlightSelected();
+    }
+
+    function updateSlotUI(slotIndex){
+      const ui = slotMeshes[slotIndex].uiEl;
+      if (!ui) return;
+
+      const img = ui.querySelector('img');
+      const state = ui.querySelector('.state');
+
+      const assignedId = slotMeshes[slotIndex].assignedId;
+      if (!assignedId){
+        img.src = createEmptyThumbDataUrl();
+        state.textContent = 'EMPTY';
+      }else{
+        const item = gallery.find(x=>x.id===assignedId);
+        img.src = item?.thumbUrl || createEmptyThumbDataUrl();
+        state.textContent = 'SET';
+      }
+    }
+
+    function setSlotTexture(slotIndex, texture, assignedId){
+      const s = slotMeshes[slotIndex];
+      if (!s) return;
+
+      texture.colorSpace = THREE.SRGBColorSpace;
+      s.photo.material.map = texture;
+      s.photo.material.needsUpdate = true;
+
+      s.assignedId = assignedId ?? null;
+      s.isEmpty = false;
+
+      updateSlotUI(slotIndex);
+    }
+
+    function clearSlot(slotIndex){
+      const s = slotMeshes[slotIndex];
+      if (!s) return;
+
+      const emptyTex = makeEmptyTexture();
+      s.photo.material.map = emptyTex;
+      s.photo.material.needsUpdate = true;
+
+      s.assignedId = null;
+      s.isEmpty = true;
+
+      updateSlotUI(slotIndex);
+    }
+
+    function findNextEmptySlot(){
+      for (let i=0;i<slotMeshes.length;i++){
+        if (slotMeshes[i].isEmpty) return i;
+      }
+      return -1;
+    }
+    function findNextSlotAfter(cur){
+      for (let i=cur+1;i<slotMeshes.length;i++){
+        if (slotMeshes[i].isEmpty) return i;
+      }
+      for (let i=0;i<=cur;i++){
+        if (slotMeshes[i].isEmpty) return i;
+      }
+      return (cur+1)%slotMeshes.length;
     }
 
     function renderGalleryUI(){
       galleryEl.innerHTML = '';
       countBadge.textContent = String(gallery.length);
 
-      gallery.forEach(item => {
+      gallery.forEach(item=>{
         const div = document.createElement('div');
         div.className = 'thumb';
         div.dataset.id = String(item.id);
@@ -1368,61 +1341,33 @@
         img.alt = `photo-${item.id}`;
         div.appendChild(img);
 
-        div.addEventListener('click', () => {
-          // ✅ nếu chưa chọn slot -> auto chọn slot trống kế tiếp
-          if (STATE.selectedSlot < 0){
-            const nextEmpty = findNextEmptySlot();
-            if (nextEmpty < 0){
-              setSelectedSlot(0);
-            } else {
-              setSelectedSlot(nextEmpty);
-            }
+        div.addEventListener('click', ()=>{
+          if (STATE.selectedSlot<0){
+            const next = findNextEmptySlot();
+            setSelectedSlot(next>=0 ? next : 0);
           }
-
           setSlotTexture(STATE.selectedSlot, item.texture, item.id);
-          showToast(`Đã thay ảnh cho slot #${STATE.selectedSlot+1}`);
+          showToast(`Đã thay ảnh slot #${STATE.selectedSlot+1}`);
 
-          // ✅ auto nhảy slot tiếp theo để thay nhanh
           const next = findNextSlotAfter(STATE.selectedSlot);
-          if (next >= 0){
-            STATE.selectedSlot = next;
-            slotHint.textContent = `Đang chọn slot #${next+1} — tap ảnh để thay`;
-            highlightSelectedSlot();
-          }
+          STATE.selectedSlot = next;
+          slotHint.textContent = `Đang chọn slot #${next+1} — tap ảnh để thay`;
+          highlightSelected();
         });
 
         galleryEl.appendChild(div);
       });
     }
 
-    function findNextEmptySlot(){
-      for (let i = 0; i < slotMeshes.length; i++){
-        if (slotMeshes[i].isEmpty) return i;
-      }
-      return -1;
-    }
-
-    function findNextSlotAfter(cur){
-      // ưu tiên slot trống trước
-      for (let i = cur+1; i < slotMeshes.length; i++){
-        if (slotMeshes[i].isEmpty) return i;
-      }
-      for (let i = 0; i <= cur; i++){
-        if (slotMeshes[i].isEmpty) return i;
-      }
-      // nếu không còn trống thì quay vòng
-      return (cur + 1) % slotMeshes.length;
-    }
-
-    // =========================
-    // Upload helpers
-    // =========================
+    // ===========================
+    // UPLOAD
+    // ===========================
     async function fileToDataUrl(file){
-      return await new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
+      return await new Promise((resolve,reject)=>{
+        const r = new FileReader();
+        r.onload = ()=>resolve(r.result);
+        r.onerror = reject;
+        r.readAsDataURL(file);
       });
     }
 
@@ -1438,8 +1383,8 @@
       const iw = img.width, ih = img.height;
       const scale = Math.max(size/iw, size/ih);
       const w = iw*scale, h = ih*scale;
-      const x = (size - w)/2;
-      const y = (size - h)/2;
+      const x = (size-w)/2;
+      const y = (size-h)/2;
 
       g.fillStyle = 'rgba(0,0,0,0.2)';
       g.fillRect(0,0,size,size);
@@ -1456,83 +1401,60 @@
 
     function dataUrlToTexture(dataUrl){
       const loader = new THREE.TextureLoader();
-      return new Promise((resolve, reject) => {
-        loader.load(
-          dataUrl,
-          (tex)=>{ tex.colorSpace = THREE.SRGBColorSpace; resolve(tex); },
-          undefined,
-          reject
-        );
+      return new Promise((resolve,reject)=>{
+        loader.load(dataUrl, tex=>{
+          tex.colorSpace = THREE.SRGBColorSpace;
+          resolve(tex);
+        }, undefined, reject);
       });
     }
 
-    async function addToGalleryFromDataUrl(dataUrl){
+    async function addToGallery(dataUrl){
       const thumbUrl = await makeThumb(dataUrl, 240);
       const texture = await dataUrlToTexture(dataUrl);
-
-      const item = {
-        id: idCounter++,
-        dataUrl,
-        thumbUrl,
-        texture
-      };
+      const item = { id:idCounter++, dataUrl, thumbUrl, texture };
       gallery.unshift(item);
       renderGalleryUI();
-      autoFillEmptySlots();
     }
 
-    function autoFillEmptySlots(){
-      const empties = slotMeshes
-        .map((s, idx)=>({s, idx}))
-        .filter(x=>x.s.isEmpty);
-
-      if (!empties.length) return;
-
-      for (const e of empties){
-        const item = gallery.find(g => !slotMeshes.some(sm => sm.assignedId === g.id)) || gallery[0];
-        if (!item) break;
-        setSlotTexture(e.idx, item.texture, item.id);
-      }
-    }
-
-    async function handleUploadFiles(files){
-      const arr = Array.from(files || []).filter(f => f.type.startsWith('image/'));
+    async function handleUpload(files){
+      const arr = Array.from(files||[]).filter(f=>f.type.startsWith('image/'));
       if (!arr.length) return;
 
       showToast(`Đang nạp ${arr.length} ảnh...`);
       for (const f of arr){
         const dataUrl = await fileToDataUrl(f);
-        await addToGalleryFromDataUrl(dataUrl);
+        await addToGallery(dataUrl);
       }
-      showToast('Xong! Bấm vào khung trên cây để chọn slot');
-    }
-
-    async function preloadGallery(){
-      for (const url of CONFIG.preloadThumbs){
-        try{
-          const dataUrl = await fetchToDataUrl(url);
-          await addToGalleryFromDataUrl(dataUrl);
-        }catch(e){}
-      }
+      showToast('Xong! Tap slot trên cây để chọn khung');
     }
 
     async function fetchToDataUrl(url){
       const res = await fetch(url, { mode:'cors' });
       const blob = await res.blob();
-      return await new Promise((resolve, reject)=>{
-        const reader = new FileReader();
-        reader.onload = ()=>resolve(reader.result);
-        reader.onerror = reject;
-        reader.readAsDataURL(blob);
+      return await new Promise((resolve,reject)=>{
+        const r = new FileReader();
+        r.onload = ()=>resolve(r.result);
+        r.onerror = reject;
+        r.readAsDataURL(blob);
       });
     }
 
-    // =========================
-    // Menu & Drawer
-    // =========================
-    function openMenu(){ menuPanel.classList.add('open'); menuBackdrop.classList.add('open'); }
-    function closeMenu(){ menuPanel.classList.remove('open'); menuBackdrop.classList.remove('open'); }
-    function toggleMenu(){ menuPanel.classList.contains('open') ? closeMenu() : openMenu(); }
+    async function preloadGallery(){
+      for (const url of CONFIG.preload){
+        try{
+          const dataUrl = await fetchToDataUrl(url);
+          await addToGallery(dataUrl);
+        }catch(e){}
+      }
+    }
+
+    // ===========================
+    // UI OPEN/CLOSE
+    // ===========================
+    function openMenu(){ menu.classList.add('open'); menuBackdrop.classList.add('open'); }
+    function closeMenu(){ menu.classList.remove('open'); menuBackdrop.classList.remove('open'); }
+    function toggleMenu(){ menu.classList.contains('open') ? closeMenu() : openMenu(); }
 
     function openDrawer(){
       drawer.classList.add('open');
@@ -1541,102 +1463,91 @@
     function closeDrawer(){
       drawer.classList.remove('open');
       drawerBackdrop.classList.remove('open');
-      // reset drag transform
       drawer.style.transform = '';
       drawer.style.transition = '';
-      STATE.drawerDragDY = 0;
+      STATE.drawerDY = 0;
     }
-    function toggleDrawer(){
-      drawer.classList.contains('open') ? closeDrawer() : openDrawer();
-    }
+    function toggleDrawer(){ drawer.classList.contains('open') ? closeDrawer() : openDrawer(); }
 
-    function toggleUI(){
-      STATE.flags.uiHidden = !STATE.flags.uiHidden;
-      document.getElementById('ui-layer').classList.toggle('ui-hidden', STATE.flags.uiHidden);
+    function resetView(){
+      mainGroup.rotation.set(0,0,0);
       closeMenu();
     }
 
-    function resetView(){
-      STATE.rotation.x = 0;
-      STATE.rotation.y = 0;
+    function toggleUI(){
+      STATE.uiHidden = !STATE.uiHidden;
+      document.getElementById('ui').style.opacity = STATE.uiHidden ? '0' : '1';
       closeMenu();
     }
 
     function shuffleSlots(){
-      const ids = slotMeshes.map(s => s.assignedId).filter(Boolean);
-      if (!ids.length) { showToast('Không có ảnh để shuffle'); return; }
-
-      for (let i = ids.length - 1; i > 0; i--){
-        const j = Math.floor(Math.random() * (i + 1));
+      const ids = slotMeshes.map(s=>s.assignedId).filter(Boolean);
+      if (!ids.length){ showToast('Chưa có ảnh để shuffle'); return; }
+      for (let i=ids.length-1;i>0;i--){
+        const j = Math.floor(Math.random()*(i+1));
         [ids[i], ids[j]] = [ids[j], ids[i]];
       }
-
       let k = 0;
-      for (let i = 0; i < slotMeshes.length; i++){
+      for (let i=0;i<slotMeshes.length;i++){
         if (slotMeshes[i].assignedId){
           const id = ids[k++];
-          const item = gallery.find(g => g.id === id);
+          const item = gallery.find(g=>g.id===id);
           if (item) setSlotTexture(i, item.texture, item.id);
         }
       }
-      showToast('Đã shuffle ảnh trong slots');
+      showToast('Đã shuffle slots');
       closeMenu();
     }
 
-    // Drawer drag-to-close (iOS-ish)
+    // Drawer drag close (iOS)
     function setupDrawerDrag(){
-      const start = (y) => {
+      const start = (y)=>{
         if (!drawer.classList.contains('open')) return;
         STATE.drawerDragging = true;
         STATE.drawerStartY = y;
-        STATE.drawerDragDY = 0;
+        STATE.drawerDY = 0;
         drawer.style.transition = 'none';
       };
-      const move = (y) => {
+      const move = (y)=>{
         if (!STATE.drawerDragging) return;
         const dy = Math.max(0, y - STATE.drawerStartY);
-        STATE.drawerDragDY = dy;
+        STATE.drawerDY = dy;
         drawer.style.transform = `translateY(${dy}px)`;
       };
-      const end = () => {
+      const end = ()=>{
         if (!STATE.drawerDragging) return;
         STATE.drawerDragging = false;
         drawer.style.transition = '0.18s ease';
-        if (STATE.drawerDragDY > 90) closeDrawer();
-        else drawer.style.transform = `translateY(0px)`;
+        if (STATE.drawerDY > 90) closeDrawer();
+        else drawer.style.transform = 'translateY(0px)';
       };
 
-      drawerHead.addEventListener('touchstart', (e)=> start(e.touches[0].clientY), {passive:true});
-      drawerHead.addEventListener('touchmove', (e)=> move(e.touches[0].clientY), {passive:true});
+      drawerHead.addEventListener('touchstart', (e)=>start(e.touches[0].clientY), {passive:true});
+      drawerHead.addEventListener('touchmove',  (e)=>move(e.touches[0].clientY), {passive:true});
       drawerHead.addEventListener('touchend', end, {passive:true});
 
-      drawerHead.addEventListener('pointerdown', (e)=> start(e.clientY));
-      window.addEventListener('pointermove', (e)=> move(e.clientY));
+      drawerHead.addEventListener('pointerdown', (e)=>start(e.clientY));
+      window.addEventListener('pointermove', (e)=>move(e.clientY));
       window.addEventListener('pointerup', end);
     }
 
-    // =========================
-    // Click on 3D slots
-    // =========================
+    // Tap slot directly in 3D
     function onCanvasPointerDown(e){
-      // ignore when clicking UI
-      if (drawer.classList.contains('open')) return;
-      if (menuPanel.classList.contains('open')) return;
+      // allow tap to also unmute music (no button)
+      // (global handler already attached)
+      if (menu.classList.contains('open')) return;
 
       const rect = renderer.domElement.getBoundingClientRect();
-      const x = ( (e.clientX - rect.left) / rect.width ) * 2 - 1;
-      const y = - ( (e.clientY - rect.top) / rect.height ) * 2 + 1;
-      pointer.set(x, y);
+      pointer.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      pointer.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
 
       raycaster.setFromCamera(pointer, camera);
 
-      // collect clickable objects (photo + frame)
       const clickables = [];
       for (const s of slotMeshes){
         clickables.push(s.photo);
         clickables.push(s.frame);
       }
-
       const hits = raycaster.intersectObjects(clickables, true);
       if (hits.length){
         const idx = hits[0].object.userData.slotIndex;
@@ -1647,50 +1558,37 @@
       }
     }
 
-    // =========================
-    // Events
-    // =========================
+    // ===========================
+    // EVENTS
+    // ===========================
     function setupEvents(){
-      window.addEventListener('resize', () => {
-        camera.aspect = window.innerWidth / window.innerHeight;
+      window.addEventListener('resize', ()=>{
+        camera.aspect = window.innerWidth/window.innerHeight;
         camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);
         composer.setSize(window.innerWidth, window.innerHeight);
       });
 
-      // canvas tap for slot select
       renderer.domElement.addEventListener('pointerdown', onCanvasPointerDown);
 
-      // menu
-      menuBtn.addEventListener('click', (e)=>{ e.stopPropagation(); toggleMenu(); });
+      btnMenu.addEventListener('click', (e)=>{ e.stopPropagation(); toggleMenu(); });
       menuBackdrop.addEventListener('click', closeMenu);
-      window.addEventListener('click', closeMenu);
-      menuPanel.addEventListener('click', (e)=>e.stopPropagation());
+      menu.addEventListener('click', (e)=>e.stopPropagation());
 
-      // drawer
-      drawerBtn.addEventListener('click', (e)=>{ e.stopPropagation(); toggleDrawer(); closeMenu(); });
-      btnCloseDrawer.addEventListener('click', closeDrawer);
+      btnDrawer.addEventListener('click', (e)=>{ e.stopPropagation(); toggleDrawer(); closeMenu(); });
       drawerBackdrop.addEventListener('click', closeDrawer);
-      setupDrawerDrag();
+      btnClose.addEventListener('click', closeDrawer);
 
-      // menu buttons
-      document.getElementById('btn-snow').addEventListener('click', () => {
-        STATE.flags.snow = !STATE.flags.snow;
-        snowState.textContent = STATE.flags.snow ? 'ON' : 'OFF';
+      btnSnow.addEventListener('click', ()=>{
+        STATE.snowOn = !STATE.snowOn;
+        snowState.textContent = STATE.snowOn ? 'ON' : 'OFF';
       });
-      document.getElementById('btn-reset').addEventListener('click', resetView);
-      document.getElementById('btn-ui-toggle').addEventListener('click', toggleUI);
-      document.getElementById('btn-shuffle').addEventListener('click', shuffleSlots);
+      btnReset.addEventListener('click', resetView);
+      btnHideUI.addEventListener('click', toggleUI);
+      btnShuffle.addEventListener('click', shuffleSlots);
 
-      // upload
-      fileInput.addEventListener('change', async (e)=>{
-        await handleUploadFiles(e.target.files);
-        e.target.value = '';
-      });
-
-      // clear slot
-      document.getElementById('btn-clear-slot').addEventListener('click', ()=>{
-        if (STATE.selectedSlot < 0){
+      btnClear.addEventListener('click', ()=>{
+        if (STATE.selectedSlot<0){
           showToast('Chọn slot trước để Clear');
           return;
         }
@@ -1698,38 +1596,41 @@
         showToast(`Đã clear slot #${STATE.selectedSlot+1}`);
       });
 
-      // keyboard shortcuts
+      fileInput.addEventListener('change', async (e)=>{
+        await handleUpload(e.target.files);
+        e.target.value = '';
+      });
+
       window.addEventListener('keydown', (e)=>{
         const k = e.key.toLowerCase();
-        if (k === 'escape'){ closeMenu(); closeDrawer(); }
-        if (k === 'h') toggleUI();
-        if (k === 'r') resetView();
+        if (k==='escape'){ closeMenu(); closeDrawer(); }
+        if (k==='h') toggleUI();
+        if (k==='r') resetView();
       });
+
+      setupDrawerDrag();
     }
 
-    // =========================
-    // Animate
-    // =========================
-    function animate() {
+    // ===========================
+    // ANIMATE
+    // ===========================
+    function animate(){
       requestAnimationFrame(animate);
       const dt = clock.getDelta();
 
-      STATE.rotation.y += 0.22 * dt;
-      STATE.rotation.x += (0 - STATE.rotation.x) * 2.0 * dt;
+      // gentle rotation
+      mainGroup.rotation.y += 0.22*dt;
+      mainGroup.rotation.x += (0 - mainGroup.rotation.x) * 1.8*dt;
 
-      mainGroup.rotation.y = STATE.rotation.y;
-      mainGroup.rotation.x = STATE.rotation.x;
-
-      // make slots face out nicely
-      for (let i = 0; i < slotMeshes.length; i++){
+      // keep frames facing outward + subtle float
+      for (let i=0;i<slotMeshes.length;i++){
         const g = slotMeshes[i].group;
-        g.rotation.z = 0.02 * Math.sin(clock.elapsedTime * 0.8 + i);
-        g.rotation.x = 0.02 * Math.cos(clock.elapsedTime * 0.7 + i);
+        g.rotation.z = 0.02*Math.sin(clock.elapsedTime*0.8 + i);
+        g.rotation.x = 0.02*Math.cos(clock.elapsedTime*0.7 + i);
         g.lookAt(0, g.position.y, 0);
         g.rotateY(Math.PI);
       }
 
-      particleSystem.forEach(p => p.update(dt));
       updateFairyLights(dt);
       updateGarland(dt);
       updateSnow();
@@ -1737,7 +1638,39 @@
       composer.render();
     }
 
-    // Boot
+    // ===========================
+    // INIT
+    // ===========================
+    async function init(){
+      initThree();
+      setupEnvironment();
+      setupLights();
+
+      createTreeOrnaments();
+      createFairyLights();
+      createGarland();
+      createSnow();
+      createSlots3D();
+
+      setupPost();
+      setupEvents();
+
+      buildSlotsUI();
+      await preloadGallery();
+      renderGalleryUI();
+
+      // loader out
+      loaderEl.style.opacity = 0;
+      setTimeout(()=>loaderEl.remove(), 800);
+
+      // music
+      bindGlobalGestureForMusic();
+      await startMusicMuted();
+
+      animate();
+    }
+
+    // Start
     init();
   </script>
 </body>
