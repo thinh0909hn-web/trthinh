@@ -27,7 +27,6 @@
       font-family: 'Times New Roman', serif;
       touch-action: manipulation;
     }
-
     #canvas-container{ position:absolute; inset:0; z-index:1; }
 
     /* LOADER */
@@ -55,6 +54,7 @@
       letter-spacing:4px;
       text-transform:uppercase;
       opacity:.9;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
     }
     @keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
 
@@ -254,7 +254,7 @@
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
     }
 
-    /* DRAWER (Bottom sheet, nhưng không che quá nhiều) */
+    /* DRAWER */
     #drawerBackdrop{
       position:absolute; inset:0;
       z-index:54;
@@ -279,7 +279,7 @@
       box-shadow: 0 26px 95px rgba(0,0,0,0.6);
       overflow:hidden;
 
-      max-height: min(60vh, 640px); /* ít che cây */
+      max-height: min(60vh, 640px);
       transform: translateY(18px);
       opacity:0;
       pointer-events:none;
@@ -423,7 +423,7 @@
       border-color: rgba(212,175,55,0.78);
       box-shadow: 0 0 0 2px rgba(212,175,55,0.18), inset 0 0 0 1px rgba(255,255,255,0.03);
     }
-    .slot img{ width:100%; height:100%; object-fit:cover; display:block; filter:saturate(1.05) contrast(1.02); }
+    .slot img{ width:100%; height:100%; object-fit:cover; display:block; }
     .slot .num{
       position:absolute; top:6px; left:6px;
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
@@ -470,12 +470,10 @@
       width:100%; height:100%;
       object-fit: cover;
       display:block;
-      filter:saturate(1.05) contrast(1.02);
       transform: scale(1.02);
     }
     .thumb:hover{ border-color: rgba(212,175,55,0.45); }
 
-    /* MINI STATUS (music) */
     #musicState{
       position:absolute;
       right: 12px;
@@ -495,7 +493,6 @@
       color: rgba(212,175,55,0.85);
       opacity:.95;
     }
-
     .hidden{ display:none !important; }
   </style>
 
@@ -514,7 +511,6 @@
 </head>
 
 <body>
-  <!-- 🎵 Autoplay: start muted (iOS allows) then unmute on first user interaction -->
   <audio id="bgm" src="https://files.catbox.moe/7ibpf5.mp3" preload="auto" loop playsinline></audio>
 
   <div id="loader">
@@ -539,7 +535,6 @@
     <div id="musicState">Music: LOADING…</div>
   </div>
 
-  <!-- MENU -->
   <div id="menuBackdrop"></div>
   <div id="menu">
     <div class="menu-title">Controls</div>
@@ -550,12 +545,10 @@
       <button class="btn" id="btnShuffle"><span>Shuffle</span><span class="pill">⇄</span></button>
     </div>
     <div class="menu-hint">
-      Tip: <b>Tap trực tiếp vào khung ảnh trên cây</b> để chọn slot, rồi chọn ảnh để thay.
-      <br/>iOS: nhạc sẽ “có tiếng” sau lần chạm đầu tiên (không cần nút).
+      Tap slot trên cây để chọn, rồi tap ảnh trong Gallery để thay. Ảnh upload được tối ưu nét 2K + mipmaps.
     </div>
   </div>
 
-  <!-- DRAWER -->
   <div id="drawerBackdrop"></div>
   <div id="drawer">
     <div class="handle"></div>
@@ -598,7 +591,7 @@
     import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
     // ===========================
-    // CONFIG
+    // CONFIG (hi-res upload)
     // ===========================
     const CONFIG = {
       colors: {
@@ -608,43 +601,26 @@
         deepGreen: 0x03180a,
         accentRed: 0x990000,
       },
-      tree: {
-        height: 24,
-        radius: 8
+      tree: { height: 24, radius: 8 },
+      camera: { z: 50 },
+      ornaments: { count: 1500 },
+      snow: { count: 1000 },
+      slots: { count: 18, scale: 1.25, rOffset: 4.9, loops: 3.2 },
+      garland: { loops: 7.6, radiusMul: 1.07, tubeRadius: 0.13 },
+      lights: { count: 560, size: 0.23 },
+
+      // ✅ chất lượng ảnh upload
+      image: {
+        thumbSize: 320,         // gallery thumb
+        texMax: 2048,           // texture 2K (auto hạ nếu cần)
+        texMin: 1024            // fallback cho máy yếu
       },
-      camera: {
-        z: 50
-      },
-      // ornaments
-      ornaments: {
-        count: 1500
-      },
-      snow: {
-        count: 1000
-      },
-      // slot frames
-      slots: {
-        count: 18,
-        scale: 1.25,      // ✅ ảnh to hơn
-        rOffset: 4.9,
-        loops: 3.2
-      },
-      // garland
-      garland: {
-        loops: 7.6,
-        radiusMul: 1.07,
-        tubeRadius: 0.13
-      },
-      // fairy lights
-      lights: {
-        count: 560,
-        size: 0.23
-      },
+
       preload: [
-        'https://images.unsplash.com/photo-1543589077-47d81606c1bf?q=80&w=900',
-        'https://images.unsplash.com/photo-1576919228236-a097c32a5cd4?q=80&w=900',
-        'https://images.unsplash.com/photo-1512389142860-9c449e58a543?q=80&w=900',
-        'https://images.unsplash.com/photo-1482638588057-dce9509db949?q=80&w=900'
+        'https://images.unsplash.com/photo-1543589077-47d81606c1bf?q=80&w=1200',
+        'https://images.unsplash.com/photo-1576919228236-a097c32a5cd4?q=80&w=1200',
+        'https://images.unsplash.com/photo-1512389142860-9c449e58a543?q=80&w=1200',
+        'https://images.unsplash.com/photo-1482638588057-dce9509db949?q=80&w=1200'
       ]
     };
 
@@ -703,18 +679,17 @@
     }
 
     // ===========================
-    // MUSIC (Autoplay muted -> unmute on first touch)
+    // MUSIC (iOS autoplay policy)
     // ===========================
     async function startMusicMuted(){
       try{
-        bgm.volume = 0.95;     // ✅ to hơn
-        bgm.muted = true;      // ✅ iOS allows autoplay when muted
+        bgm.volume = 0.95;
+        bgm.muted = true;
         await bgm.play();
         STATE.music.ready = true;
         STATE.music.playing = true;
         musicState.textContent = 'Music: READY (tap once for sound)';
       }catch(e){
-        // if even muted play fails, fallback: user gesture start
         STATE.music.ready = false;
         musicState.textContent = 'Music: TAP TO START';
       }
@@ -723,17 +698,14 @@
     async function unmuteMusicOnFirstGesture(){
       if (STATE.music.unmuted) return;
       try{
-        // Make sure it is playing then unmute
         if (bgm.paused) await bgm.play();
         bgm.muted = false;
         bgm.volume = 0.95;
         STATE.music.unmuted = true;
         STATE.music.playing = true;
         musicState.textContent = 'Music: PLAYING';
-        // hide badge after a while (optional)
-        setTimeout(()=>{ musicState.classList.add('hidden'); }, 1400);
+        setTimeout(()=>{ musicState.classList.add('hidden'); }, 1200);
       }catch(e){
-        // keep hint visible
         musicState.textContent = 'Music: TAP AGAIN';
       }
     }
@@ -741,16 +713,15 @@
     function bindGlobalGestureForMusic(){
       const handler = async () => {
         await unmuteMusicOnFirstGesture();
-        // remove after unmuted
         if (STATE.music.unmuted){
-          window.removeEventListener('pointerdown', handler, {capture:true});
-          window.removeEventListener('touchstart', handler, {capture:true});
-          window.removeEventListener('keydown', handler, {capture:true});
+          window.removeEventListener('pointerdown', handler, true);
+          window.removeEventListener('touchstart', handler, true);
+          window.removeEventListener('keydown', handler, true);
         }
       };
-      window.addEventListener('pointerdown', handler, {capture:true});
-      window.addEventListener('touchstart', handler, {capture:true});
-      window.addEventListener('keydown', handler, {capture:true});
+      window.addEventListener('pointerdown', handler, true);
+      window.addEventListener('touchstart', handler, true);
+      window.addEventListener('keydown', handler, true);
     }
 
     // ===========================
@@ -896,7 +867,6 @@
       snowSystem.geometry.attributes.position.needsUpdate = true;
     }
 
-    // ✅ “cây thông đẹp hơn”: ornaments + star + lights + garland
     function createTreeOrnaments(){
       const sphereGeo = new THREE.SphereGeometry(0.5, 32, 32);
       const boxGeo    = new THREE.BoxGeometry(0.55, 0.55, 0.55);
@@ -1039,7 +1009,6 @@
       lightsMesh.rotation.y += 0.12*dt;
     }
 
-    // ✅ Garland “dây kim tuyến” tube spiral ánh vàng
     function createGarland(){
       const h = CONFIG.tree.height*0.98;
       const halfH = h/2;
@@ -1112,27 +1081,27 @@
 
     function makeEmptyTexture(){
       const c = document.createElement('canvas');
-      c.width = 256; c.height = 256;
+      c.width = 512; c.height = 512;
       const g = c.getContext('2d');
 
-      const grd = g.createLinearGradient(0,0,256,256);
+      const grd = g.createLinearGradient(0,0,512,512);
       grd.addColorStop(0,'rgba(255,255,255,0.08)');
       grd.addColorStop(1,'rgba(0,0,0,0.22)');
       g.fillStyle = grd;
-      g.fillRect(0,0,256,256);
+      g.fillRect(0,0,512,512);
 
       g.strokeStyle = 'rgba(212,175,55,0.45)';
-      g.lineWidth = 6;
-      g.strokeRect(14,14,228,228);
+      g.lineWidth = 10;
+      g.strokeRect(22,22,468,468);
 
       g.fillStyle = 'rgba(252,238,167,0.9)';
-      g.font = 'bold 22px Cinzel, serif';
+      g.font = 'bold 40px Cinzel, serif';
       g.textAlign = 'center';
-      g.fillText('TAP SLOT', 128, 124);
+      g.fillText('TAP SLOT', 256, 250);
 
       g.fillStyle = 'rgba(212,175,55,0.70)';
-      g.font = '14px ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial';
-      g.fillText('to replace photo', 128, 150);
+      g.font = '24px ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial';
+      g.fillText('to replace photo', 256, 300);
 
       const tex = new THREE.CanvasTexture(c);
       tex.colorSpace = THREE.SRGBColorSpace;
@@ -1188,17 +1157,17 @@
 
     function createEmptyThumbDataUrl(){
       const c = document.createElement('canvas');
-      c.width = 220; c.height = 220;
+      c.width = 240; c.height = 240;
       const g = c.getContext('2d');
       g.fillStyle = 'rgba(0,0,0,0.22)';
-      g.fillRect(0,0,220,220);
+      g.fillRect(0,0,240,240);
       g.strokeStyle = 'rgba(212,175,55,0.42)';
-      g.lineWidth = 6;
-      g.strokeRect(14,14,192,192);
+      g.lineWidth = 7;
+      g.strokeRect(16,16,208,208);
       g.fillStyle = 'rgba(252,238,167,0.88)';
       g.font = 'bold 18px ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial';
       g.textAlign = 'center';
-      g.fillText('EMPTY', 110, 118);
+      g.fillText('EMPTY', 120, 128);
       return c.toDataURL('image/png');
     }
 
@@ -1283,11 +1252,23 @@
       }
     }
 
+    function applyTextureQuality(texture){
+      // ✅ FIX blur: mipmap + filters + anisotropy
+      texture.colorSpace = THREE.SRGBColorSpace;
+      texture.generateMipmaps = true;
+      texture.minFilter = THREE.LinearMipmapLinearFilter;
+      texture.magFilter = THREE.LinearFilter;
+      texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+      texture.needsUpdate = true;
+      return texture;
+    }
+
     function setSlotTexture(slotIndex, texture, assignedId){
       const s = slotMeshes[slotIndex];
       if (!s) return;
 
-      texture.colorSpace = THREE.SRGBColorSpace;
+      applyTextureQuality(texture);
+
       s.photo.material.map = texture;
       s.photo.material.needsUpdate = true;
 
@@ -1360,7 +1341,7 @@
     }
 
     // ===========================
-    // UPLOAD
+    // HI-RES UPLOAD PIPELINE
     // ===========================
     async function fileToDataUrl(file){
       return await new Promise((resolve,reject)=>{
@@ -1371,14 +1352,26 @@
       });
     }
 
-    async function makeThumb(dataUrl, size=240){
+    function getSafeTexMax(){
+      // ✅ iOS/máy yếu: hạ texMax để tránh crash
+      const dpr = window.devicePixelRatio || 1;
+      const mem = navigator.deviceMemory || 4; // chrome android supports, iOS often undefined
+      const small = (mem && mem <= 2) || dpr >= 3;
+      return small ? Math.max(CONFIG.image.texMin, 1536) : CONFIG.image.texMax;
+    }
+
+    async function makeThumb(dataUrl, size=CONFIG.image.thumbSize){
       const img = new Image();
       img.src = dataUrl;
       await img.decode();
 
       const c = document.createElement('canvas');
       c.width = size; c.height = size;
-      const g = c.getContext('2d');
+      const ctx = c.getContext('2d');
+
+      // ✅ HIGH quality thumbnail
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
 
       const iw = img.width, ih = img.height;
       const scale = Math.max(size/iw, size/ih);
@@ -1386,32 +1379,43 @@
       const x = (size-w)/2;
       const y = (size-h)/2;
 
-      g.fillStyle = 'rgba(0,0,0,0.2)';
-      g.fillRect(0,0,size,size);
-      g.drawImage(img, x, y, w, h);
+      ctx.fillStyle = 'rgba(0,0,0,0.2)';
+      ctx.fillRect(0,0,size,size);
+      ctx.drawImage(img, x, y, w, h);
 
-      const grd = g.createRadialGradient(size/2,size/2, size*0.15, size/2,size/2, size*0.72);
-      grd.addColorStop(0,'rgba(255,255,255,0.05)');
-      grd.addColorStop(1,'rgba(0,0,0,0.24)');
-      g.fillStyle = grd;
-      g.fillRect(0,0,size,size);
-
-      return c.toDataURL('image/jpeg', 0.86);
+      return c.toDataURL('image/jpeg', 0.88);
     }
 
-    function dataUrlToTexture(dataUrl){
-      const loader = new THREE.TextureLoader();
-      return new Promise((resolve,reject)=>{
-        loader.load(dataUrl, tex=>{
-          tex.colorSpace = THREE.SRGBColorSpace;
-          resolve(tex);
-        }, undefined, reject);
-      });
+    async function dataUrlToHiResTexture(dataUrl){
+      // ✅ CORE FIX: create 2K texture via canvas (not thumb)
+      const img = new Image();
+      img.src = dataUrl;
+      await img.decode();
+
+      const MAX = getSafeTexMax(); // 2048 or lower depending device
+      const maxDim = Math.max(img.width, img.height);
+      const scale = Math.min(1, MAX / maxDim);
+
+      const w = Math.max(2, Math.floor(img.width * scale));
+      const h = Math.max(2, Math.floor(img.height * scale));
+
+      const canvas = document.createElement('canvas');
+      canvas.width = w;
+      canvas.height = h;
+
+      const ctx = canvas.getContext('2d');
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+
+      ctx.drawImage(img, 0, 0, w, h);
+
+      const texture = new THREE.CanvasTexture(canvas);
+      return applyTextureQuality(texture);
     }
 
     async function addToGallery(dataUrl){
-      const thumbUrl = await makeThumb(dataUrl, 240);
-      const texture = await dataUrlToTexture(dataUrl);
+      const thumbUrl = await makeThumb(dataUrl);
+      const texture = await dataUrlToHiResTexture(dataUrl);
       const item = { id:idCounter++, dataUrl, thumbUrl, texture };
       gallery.unshift(item);
       renderGalleryUI();
@@ -1421,10 +1425,16 @@
       const arr = Array.from(files||[]).filter(f=>f.type.startsWith('image/'));
       if (!arr.length) return;
 
-      showToast(`Đang nạp ${arr.length} ảnh...`);
+      showToast(`Đang nạp ${arr.length} ảnh (hi-res)...`);
+
+      // ✅ nạp lần lượt để tránh spike bộ nhớ
       for (const f of arr){
-        const dataUrl = await fileToDataUrl(f);
-        await addToGallery(dataUrl);
+        try{
+          const dataUrl = await fileToDataUrl(f);
+          await addToGallery(dataUrl);
+        }catch(e){
+          console.warn('Upload fail:', e);
+        }
       }
       showToast('Xong! Tap slot trên cây để chọn khung');
     }
@@ -1499,7 +1509,6 @@
       closeMenu();
     }
 
-    // Drawer drag close (iOS)
     function setupDrawerDrag(){
       const start = (y)=>{
         if (!drawer.classList.contains('open')) return;
@@ -1531,10 +1540,7 @@
       window.addEventListener('pointerup', end);
     }
 
-    // Tap slot directly in 3D
     function onCanvasPointerDown(e){
-      // allow tap to also unmute music (no button)
-      // (global handler already attached)
       if (menu.classList.contains('open')) return;
 
       const rect = renderer.domElement.getBoundingClientRect();
@@ -1618,11 +1624,9 @@
       requestAnimationFrame(animate);
       const dt = clock.getDelta();
 
-      // gentle rotation
       mainGroup.rotation.y += 0.22*dt;
       mainGroup.rotation.x += (0 - mainGroup.rotation.x) * 1.8*dt;
 
-      // keep frames facing outward + subtle float
       for (let i=0;i<slotMeshes.length;i++){
         const g = slotMeshes[i].group;
         g.rotation.z = 0.02*Math.sin(clock.elapsedTime*0.8 + i);
@@ -1659,19 +1663,41 @@
       await preloadGallery();
       renderGalleryUI();
 
-      // loader out
       loaderEl.style.opacity = 0;
       setTimeout(()=>loaderEl.remove(), 800);
 
       // music
       bindGlobalGestureForMusic();
-      await startMusicMuted();
+      await (async ()=>{
+        try{
+          bgm.volume = 0.95;
+          bgm.muted = true;
+          await bgm.play();
+          musicState.textContent = 'Music: READY (tap once for sound)';
+        }catch(e){
+          musicState.textContent = 'Music: TAP TO START';
+        }
+      })();
 
       animate();
     }
 
+    // Menu buttons
+    document.getElementById('btnSnow').addEventListener('click', ()=>{});
+    document.getElementById('btnReset').addEventListener('click', ()=>{});
+    document.getElementById('btnHideUI').addEventListener('click', ()=>{});
+    document.getElementById('btnShuffle').addEventListener('click', ()=>{});
+
+    // connect menu actions after init uses functions
+    document.getElementById('btnMenu').addEventListener('click', ()=>{});
+    document.getElementById('btnDrawer').addEventListener('click', ()=>{});
+
     // Start
     init();
+  </script>
+
+  <script>
+    // Hook menu actions (outside module due to scope isolation is not needed; kept in module already.)
   </script>
 </body>
 </html>
