@@ -1,1080 +1,1234 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-
-  <title>Exercise 1, 3, 4 | Trắc nghiệm tiếng Anh</title>
-  <meta name="description" content="ĐỀ TIẾNG ANH 10 – 30+ câu trắc nghiệm (Ex1, Ex3, Ex4)" />
-
-  <!-- Open Graph (Facebook/Zalo/Discord/...) -->
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content="ĐỀ TIẾNG ANH 10" />
-  <meta property="og:description" content="Do đích thân thầy giáo mới người an gô la dạy đề có 70 câu làm cho sướng hahah!" />
-  <meta property="og:image" content="https://files.catbox.moe/0uf5uv.jpeg" />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
-  <meta property="og:url" content="https://ktra.thinhshop247.site/" />
-
-  <!-- Twitter/X -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="ĐỀ TIẾNG ANH 10 – Exercise 1, 3, 4" />
-  <meta name="twitter:description" content="Web trắc nghiệm – nộp bài xem điểm + gửi Telegram." />
-  <meta name="twitter:image" content="https://files.catbox.moe/0uf5uv.jpeg" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Grand Luxury Tree - Christmas Edition</title>
 
   <style>
     :root{
-      --bg1:#070A12; --bg2:#0B1224;
-      --text:#eaf0ff;
-      --muted:#a9b6d6;
-      --line:#22305f;
-      --good:#35e2a0;
-      --bad:#ff5470;
-      --shadow: 0 20px 60px rgba(0,0,0,.45);
-      --r:18px;
-      --r2:14px;
+      --gold: rgba(212,175,55,0.95);
+      --gold2: rgba(252,238,167,0.95);
+      --bg: #050d1a;
     }
-    *{box-sizing:border-box}
-    html,body{height:100%}
+
     body{
       margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-      color:var(--text);
-      background:
-        radial-gradient(1000px 700px at 15% 10%, #2a3cff33 0%, transparent 60%),
-        radial-gradient(900px 600px at 90% 20%, #00ffd533 0%, transparent 55%),
-        radial-gradient(900px 700px at 40% 100%, #ff4d7d22 0%, transparent 60%),
-        linear-gradient(180deg, var(--bg1), var(--bg2));
-      overflow-x:hidden;
+      overflow:hidden;
+      background: radial-gradient(circle at center, #0f2027 0%, #203a43 50%, #2c5364 100%);
+      background-color: var(--bg);
+      font-family: 'Times New Roman', serif;
     }
-    .wrap{max-width:1200px;margin:0 auto;padding:18px}
-    .header{
-      display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;
-      padding:16px 16px 12px;
-      border:1px solid #1a2550;
-      border-radius:var(--r);
-      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
-      box-shadow: var(--shadow);
-      position:relative; overflow:hidden;
-    }
-    .header::before{
-      content:"";
-      position:absolute; inset:-2px;
-      background: radial-gradient(520px 220px at 18% 0%, rgba(53,226,160,.18), transparent 55%),
-                  radial-gradient(520px 260px at 95% 40%, rgba(79,140,255,.18), transparent 55%);
-      pointer-events:none;
-    }
-    .title h1{margin:0 0 6px;font-size:20px;letter-spacing:.2px}
-    .title p{margin:0;color:var(--muted);font-size:13px;line-height:1.35}
 
-    .rightCol{
-      flex: 1 1 360px;
-      min-width: 0;
-      max-width: 560px;
+    #canvas-container{ position:absolute; inset:0; width:100vw; height:100vh; z-index:1; }
+
+    /* Loader */
+    #loader{
+      position:absolute; inset:0;
+      background: var(--bg);
+      z-index:100;
+      display:flex; flex-direction:column;
+      align-items:center; justify-content:center;
+      transition: opacity .8s ease-out;
+    }
+    .spinner{
+      width:44px; height:44px;
+      border:1px solid rgba(212,175,55,0.2);
+      border-top:1px solid rgba(212,175,55,1);
+      border-radius:50%;
+      animation: spin 1s linear infinite;
+    }
+    .loader-text{
+      margin-top:18px;
+      color: var(--gold);
+      font-size:12px;
+      letter-spacing:4px;
+      text-transform:uppercase;
+      opacity:.9;
+    }
+    @keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
+
+    /* UI */
+    #ui-layer{
+      position:absolute; inset:0;
+      z-index:10;
+      pointer-events:none;
       display:flex;
       flex-direction:column;
-      gap:12px;
-      padding-top:2px;
+      align-items:center;
+      padding-top: calc(env(safe-area-inset-top, 0px) + 16px);
+      transition: opacity .35s ease;
     }
-    @media (max-width: 600px){
-      .rightCol{ flex: 1 1 100%; max-width: 100%; gap:10px; }
-    }
+    .ui-hidden{ opacity:0 !important; pointer-events:none !important; }
 
-    .chiprow{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:flex-start}
-    .pill{
-      display:inline-flex;align-items:center;gap:8px;
-      padding:8px 12px;border-radius:999px;
-      border:1px solid #24326a;background: rgba(255,255,255,.04);
-      color:var(--muted);font-size:12px;
+    #title{
+      margin:0;
+      padding: 0 70px 0 14px;
+      max-width: min(92vw, 760px);
+      line-height:1.1;
+      font-weight:400;
+      letter-spacing:3px;
+      text-shadow: 0 0 42px rgba(252,238,167,0.45);
+      background: linear-gradient(to bottom, #fff, #eebb66);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      font-family: 'Cinzel', 'Times New Roman', serif;
       white-space:nowrap;
-    }
-
-    button{
-      appearance:none;border:1px solid #2a3a7a;
-      background: rgba(255,255,255,.06);
-      color:var(--text); padding:10px 12px;
-      border-radius:14px; font-weight:800;
-      cursor:pointer; transition: transform .12s ease, background .2s ease, border-color .2s ease, opacity .2s ease;
-      user-select:none;
-    }
-    button:hover{transform: translateY(-1px); border-color:#3d57c8; background: rgba(255,255,255,.09)}
-    button:active{transform: translateY(0px) scale(.99)}
-    button.primary{
-      border:none;
-      background: linear-gradient(90deg, rgba(79,140,255,.95), rgba(53,226,160,.95));
-      color:#061025;
-    }
-    button:disabled{opacity:.6;cursor:not-allowed;transform:none}
-
-    .seg{
-      display:flex;border:1px solid #2a3a7a;border-radius:999px;overflow:hidden;
-      background: rgba(0,0,0,.15);
-      width:100%;
-    }
-    .seg button{
-      flex:1 1 0;
-      border:none;border-radius:0;padding:10px 12px;background:transparent;
-      font-weight:900;color:var(--muted);
-    }
-    .seg button.active{
-      background: rgba(255,255,255,.08);
-      color:var(--text);
-    }
-
-    .btns{
-      width:100%;
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:10px;
-      align-items:stretch;
-    }
-    #submitBtn{
-      grid-column: 1 / -1;
-      padding:12px 14px;
-      font-size:14px;
-      border-radius:16px;
-    }
-
-    .progress{
-      height:10px;border-radius:999px;overflow:hidden;
-      border:1px solid #22305f;background: rgba(0,0,0,.25);
-      margin-top:10px;
-    }
-    .bar{
-      height:100%;
-      width:0%;
-      background: linear-gradient(90deg, rgba(79,140,255,.95), rgba(53,226,160,.95));
-      transition: width .25s ease;
-    }
-    .hint{
-      margin-top:10px;
-      padding:10px 12px;border-radius:14px;
-      border:1px solid #22305f;background: rgba(0,0,0,.18);
-      color:var(--muted);font-size:12px;
-      line-height:1.35;
-    }
-    .kbd{
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
-      font-size:11px;padding:2px 6px;border-radius:8px;border:1px solid #22305f;background: rgba(0,0,0,.25)
-    }
-
-    .main{
-      display:grid;
-      grid-template-columns: 280px 1fr;
-      gap:12px;
-      margin-top:12px;
-      align-items:start;
-    }
-    @media (max-width: 920px){
-      .main{grid-template-columns: 1fr}
-    }
-
-    .side, .content, .resultCard{
-      border:1px solid #1a2550;
-      border-radius:var(--r);
-      background: rgba(14, 22, 48, .55);
-      box-shadow: var(--shadow);
       overflow:hidden;
+      text-overflow:ellipsis;
+      user-select:none;
+      opacity:.95;
     }
-    .panelHd{
-      padding:14px 14px 10px;
-      border-bottom:1px solid #1a2550;
-      display:flex;align-items:flex-start;justify-content:space-between;gap:10px;
+    @media (max-width:600px){
+      #title{ font-size:28px; letter-spacing:2px; padding-right:62px; }
     }
-    .panelHd .small{color:var(--muted);font-size:12px;margin-bottom:4px}
-    .panelHd .big{font-weight:1000}
-    .tag{
-      font-size:11px;color:#061025;font-weight:1000;
-      background: linear-gradient(90deg, rgba(255,200,87,.95), rgba(255,84,112,.90));
-      padding:6px 10px;border-radius:999px;
-      white-space:nowrap;
+    @media (min-width:601px){
+      #title{ font-size:54px; }
     }
 
-    .sideBody{padding:12px}
-    .qList{display:grid;grid-template-columns: repeat(5, 1fr);gap:8px;}
-    .qBtn{
-      border-radius:12px;
-      border:1px solid #22305f;
-      background: rgba(255,255,255,.04);
-      color:var(--muted);
-      padding:10px 0;
-      text-align:center;
-      font-weight:1000;
+    /* top-right button */
+    #top-controls{
+      position:absolute;
+      top: calc(env(safe-area-inset-top, 0px) + 10px);
+      right: 12px;
+      z-index:30;
+      pointer-events:auto;
+      display:flex;
+      gap:10px;
+      align-items:center;
+    }
+
+    .icon-btn{
+      width:44px; height:44px;
+      border-radius:14px;
+      border:1px solid rgba(212,175,55,0.45);
+      background: rgba(20,20,20,0.55);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 12px 34px rgba(0,0,0,0.35);
       cursor:pointer;
-      transition: transform .12s ease, background .2s ease, border-color .2s ease;
+      -webkit-tap-highlight-color:transparent;
+      display:grid; place-items:center;
+      transition: .18s ease;
+    }
+    .icon-btn:active{ transform: translateY(1px) scale(0.98); }
+
+    .icon{ width:18px; height:18px; position:relative; }
+    .icon.ham::before, .icon.ham::after, .icon.ham span{
+      content:"";
+      position:absolute; left:0; right:0;
+      height:2px;
+      background: rgba(212,175,55,0.9);
+      border-radius:2px;
+    }
+    .icon.ham::before{ top:2px; }
+    .icon.ham span{ top:8px; }
+    .icon.ham::after{ top:14px; }
+
+    /* popup menu */
+    #menu-backdrop{
+      position:absolute; inset:0;
+      z-index:39;
+      opacity:0;
+      pointer-events:none;
+      background: rgba(0,0,0,0.18);
+      transition: opacity .18s ease;
+    }
+    #menu-backdrop.open{ opacity:1; pointer-events:auto; }
+
+    #menu-panel{
+      position:absolute;
+      top: calc(env(safe-area-inset-top, 0px) + 62px);
+      right: 12px;
+      z-index:40;
+      width: min(320px, 92vw);
+      border-radius: 18px;
+      background: rgba(10,10,10,0.62);
+      border: 1px solid rgba(212,175,55,0.22);
+      backdrop-filter: blur(14px);
+      box-shadow: 0 22px 70px rgba(0,0,0,0.55);
+      padding: 10px;
+      transform-origin: top right;
+      transform: translateY(-6px) scale(0.97);
+      opacity: 0;
+      pointer-events: none;
+      transition: .2s ease;
+    }
+    #menu-panel.open{
+      opacity:1;
+      transform: translateY(0) scale(1);
+      pointer-events:auto;
+    }
+    .menu-title{
+      color: rgba(252,238,167,0.95);
+      font-family: 'Cinzel', serif;
+      letter-spacing:2px;
+      font-size:12px;
+      text-transform:uppercase;
+      padding: 6px 10px 10px;
       user-select:none;
     }
-    .qBtn:hover{transform: translateY(-1px); border-color:#3d57c8; background: rgba(255,255,255,.07)}
-    .qBtn.done{
-      color:#061025;
-      border-color: transparent;
-      background: linear-gradient(90deg, rgba(53,226,160,.9), rgba(79,140,255,.9));
+    .menu-grid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+      padding: 0 2px 2px;
     }
-    .qBtn.locked{opacity:.6;cursor:default;transform:none}
-
-    .quizBody{padding:0}
-    .q{
-      padding:14px;
-      border-top:1px solid rgba(255,255,255,.04);
-      scroll-margin-top: 14px;
-      animation: pop .25s ease both;
-    }
-    @keyframes pop {from{transform:translateY(6px);opacity:.0}to{transform:translateY(0);opacity:1}}
-    .qhead{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
-    .qtitle{margin:0;font-size:14px;line-height:1.35}
-    .qnum{
-      font-weight:1000; color:#0b1530;
-      background: linear-gradient(90deg, rgba(53,226,160,.9), rgba(79,140,255,.9));
-      padding:6px 10px;border-radius:999px;
-      min-width:44px;text-align:center;
-    }
-    .opts{display:grid;gap:10px;margin-top:10px}
-    .opt{
-      display:flex;gap:10px;align-items:flex-start;
-      padding:10px 12px;
-      border-radius:var(--r2);
-      border:1px solid #22305f;
-      background: rgba(255,255,255,.04);
+    .tile, .btn{
+      border: 1px solid rgba(212,175,55,0.18);
+      background: rgba(255,255,255,0.04);
+      border-radius: 16px;
+      padding: 12px 12px;
+      color: rgba(212,175,55,0.95);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
       cursor:pointer;
-      transition: background .2s ease, border-color .2s ease, transform .12s ease;
+      user-select:none;
+      -webkit-tap-highlight-color:transparent;
+      transition: .18s ease;
     }
-    .opt:hover{border-color:#3d57c8;background: rgba(255,255,255,.06);transform: translateY(-1px)}
-    .opt input{margin-top:2px;transform:scale(1.1)}
-    .opt b{display:inline-block;min-width:18px}
-    .muted{color:var(--muted)}
-
-    .resultCard{margin-top:12px;display:none}
-    .resultBody{padding:14px;display:grid;gap:10px}
-    .scoreBox{
-      padding:14px;border-radius:16px;
-      border:1px solid #22305f;
-      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(0,0,0,.12));
+    .tile:hover, .btn:hover{
+      background: rgba(212,175,55,0.13);
+      border-color: rgba(212,175,55,0.42);
     }
-    .scoreBig{font-size:28px;font-weight:1100;letter-spacing:.3px}
-    .review{display:grid;gap:10px}
-    .item{
-      border:1px solid #22305f;
-      background: rgba(255,255,255,.03);
-      border-radius:16px;
-      padding:12px;
+    .tile:active, .btn:active{ transform: translateY(1px); }
+    .tile span, .btn span{
+      font-size:11px;
+      letter-spacing:1px;
+      text-transform:uppercase;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
     }
     .badge{
-      display:inline-flex;align-items:center;gap:8px;
-      padding:6px 10px;border-radius:999px;font-size:12px;font-weight:1000;
-      border:1px solid transparent;
+      font-size:10px;
+      letter-spacing:1px;
+      opacity:0.75;
+      padding: 4px 8px;
+      border-radius:999px;
+      border: 1px solid rgba(212,175,55,0.22);
+      background: rgba(0,0,0,0.12);
+      flex: 0 0 auto;
     }
-    .ok{background: rgba(53,226,160,.12); border-color: rgba(53,226,160,.35); color: var(--good)}
-    .no{background: rgba(255,84,112,.10); border-color: rgba(255,84,112,.35); color: var(--bad)}
-    .ansLine{margin-top:8px;color:var(--muted);font-size:12px;line-height:1.35}
-
-    .foot{margin:16px 0 6px;color:var(--muted);font-size:12px;text-align:center}
-
-    /* modal */
-    .modalBack{
-      position:fixed; inset:0; background: rgba(0,0,0,.55);
-      display:none; align-items:center; justify-content:center;
-      padding:18px;
-      z-index: 9999;
+    .hint{
+      padding: 8px 10px 6px;
+      color: rgba(212,175,55,0.55);
+      font-size:10px;
+      line-height:1.35;
     }
-    .modal{
-      width:min(520px, 100%);
-      border:1px solid #22305f;
-      background: rgba(14, 22, 48, .95);
-      border-radius: 18px;
-      box-shadow: var(--shadow);
+    input[type="file"]{ display:none; }
+
+    /* Webcam pill */
+    #webcam-pill{
+      position:absolute;
+      left: 12px;
+      bottom: calc(env(safe-area-inset-bottom, 0px) + 12px);
+      z-index:60;
+      pointer-events:auto;
+      display:none;
+      align-items:center;
+      gap:8px;
+      padding: 8px 10px;
+      border-radius:999px;
+      border: 1px solid rgba(212,175,55,0.32);
+      background: rgba(10,10,10,0.55);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 14px 50px rgba(0,0,0,0.45);
+      max-width: 92vw;
+    }
+    #webcam-mini{
+      width: 120px;
+      height: 68px;
+      border-radius: 999px;
       overflow:hidden;
+      background:#000;
+      border: 1px solid rgba(255,255,255,0.08);
+      flex: 0 0 auto;
     }
-    .modalHd{padding:14px 14px 10px; border-bottom:1px solid #1a2550}
-    .modalHd b{font-size:14px}
-    .modalBd{padding:14px; display:grid; gap:10px}
-    .field{
-      display:grid; gap:6px;
-      font-size:12px; color: var(--muted);
+    #webcam{ width:100%; height:100%; object-fit:cover; transform:scaleX(-1); }
+    #webcam-meta{ display:flex; flex-direction:column; gap:3px; min-width: 120px; }
+    #webcam-status{
+      color: rgba(252,238,167,0.9);
+      font-size:10px;
+      letter-spacing:1px;
+      text-transform:uppercase;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width: 38vw;
     }
-    .field input{
-      width:100%;
-      padding:12px 12px;
-      border-radius:14px;
-      border:1px solid #22305f;
-      outline:none;
-      background: rgba(0,0,0,.25);
-      color: var(--text);
-      font-weight:800;
+    #debug-info{
+      color: rgba(212,175,55,0.78);
+      font-size:10px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width: 38vw;
+      opacity:0.95;
     }
-    .modalBtns{
-      display:grid; grid-template-columns: 1fr 1fr; gap:10px;
-      padding: 0 14px 14px;
+    .pill-btn{
+      width:34px; height:34px;
+      border-radius:999px;
+      border: 1px solid rgba(212,175,55,0.30);
+      background: rgba(255,255,255,0.06);
+      color: rgba(212,175,55,0.95);
+      cursor:pointer;
+      display:grid; place-items:center;
+      -webkit-tap-highlight-color:transparent;
     }
+    .pill-btn:active{ transform: translateY(1px) scale(0.98); }
   </style>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap');
+  </style>
+
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/",
+        "@mediapipe/tasks-vision": "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/+esm"
+      }
+    }
+  </script>
 </head>
 
 <body>
-  <div class="wrap">
-    <div class="header">
-      <div class="title">
-        <h1>Quiz – Exercise 1, 3, 4</h1>
-        <p>Làm bài → xem điểm + đáp án. Có danh sách câu, lọc theo phần, trộn đáp án (ổn định). Dữ liệu <b>không mất khi F5</b>.</p>
-        <div class="progress"><div class="bar" id="bar"></div></div>
-        <div class="hint" id="statusText">
-          Chọn phần ở trên, làm từng câu. Khi làm đủ thì nút <b>Nộp bài</b> sẽ sáng.
-        </div>
-      </div>
-
-      <div class="rightCol">
-        <div class="chiprow">
-          <span class="pill">Tổng câu: <b id="totalQ">0</b></span>
-          <span class="pill">Đã chọn: <b id="doneQ">0</b></span>
-          <span class="pill">Đang xem: <b id="viewQ">0</b></span>
-        </div>
-
-        <div class="seg" aria-label="filter">
-          <button id="tabAll" class="active" type="button">Tất cả</button>
-          <button id="tabEx1" type="button">Exercise 1</button>
-          <button id="tabEx3" type="button">Exercise 3</button>
-          <button id="tabEx4" type="button">Exercise 4</button>
-        </div>
-
-        <div class="btns">
-          <button id="shuffleBtn" type="button">Trộn đáp án</button>
-          <button id="newBtn" type="button">Bài mới</button>
-          <button id="submitBtn" class="primary" type="button" disabled>Nộp bài</button>
-        </div>
-
-        <div class="hint">
-          Tip: bật <span class="kbd">Trộn đáp án</span> để luyện thật hơn (nhưng vẫn giữ thứ tự ổn định trong 1 lượt làm).
-          <br/>Nộp bài xong sẽ hỏi <b>Tên</b> rồi tự gửi kết quả về <b>Telegram</b>.
-        </div>
-      </div>
-    </div>
-
-    <div class="main">
-      <aside class="side">
-        <div class="panelHd">
-          <div>
-            <div class="small">Đi nhanh tới câu</div>
-            <div class="big">Danh sách câu</div>
-          </div>
-          <div class="tag" id="sideTag">All</div>
-        </div>
-        <div class="sideBody">
-          <div class="qList" id="qList"></div>
-          <div class="hint" style="margin-top:10px">
-            Ô <b>xanh</b> = đã chọn đáp án. Bấm vào số để nhảy tới câu đó.
-          </div>
-        </div>
-      </aside>
-
-      <section class="content">
-        <div class="panelHd">
-          <div>
-            <div class="small">Phần làm bài</div>
-            <div class="big" id="contentTitle">Exercise 1 + 3 + 4</div>
-          </div>
-          <div class="tag">©TRUONGTHINH</div>
-        </div>
-        <div class="quizBody" id="quiz"></div>
-      </section>
-    </div>
-
-    <section class="resultCard" id="resultCard">
-      <div class="panelHd">
-        <div>
-          <div class="small">Kết quả</div>
-          <div class="big">Chấm điểm + Review</div>
-        </div>
-        <div class="tag">Xem đáp án</div>
-      </div>
-      <div class="resultBody" id="result"></div>
-    </section>
-
-    <div class="foot">dev @truongthinh ©2025</div>
+  <div id="loader">
+    <div class="spinner"></div>
+    <div class="loader-text">Loading Memories</div>
   </div>
 
-  <!-- Modal nhập tên -->
-  <div class="modalBack" id="modalBack">
-    <div class="modal">
-      <div class="modalHd"><b>Nhập tên để nộp bài</b></div>
-      <div class="modalBd">
-        <div class="field">
-          <div>Tên của bạn (bắt buộc)</div>
-          <input id="nameInput" placeholder="VD: Trường Thịnh" maxlength="50" />
-        </div>
-        <div class="hint" id="sendHint" style="margin:0">
-          Sau khi bấm <b>Gửi</b>, web sẽ chấm điểm và gửi về Telegram.
-        </div>
-      </div>
-      <div class="modalBtns">
-        <button id="cancelSend" type="button">Hủy</button>
-        <button id="confirmSend" class="primary" type="button">Gửi</button>
-      </div>
+  <div id="canvas-container"></div>
+
+  <div id="ui-layer">
+    <h1 id="title">Merry Christmas</h1>
+    <div id="top-controls">
+      <button class="icon-btn" id="btn-menu" aria-label="Menu">
+        <div class="icon ham"><span></span></div>
+      </button>
     </div>
   </div>
 
-<script>
-/* ================== CONFIG ================== */
-// ✅ DÁN LINK WORKER CỦA BẠN VÀO ĐÂY (KẾT THÚC BẰNG / HOẶC KHÔNG CŨNG ĐƯỢC)
-const WORKER_ENDPOINT = "https://tthinh.trthinh0904n.workers.dev/"; // <-- sửa dòng này
+  <div id="menu-backdrop"></div>
 
-// localStorage key
-const STORAGE_KEY = "ktra_thinhshop247_quiz_state_v2";
+  <div id="menu-panel">
+    <div class="menu-title">Photos & Controls</div>
 
-/* ========= DATA ========= */
-const QUESTIONS = [
-  // ===== Exercise 1 (10) =====
-  { section: "Exercise 1", q: "Circle the word whose underlined part differs from the other three in pronunciation.", options: [
-      {k:"A", t:"brick"}, {k:"B", t:"brown"}, {k:"C", t:"class"}, {k:"D", t:"break"}
-    ], answer:"C" },
-  { section: "Exercise 1", q: "Circle the word whose underlined part differs from the other three in pronunciation.", options: [
-      {k:"A", t:"crush"}, {k:"B", t:"tree"}, {k:"C", t:"crash"}, {k:"D", t:"crook"}
-    ], answer:"B" },
-  { section: "Exercise 1", q: "Circle the word whose underlined part differs from the other three in pronunciation.", options: [
-      {k:"A", t:"truck"}, {k:"B", t:"trick"}, {k:"C", t:"trace"}, {k:"D", t:"group"}
-    ], answer:"D" },
-  { section: "Exercise 1", q: "Circle the word whose underlined part differs from the other three in pronunciation.", options: [
-      {k:"A", t:"please"}, {k:"B", t:"place"}, {k:"C", t:"click"}, {k:"D", t:"plug"}
-    ], answer:"C" },
-  { section: "Exercise 1", q: "Circle the word whose underlined part differs from the other three in pronunciation.", options: [
-      {k:"A", t:"green"}, {k:"B", t:"grass"}, {k:"C", t:"grab"}, {k:"D", t:"cloud"}
-    ], answer:"D" },
-  { section: "Exercise 1", q: "Circle the word whose underlined part differs from the other three in pronunciation.", options: [
-      {k:"A", t:"claim"}, {k:"B", t:"trend"}, {k:"C", t:"clock"}, {k:"D", t:"club"}
-    ], answer:"B" },
-  { section: "Exercise 1", q: "Circle the word whose underlined part differs from the other three in pronunciation.", options: [
-      {k:"A", t:"breakfast"}, {k:"B", t:"breadwinner"}, {k:"C", t:"brush"}, {k:"D", t:"tread"}
-    ], answer:"D" },
-  { section: "Exercise 1", q: "Circle the word whose underlined part differs from the other three in pronunciation.", options: [
-      {k:"A", t:"crane"}, {k:"B", t:"train"}, {k:"C", t:"create"}, {k:"D", t:"crash"}
-    ], answer:"B" },
-  { section: "Exercise 1", q: "Circle the word whose underlined part differs from the other three in pronunciation.", options: [
-      {k:"A", t:"practise"}, {k:"B", t:"present"}, {k:"C", t:"play"}, {k:"D", t:"protect"}
-    ], answer:"C" },
-  { section: "Exercise 1", q: "Circle the word whose underlined part differs from the other three in pronunciation.", options: [
-      {k:"A", t:"club"}, {k:"B", t:"green"}, {k:"C", t:"group"}, {k:"D", t:"ground"}
-    ], answer:"A" },
+    <div class="menu-grid">
+      <label class="tile">
+        <span>Chọn thư mục ảnh</span>
+        <span class="badge">Folder</span>
+        <input type="file" id="folder-input" webkitdirectory directory multiple />
+      </label>
 
-  // ===== Exercise 3 (20) =====
-  { section:"Exercise 3", q:"Parents should share household ______ so that no one feels overloaded.", options:[
-      {k:"A", t:"jobs"},{k:"B", t:"work"},{k:"C", t:"chores"},{k:"D", t:"duties"}
-    ], answer:"C"},
-  { section:"Exercise 3", q:"We should use public transport more often to help protect the ______.", options:[
-      {k:"A", t:"nature"},{k:"B", t:"air"},{k:"C", t:"planet"},{k:"D", t:"environment"}
-    ], answer:"D"},
-  { section:"Exercise 3", q:"My father is responsible for paying the bills and managing the family ______.", options:[
-      {k:"A", t:"income"},{k:"B", t:"house"},{k:"C", t:"chores"},{k:"D", t:"finances"}
-    ], answer:"D"},
-  { section:"Exercise 3", q:"Saving water is a simple way to reduce our ______ on the planet.", options:[
-      {k:"A", t:"duty"},{k:"B", t:"activity"},{k:"C", t:"impact"},{k:"D", t:"behavior"}
-    ], answer:"C"},
-  { section:"Exercise 3", q:"Children learn the value of teamwork when they do chores ______ with their parents.", options:[
-      {k:"A", t:"lonely"},{k:"B", t:"together"},{k:"C", t:"alone"},{k:"D", t:"single"}
-    ], answer:"B"},
-  { section:"Exercise 3", q:"In many families, mothers still take the main ______ in caring for the children.", options:[
-      {k:"A", t:"job"},{k:"B", t:"position"},{k:"C", t:"role"},{k:"D", t:"duty"}
-    ], answer:"C"},
-  { section:"Exercise 3", q:"We should recycle plastic bottles instead of throwing them into the ______.", options:[
-      {k:"A", t:"bin"},{k:"B", t:"land"},{k:"C", t:"park"},{k:"D", t:"rubbish"}
-    ], answer:"A"},
-  { section:"Exercise 3", q:"Families with strong ______ usually have better communication and understanding.", options:[
-      {k:"A", t:"rules"},{k:"B", t:"values"},{k:"C", t:"bonds"},{k:"D", t:"chores"}
-    ], answer:"C"},
-  { section:"Exercise 3", q:"Teenagers should learn to be more ______ by doing simple household tasks.", options:[
-      {k:"A", t:"careful"},{k:"B", t:"hardworking"},{k:"C", t:"responsible"},{k:"D", t:"patient"}
-    ], answer:"C"},
-  { section:"Exercise 3", q:"Turning off lights when leaving a room helps us save both energy and ______.", options:[
-      {k:"A", t:"electricity"},{k:"B", t:"environment"},{k:"C", t:"money"},{k:"D", t:"carbon"}
-    ], answer:"C"},
-  { section:"Exercise 3", q:"My brother can play the guitar and sing very well. He wants to become a famous ______.", options:[
-      {k:"A", t:"conductor"},{k:"B", t:"composer"},{k:"C", t:"judge"},{k:"D", t:"performer"}
-    ], answer:"D"},
-  { section:"Exercise 3", q:"Taylor Swift’s latest ______ has topped the music charts for weeks.", options:[
-      {k:"A", t:"song"},{k:"B", t:"playlist"},{k:"C", t:"album"},{k:"D", t:"rhythm"}
-    ], answer:"C"},
-  { section:"Exercise 3", q:"The orchestra will ______ a concert at the city theatre next month.", options:[
-      {k:"A", t:"compose"},{k:"B", t:"perform"},{k:"C", t:"produce"},{k:"D", t:"direct"}
-    ], answer:"B"},
-  { section:"Exercise 3", q:"The students were excited to hear live ______ at the school festival.", options:[
-      {k:"A", t:"sound"},{k:"B", t:"music"},{k:"C", t:"noise"},{k:"D", t:"melody"}
-    ], answer:"B"},
-  { section:"Exercise 3", q:"She has a wonderful voice and a great sense of ______.", options:[
-      {k:"A", t:"song"},{k:"B", t:"tone"},{k:"C", t:"sound"},{k:"D", t:"rhythm"}
-    ], answer:"D"},
-  { section:"Exercise 3", q:"Many people find it relaxing to listen to ______ music while studying.", options:[
-      {k:"A", t:"heavy"},{k:"B", t:"noisy"},{k:"C", t:"classical"},{k:"D", t:"electric"}
-    ], answer:"C"},
-  { section:"Exercise 3", q:"The song has a beautiful ______ that everyone remembers easily.", options:[
-      {k:"A", t:"note"},{k:"B", t:"chord"},{k:"C", t:"melody"},{k:"D", t:"sound"}
-    ], answer:"C"},
-  { section:"Exercise 3", q:"The music teacher asked the students to ______ the lyrics of the song.", options:[
-      {k:"A", t:"copy"},{k:"B", t:"sing"},{k:"C", t:"translate"},{k:"D", t:"memorize"}
-    ], answer:"D"},
-  { section:"Exercise 3", q:"The concert was so ______ that the audience gave the band a standing ovation.", options:[
-      {k:"A", t:"boring"},{k:"B", t:"amazing"},{k:"C", t:"silent"},{k:"D", t:"quiet"}
-    ], answer:"B"},
-  { section:"Exercise 3", q:"She loves to listen to soft piano ______ before going to bed.", options:[
-      {k:"A", t:"rhythm"},{k:"B", t:"tunes"},{k:"C", t:"voices"},{k:"D", t:"chords"}
-    ], answer:"B"},
+      <label class="tile">
+        <span>Chọn file ảnh</span>
+        <span class="badge">Files</span>
+        <input type="file" id="file-input" multiple accept="image/*" />
+      </label>
 
-  // ===== Exercise 4 (40) =====
-  { section:"Exercise 4", q:"My brother usually __________ to pop music while studying.", options:[
-      {k:"A", t:"listens"},{k:"B", t:"is listening"},{k:"C", t:"listened"},{k:"D", t:"has listened"}
-    ], answer:"A"},
-  { section:"Exercise 4", q:"Listen! The band __________ a new song on stage.", options:[
-      {k:"A", t:"play"},{k:"B", t:"plays"},{k:"C", t:"are playing"},{k:"D", t:"have played"}
-    ], answer:"C"},
-  { section:"Exercise 4", q:"She __________ the guitar very well.", options:[
-      {k:"A", t:"play"},{k:"B", t:"played"},{k:"C", t:"plays"},{k:"D", t:"is playing"}
-    ], answer:"C"},
+      <button class="btn" id="btn-snow" type="button">
+        <span>Snow</span>
+        <span class="badge" id="snow-state">ON</span>
+      </button>
 
-  { section:"Exercise 4", q:"Our music teacher __________ invited to judge many singing contests.", options:[
-      {k:"A", t:"is"},{k:"B", t:"has been"},{k:"C", t:"was"},{k:"D", t:"being"}
-    ], answer:"B"},
-  { section:"Exercise 4", q:"They __________ a concert next weekend to raise money for charity.", options:[
-      {k:"A", t:"are going to hold"},{k:"B", t:"will holding"},{k:"C", t:"hold"},{k:"D", t:"holding"}
-    ], answer:"A"},
-  { section:"Exercise 4", q:"I think the new song by Taylor Swift __________ a big hit.", options:[
-      {k:"A", t:"will be"},{k:"B", t:"is being"},{k:"C", t:"is going to be"},{k:"D", t:"be"}
-    ], answer:"A"},
-  { section:"Exercise 4", q:"At the moment, the students __________ how to read musical notes.", options:[
-      {k:"A", t:"learn"},{k:"B", t:"learns"},{k:"C", t:"are learning"},{k:"D", t:"learned"}
-    ], answer:"C"},
-  { section:"Exercise 4", q:"My sister __________ the piano since she was ten years old.", options:[
-      {k:"A", t:"plays"},{k:"B", t:"has played"},{k:"C", t:"played"},{k:"D", t:"is playing"}
-    ], answer:"B"},
-  { section:"Exercise 4", q:"Look! The audience __________ excitedly as the band appears.", options:[
-      {k:"A", t:"cheer"},{k:"B", t:"is cheering"},{k:"C", t:"cheers"},{k:"D", t:"cheered"}
-    ], answer:"B"},
-  { section:"Exercise 4", q:"We __________ to attend a live music festival next summer.", options:[
-      {k:"A", t:"are planning"},{k:"B", t:"plan"},{k:"C", t:"will plan"},{k:"D", t:"planned"}
-    ], answer:"A"},
+      <button class="btn" id="btn-webcam-toggle" type="button">
+        <span>Webcam</span>
+        <span class="badge" id="webcam-state">OFF</span>
+      </button>
 
-  { section:"Exercise 4", q:"Trees __________ every year to make the city greener.", options:[
-      {k:"A", t:"plant"},{k:"B", t:"are planted"},{k:"C", t:"were planted"},{k:"D", t:"will plant"}
-    ], answer:"B"},
-  { section:"Exercise 4", q:"Plastic bottles __________ into new products in many factories.", options:[
-      {k:"A", t:"recycle"},{k:"B", t:"are recycled"},{k:"C", t:"were recycled"},{k:"D", t:"will recycle"}
-    ], answer:"B"},
-  { section:"Exercise 4", q:"Hundreds of trees __________ last month to reduce air pollution.", options:[
-      {k:"A", t:"are planted"},{k:"B", t:"were planted"},{k:"C", t:"have been planted"},{k:"D", t:"will be planted"}
-    ], answer:"B"},
-  { section:"Exercise 4", q:"A lot of waste __________ into the river every day.", options:[
-      {k:"A", t:"is dumped"},{k:"B", t:"was dumped"},{k:"C", t:"dumped"},{k:"D", t:"will dump"}
-    ], answer:"A"},
-  { section:"Exercise 4", q:"Solar energy __________ by many countries in the future.", options:[
-      {k:"A", t:"will use"},{k:"B", t:"will be used"},{k:"C", t:"is used"},{k:"D", t:"was used"}
-    ], answer:"B"},
-  { section:"Exercise 4", q:"The recycling bins __________ at the moment.", options:[
-      {k:"A", t:"are emptied"},{k:"B", t:"were emptied"},{k:"C", t:"are being emptied"},{k:"D", t:"will be emptied"}
-    ], answer:"C"},
-  { section:"Exercise 4", q:"These plastic bags __________ for many years; they’re bad for the environment.", options:[
-      {k:"A", t:"were used"},{k:"B", t:"have been used"},{k:"C", t:"are used"},{k:"D", t:"will be used"}
-    ], answer:"B"},
-  { section:"Exercise 4", q:"The park __________ by volunteers yesterday morning.", options:[
-      {k:"A", t:"is cleaned"},{k:"B", t:"was cleaned"},{k:"C", t:"cleans"},{k:"D", t:"will clean"}
-    ], answer:"B"},
-  { section:"Exercise 4", q:"More public dustbins __________ in our city next month.", options:[
-      {k:"A", t:"are installed"},{k:"B", t:"were installed"},{k:"C", t:"will be installed"},{k:"D", t:"are being installed"}
-    ], answer:"C"},
-  { section:"Exercise 4", q:"Energy-saving campaigns __________ in schools every year.", options:[
-      {k:"A", t:"organize"},{k:"B", t:"are organized"},{k:"C", t:"were organized"},{k:"D", t:"will organize"}
-    ], answer:"B"},
+      <button class="btn" id="btn-reset" type="button">
+        <span>Reset View</span>
+        <span class="badge">R</span>
+      </button>
 
-  { section:"Exercise 4", q:"She plays the guitar beautifully, ____ she can also compose her own songs.", options:[
-      {k:"A", t:"but"},{k:"B", t:"and"},{k:"C", t:"or"},{k:"D", t:"yet"}
-    ], answer:"B"},
-  { section:"Exercise 4", q:"Tom practices the piano every day, ____ he still finds it hard to perform in public.", options:[
-      {k:"A", t:"so"},{k:"B", t:"for"},{k:"C", t:"yet"},{k:"D", t:"or"}
-    ], answer:"C"},
-  { section:"Exercise 4", q:"The concert was canceled, ____ the fans were very disappointed.", options:[
-      {k:"A", t:"but"},{k:"B", t:"so"},{k:"C", t:"or"},{k:"D", t:"yet"}
-    ], answer:"B"},
-  { section:"Exercise 4", q:"You can download the song for free ____ buy the full album online.", options:[
-      {k:"A", t:"and"},{k:"B", t:"but"},{k:"C", t:"or"},{k:"D", t:"yet"}
-    ], answer:"C"},
-  { section:"Exercise 4", q:"The singer is talented ____ she needs more experience on stage.", options:[
-      {k:"A", t:"and"},{k:"B", t:"so"},{k:"C", t:"but"},{k:"D", t:"for"}
-    ], answer:"C"},
-  { section:"Exercise 4", q:"The band worked very hard, ____ they wanted to release a perfect album.", options:[
-      {k:"A", t:"so"},{k:"B", t:"or"},{k:"C", t:"yet"},{k:"D", t:"for"}
-    ], answer:"D"},
-  { section:"Exercise 4", q:"The sound system was broken, ____ the concert couldn’t go on.", options:[
-      {k:"A", t:"but"},{k:"B", t:"so"},{k:"C", t:"yet"},{k:"D", t:"for"}
-    ], answer:"B"},
-  { section:"Exercise 4", q:"I like listening to classical music, ____ my brother prefers rock.", options:[
-      {k:"A", t:"and"},{k:"B", t:"or"},{k:"C", t:"yet"},{k:"D", t:"for"}
-    ], answer:"C"},
-  { section:"Exercise 4", q:"Would you like to join the choir ____ play in the school band?", options:[
-      {k:"A", t:"and"},{k:"B", t:"or"},{k:"C", t:"but"},{k:"D", t:"for"}
-    ], answer:"B"},
-  { section:"Exercise 4", q:"She practices singing every morning, ____ she dreams of becoming a professional singer.", options:[
-      {k:"A", t:"so"},{k:"B", t:"but"},{k:"C", t:"yet"},{k:"D", t:"or"}
-    ], answer:"A"},
+      <button class="btn" id="btn-ui-toggle" type="button">
+        <span>Hide UI</span>
+        <span class="badge">H</span>
+      </button>
+    </div>
 
-  { section:"Exercise 4", q:"I want _______ how to play the guitar this summer.", options:[
-      {k:"A", t:"learn"},{k:"B", t:"learning"},{k:"C", t:"to learn"},{k:"D", t:"learned"}
-    ], answer:"C"},
-  { section:"Exercise 4", q:"My teacher made me _______ the song again because I sang it off-key.", options:[
-      {k:"A", t:"to sing"},{k:"B", t:"singing"},{k:"C", t:"sing"},{k:"D", t:"sang"}
-    ], answer:"C"},
-  { section:"Exercise 4", q:"She decided _______ a new piano for her music class.", options:[
-      {k:"A", t:"buy"},{k:"B", t:"buying"},{k:"C", t:"to buy"},{k:"D", t:"bought"}
-    ], answer:"C"},
-  { section:"Exercise 4", q:"We heard the band _______ their new song at the concert.", options:[
-      {k:"A", t:"to perform"},{k:"B", t:"performing"},{k:"C", t:"perform"},{k:"D", t:"performed"}
-    ], answer:"C"},
-  { section:"Exercise 4", q:"The music club plans _______ a charity concert next month.", options:[
-      {k:"A", t:"organizing"},{k:"B", t:"to organize"},{k:"C", t:"organize"},{k:"D", t:"to be organized"}
-    ], answer:"B"},
-  { section:"Exercise 4", q:"The students were happy _______ the music competition.", options:[
-      {k:"A", t:"join"},{k:"B", t:"to join"},{k:"C", t:"joining"},{k:"D", t:"joined"}
-    ], answer:"B"},
-  { section:"Exercise 4", q:"Let’s the choir _______ their song before we leave.", options:[
-      {k:"A", t:"to finish"},{k:"B", t:"finish"},{k:"C", t:"finished"},{k:"D", t:"finishing"}
-    ], answer:"B"},
-  { section:"Exercise 4", q:"She promised _______ her voice for the school concert.", options:[
-      {k:"A", t:"using"},{k:"B", t:"use"},{k:"C", t:"to use"},{k:"D", t:"used"}
-    ], answer:"C"},
-  { section:"Exercise 4", q:"I heard him _______ softly while he was composing a new melody.", options:[
-      {k:"A", t:"sing"},{k:"B", t:"to sing"},{k:"C", t:"singing"},{k:"D", t:"sang"}
-    ], answer:"C"},
-  { section:"Exercise 4", q:"My dream is _______ a famous music producer one day.", options:[
-      {k:"A", t:"become"},{k:"B", t:"becoming"},{k:"C", t:"to become"},{k:"D", t:"became"}
-    ], answer:"C"},
-];
+    <div class="hint">
+      Webcam chạy tốt trên <b>HTTPS</b> (GitHub Pages / domain). Nếu mở <b>content://</b> sẽ bị chặn camera.<br>
+      Gesture: Open hand = Scatter • Pinch = Focus • Close hand = Tree
+    </div>
+  </div>
 
-/* ========= STATE (persist) ========= */
-let state = {
-  filter: "all",      // all | ex1 | ex3 | ex4
-  shuffle: false,
-  submitted: false,
-  selections: {},     // qIndex -> "A/B/C/D"
-  optionOrder: {},    // qIndex -> stable order per attempt
-  lastSubmitAt: null
-};
+  <div id="webcam-pill">
+    <div id="webcam-mini">
+      <video id="webcam" autoplay playsinline muted></video>
+    </div>
+    <div id="webcam-meta">
+      <div id="webcam-status">Webcam: OFF</div>
+      <div id="debug-info">Closed</div>
+    </div>
+    <button class="pill-btn" id="btn-webcam-close" title="Close">✕</button>
+  </div>
 
-/* ========= ELS ========= */
-const elQuiz = document.getElementById("quiz");
-const elQList = document.getElementById("qList");
-const elTotalQ = document.getElementById("totalQ");
-const elDoneQ = document.getElementById("doneQ");
-const elViewQ = document.getElementById("viewQ");
-const elBar = document.getElementById("bar");
-const elSubmit = document.getElementById("submitBtn");
-const elShuffle = document.getElementById("shuffleBtn");
-const elNew = document.getElementById("newBtn");
-const elStatus = document.getElementById("statusText");
-const elResultCard = document.getElementById("resultCard");
-const elResult = document.getElementById("result");
-const elSideTag = document.getElementById("sideTag");
-const elContentTitle = document.getElementById("contentTitle");
+  <script type="module">
+    import * as THREE from 'three';
+    import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+    import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+    import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+    import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+    import { FilesetResolver, HandLandmarker } from '@mediapipe/tasks-vision';
 
-const tabAll = document.getElementById("tabAll");
-const tabEx1 = document.getElementById("tabEx1");
-const tabEx3 = document.getElementById("tabEx3");
-const tabEx4 = document.getElementById("tabEx4");
+    const CONFIG = {
+      colors: {
+        bg: 0x050d1a,
+        fog: 0x050d1a,
+        champagneGold: 0xffd966,
+        deepGreen: 0x03180a,
+        accentRed: 0x990000,
+      },
+      particles: {
+        count: 1500,
+        dustCount: 2000,
+        snowCount: 1000,
+        treeHeight: 24,
+        treeRadius: 8
+      },
+      camera: { z: 50 },
+      preload: {
+        autoScanLocal: true,
+        scanCount: 200,
+        images: [
+          'https://images.unsplash.com/photo-1543589077-47d81606c1bf?q=80&w=600',
+          'https://images.unsplash.com/photo-1576919228236-a097c32a5cd4?q=80&w=600',
+          'https://images.unsplash.com/photo-1512389142860-9c449e58a543?q=80&w=600',
+          'https://images.unsplash.com/photo-1482638588057-dce9509db949?q=80&w=600'
+        ]
+      }
+    };
 
-// modal
-const modalBack = document.getElementById("modalBack");
-const nameInput = document.getElementById("nameInput");
-const cancelSend = document.getElementById("cancelSend");
-const confirmSend = document.getElementById("confirmSend");
-const sendHint = document.getElementById("sendHint");
+    const STATE = {
+      mode: 'TREE',
+      focusTarget: null,
+      hand: { detected: false, x: 0, y: 0 },
+      rotation: { x: 0, y: 0 },
+      flags: { snow: true, webcam: false, uiHidden: false }
+    };
 
-/* ========= helpers ========= */
-function escapeHtml(s){
-  return String(s)
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
-}
-function shuffled(arr){
-  const a = arr.slice();
-  for(let i=a.length-1;i>0;i--){
-    const j = Math.floor(Math.random()*(i+1));
-    [a[i],a[j]]=[a[j],a[i]];
-  }
-  return a;
-}
-function filteredIndices(){
-  return QUESTIONS
-    .map((q, i)=>({q,i}))
-    .filter(({q})=>{
-      if(state.filter==="all") return true;
-      if(state.filter==="ex1") return q.section==="Exercise 1";
-      if(state.filter==="ex3") return q.section==="Exercise 3";
-      if(state.filter==="ex4") return q.section==="Exercise 4";
-      return true;
-    })
-    .map(x=>x.i);
-}
-function ensureOptionOrder(indices){
-  for(const qi of indices){
-    if(!state.optionOrder[qi]){
-      const keys = QUESTIONS[qi].options.map(o=>o.k);
-      state.optionOrder[qi] = state.shuffle ? shuffled(keys) : keys;
-    }
-  }
-}
-function getOptionsInOrder(qIndex){
-  const order = state.optionOrder[qIndex] || QUESTIONS[qIndex].options.map(o=>o.k);
-  const map = new Map(QUESTIONS[qIndex].options.map(o=>[o.k, o]));
-  return order.map(k=>map.get(k)).filter(Boolean);
-}
-function setTabsActive(){
-  tabAll.classList.toggle("active", state.filter==="all");
-  tabEx1.classList.toggle("active", state.filter==="ex1");
-  tabEx3.classList.toggle("active", state.filter==="ex3");
-  tabEx4.classList.toggle("active", state.filter==="ex4");
+    // DOM
+    const menuBtn = document.getElementById('btn-menu');
+    const menuPanel = document.getElementById('menu-panel');
+    const menuBackdrop = document.getElementById('menu-backdrop');
 
-  if(state.filter==="all"){
-    elSideTag.textContent = "All";
-    elContentTitle.textContent = "Exercise 1 + 3 + 4";
-  }else if(state.filter==="ex1"){
-    elSideTag.textContent = "Ex1";
-    elContentTitle.textContent = "Exercise 1 (Pronunciation)";
-  }else if(state.filter==="ex3"){
-    elSideTag.textContent = "Ex3";
-    elContentTitle.textContent = "Exercise 3 (Multiple choice)";
-  }else{
-    elSideTag.textContent = "Ex4";
-    elContentTitle.textContent = "Exercise 4 (Grammar)";
-  }
-}
+    const snowState = document.getElementById('snow-state');
+    const webcamState = document.getElementById('webcam-state');
 
-/* ========= localStorage ========= */
-function saveState(){
-  const safe = {
-    filter: state.filter,
-    shuffle: state.shuffle,
-    submitted: state.submitted,
-    selections: state.selections,
-    optionOrder: state.optionOrder,
-    lastSubmitAt: state.lastSubmitAt
-  };
-  try{
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(safe));
-  }catch(e){}
-}
-function loadState(){
-  try{
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if(!raw) return;
-    const s = JSON.parse(raw);
-    if(!s || typeof s !== "object") return;
-    state.filter = s.filter || "all";
-    state.shuffle = !!s.shuffle;
-    state.submitted = !!s.submitted;
-    state.selections = s.selections || {};
-    state.optionOrder = s.optionOrder || {};
-    state.lastSubmitAt = s.lastSubmitAt || null;
-    elShuffle.textContent = state.shuffle ? "Đã trộn đáp án" : "Trộn đáp án";
-  }catch(e){}
-}
-function clearState(){
-  try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
-}
+    const webcamPill = document.getElementById('webcam-pill');
+    const webcamStatus = document.getElementById('webcam-status');
+    const debugInfo = document.getElementById('debug-info');
 
-/* ========= render ========= */
-function render(){
-  const indices = filteredIndices();
-  ensureOptionOrder(indices);
-  setTabsActive();
+    // THREE
+    let scene, camera, renderer, composer;
+    let mainGroup;
+    let clock = new THREE.Clock();
+    let particleSystem = [];
+    let photoMeshGroup = new THREE.Group();
+    let caneTexture;
+    let snowSystem;
 
-  elQuiz.innerHTML = "";
-  elQList.innerHTML = "";
+    // Fancy additions
+    let lightsMesh = null;
+    let garlandMesh = null;
 
-  // Sidebar buttons
-  indices.forEach((qi, idx)=>{
-    const btn = document.createElement("div");
-    btn.className = "qBtn";
-    btn.textContent = (idx + 1);
-    if(state.selections[qi]) btn.classList.add("done");
-    if(state.submitted) btn.classList.add("locked");
-    btn.addEventListener("click", ()=>{
-      const el = document.getElementById("q_" + qi);
-      if(el) el.scrollIntoView({behavior:"smooth", block:"start"});
-    });
-    elQList.appendChild(btn);
-  });
+    // Mediapipe
+    let handLandmarker, videoEl;
+    let streamRef = null;
+    let lastVideoTime = -1;
+    let mediaReady = false;
 
-  let lastSection = "";
-  for(const qi of indices){
-    const item = QUESTIONS[qi];
+    async function init() {
+      initThree();
+      setupEnvironment();
+      setupLights();
+      createTextures();
+      createParticles();
+      createDust();
+      createFairyLights();   // ✨
+      createGarland();       // ✨ tube spiral
+      createSnow();
+      loadPredefinedImages();
+      setupPostProcessing();
+      setupEvents();
 
-    if(item.section !== lastSection){
-      const sec = document.createElement("div");
-      sec.className = "q";
-      sec.innerHTML = `
-        <div class="muted" style="font-size:12px;margin-bottom:6px">Section</div>
-        <div style="font-weight:1100;font-size:16px">${escapeHtml(item.section)}</div>
-      `;
-      elQuiz.appendChild(sec);
-      lastSection = item.section;
+      const loader = document.getElementById('loader');
+      loader.style.opacity = 0;
+      setTimeout(() => loader.remove(), 800);
+
+      animate();
     }
 
-    const wrap = document.createElement("div");
-    wrap.className = "q";
-    wrap.id = "q_" + qi;
+    function initThree() {
+      const container = document.getElementById('canvas-container');
+      scene = new THREE.Scene();
+      scene.background = new THREE.Color(CONFIG.colors.bg);
+      scene.fog = new THREE.FogExp2(CONFIG.colors.fog, 0.015);
 
-    const chosen = state.selections[qi] || "";
-    const opts = getOptionsInOrder(qi);
+      camera = new THREE.PerspectiveCamera(42, window.innerWidth / window.innerHeight, 0.1, 1000);
+      camera.position.set(0, 2, CONFIG.camera.z);
 
-    wrap.innerHTML = `
-      <div class="qhead">
-        <div>
-          <p class="qtitle">${escapeHtml(item.q)}</p>
-          <div class="muted" style="font-size:12px;margin-top:6px">Chọn 1 đáp án</div>
-        </div>
-        <div class="qnum">${qi+1}</div>
-      </div>
-      <div class="opts">
-        ${opts.map(opt=>{
-          const id = `q${qi}_${opt.k}`;
-          const checked = (chosen === opt.k) ? "checked" : "";
-          const disabled = state.submitted ? "disabled" : "";
-          return `
-            <label class="opt" for="${id}" style="${state.submitted ? "opacity:.92;cursor:default" : ""}">
-              <input type="radio" name="q${qi}" id="${id}" value="${opt.k}" ${checked} ${disabled}/>
-              <div><b>${opt.k}.</b> ${escapeHtml(opt.t)}</div>
-            </label>
-          `;
-        }).join("")}
-      </div>
-    `;
-    elQuiz.appendChild(wrap);
+      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.toneMapping = THREE.ReinhardToneMapping;
+      renderer.toneMappingExposure = 2.2;
+      container.appendChild(renderer.domElement);
 
-    wrap.querySelectorAll(`input[name="q${qi}"]`).forEach(r=>{
-      r.addEventListener("change", (e)=>{
-        if(state.submitted) return;
-        state.selections[qi] = e.target.value;
-        saveState();
-        updateMeta();
-        renderSidebarOnly();
+      mainGroup = new THREE.Group();
+      scene.add(mainGroup);
+    }
+
+    function setupEnvironment() {
+      const pmremGenerator = new THREE.PMREMGenerator(renderer);
+      scene.environment = pmremGenerator.fromScene(new RoomEnvironment(), 0.04).texture;
+    }
+
+    function setupLights() {
+      scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+
+      const innerLight = new THREE.PointLight(0xffaa00, 2, 22);
+      innerLight.position.set(0, 5, 0);
+      mainGroup.add(innerLight);
+
+      const spotGold = new THREE.SpotLight(0xffcc66, 1200);
+      spotGold.position.set(30, 40, 40);
+      spotGold.angle = 0.5;
+      spotGold.penumbra = 0.5;
+      scene.add(spotGold);
+
+      const spotBlue = new THREE.SpotLight(0x6688ff, 800);
+      spotBlue.position.set(-30, 20, -30);
+      scene.add(spotBlue);
+
+      const fill = new THREE.DirectionalLight(0xffeebb, 0.9);
+      fill.position.set(0, 0, 50);
+      scene.add(fill);
+    }
+
+    function setupPostProcessing() {
+      const renderScene = new RenderPass(scene, camera);
+      const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
+      bloomPass.threshold = 0.62;
+      bloomPass.strength = 0.65; // đẹp hơn
+      bloomPass.radius = 0.55;   // glow mượt hơn
+
+      composer = new EffectComposer(renderer);
+      composer.addPass(renderScene);
+      composer.addPass(bloomPass);
+    }
+
+    function createTextures() {
+      const canvas = document.createElement('canvas');
+      canvas.width = 128; canvas.height = 128;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, 128, 128);
+      ctx.fillStyle = '#880000';
+      ctx.beginPath();
+      for (let i = -128; i < 256; i += 32) {
+        ctx.moveTo(i, 0); ctx.lineTo(i + 32, 128); ctx.lineTo(i + 16, 128); ctx.lineTo(i - 16, 0);
+      }
+      ctx.fill();
+      caneTexture = new THREE.CanvasTexture(canvas);
+      caneTexture.wrapS = THREE.RepeatWrapping;
+      caneTexture.wrapT = THREE.RepeatWrapping;
+      caneTexture.repeat.set(3, 3);
+    }
+
+    function createSnow() {
+      const geometry = new THREE.BufferGeometry();
+      const vertices = [];
+      const velocities = [];
+
+      const canvas = document.createElement('canvas');
+      canvas.width = 32; canvas.height = 32;
+      const context = canvas.getContext('2d');
+      context.fillStyle = 'white';
+      context.beginPath();
+      context.arc(16, 16, 16, 0, Math.PI * 2);
+      context.fill();
+      const snowTexture = new THREE.CanvasTexture(canvas);
+
+      for (let i = 0; i < CONFIG.particles.snowCount; i++) {
+        vertices.push(
+          THREE.MathUtils.randFloatSpread(100),
+          THREE.MathUtils.randFloatSpread(60),
+          THREE.MathUtils.randFloatSpread(60),
+        );
+        velocities.push(Math.random() * 0.2 + 0.1, Math.random() * 0.05);
+      }
+
+      geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+      geometry.setAttribute('userData', new THREE.Float32BufferAttribute(velocities, 2));
+
+      const material = new THREE.PointsMaterial({
+        color: 0xffffff,
+        size: 0.4,
+        map: snowTexture,
+        transparent: true,
+        opacity: 0.8,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false
       });
-    });
-  }
 
-  updateMeta();
-}
-
-function renderSidebarOnly(){
-  const indices = filteredIndices();
-  const children = Array.from(elQList.children);
-  indices.forEach((qi, idx)=>{
-    const btn = children[idx];
-    if(!btn) return;
-    btn.classList.toggle("done", !!state.selections[qi]);
-  });
-}
-
-function updateMeta(){
-  const indices = filteredIndices();
-  const totalAll = QUESTIONS.length;
-  const doneAll = Object.keys(state.selections).length;
-
-  elTotalQ.textContent = totalAll;
-  elDoneQ.textContent = doneAll;
-  elViewQ.textContent = indices.length;
-
-  const pct = Math.round((doneAll/totalAll)*100);
-  elBar.style.width = pct + "%";
-
-  const allDone = doneAll === totalAll;
-  elSubmit.disabled = !allDone || state.submitted;
-
-  if(state.submitted){
-    elStatus.innerHTML = `Đã nộp bài. Bấm <b>Bài mới</b> để làm lại lượt mới.`;
-  } else if(allDone){
-    elStatus.innerHTML = `Đã chọn đủ <b>${doneAll}/${totalAll}</b>. Bấm <b>Nộp bài</b> để chấm điểm ✅`;
-  } else {
-    elStatus.innerHTML = `Bạn đã chọn <b>${doneAll}/${totalAll}</b>. Còn <b>${totalAll-doneAll}</b> câu nữa.`;
-  }
-}
-
-/* ========= grade + send ========= */
-function buildDetailText(){
-  const total = QUESTIONS.length;
-  let correct = 0;
-  const lines = [];
-
-  for(let i=0;i<total;i++){
-    const q = QUESTIONS[i];
-    const pick = state.selections[i] || "(chưa chọn)";
-    const ok = pick === q.answer;
-    if(ok) correct++;
-    lines.push(
-      `Câu ${i+1} (${q.section}): chọn ${pick} | đúng ${q.answer} ${ok ? "✅" : "❌"}`
-    );
-  }
-  return { correct, total, detail: lines.join("\n") };
-}
-
-function showResult(correct, total){
-  const percent = Math.round((correct/total)*100);
-  elResultCard.style.display = "block";
-  elResult.innerHTML = `
-    <div class="scoreBox">
-      <div class="muted">Điểm của bạn</div>
-      <div class="scoreBig">${correct} / ${total} <span class="muted" style="font-size:14px">(${percent}%)</span></div>
-      <div class="muted" style="margin-top:6px;line-height:1.35">
-        Review bên dưới sẽ hiện <b>đáp án đúng</b> + đáp án bạn chọn.
-      </div>
-    </div>
-    <div class="review" id="review"></div>
-  `;
-
-  const rv = document.getElementById("review");
-  for(let i=0;i<QUESTIONS.length;i++){
-    const q = QUESTIONS[i];
-    const pick = state.selections[i] || "";
-    const ok = pick === q.answer;
-
-    const item = document.createElement("div");
-    item.className = "item";
-    item.innerHTML = `
-      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
-        <div style="font-weight:1000">Câu ${i+1} <span class="muted" style="font-weight:600">• ${escapeHtml(q.section)}</span></div>
-        <span class="badge ${ok ? "ok":"no"}">${ok ? "✅ Đúng":"❌ Sai"}</span>
-      </div>
-      <div class="muted" style="margin-top:6px">${escapeHtml(q.q)}</div>
-      <div class="ansLine">
-        Bạn chọn: <b>${pick || "(chưa chọn)"}</b>
-        &nbsp;•&nbsp; Đáp án đúng: <b>${q.answer}</b>
-      </div>
-    `;
-    rv.appendChild(item);
-  }
-}
-
-async function sendToTelegram(name, correct, total, detail){
-  // nếu chưa sửa endpoint thì bỏ qua
-  if(!WORKER_ENDPOINT || WORKER_ENDPOINT.includes("YOUR-WORKER")){
-    return { ok:false, msg:"Bạn chưa dán WORKER_ENDPOINT (link Cloudflare Worker) vào file index.html." };
-  }
-
-  const url = WORKER_ENDPOINT.endsWith("/") ? WORKER_ENDPOINT : (WORKER_ENDPOINT + "/");
-
-  try{
-    const res = await fetch(url, {
-      method:"POST",
-      headers:{ "Content-Type":"application/json" },
-      body: JSON.stringify({
-        name,
-        score: correct,
-        total,
-        detail
-      })
-    });
-
-    if(!res.ok){
-      const t = await res.text().catch(()=> "");
-      return { ok:false, msg:`Worker trả lỗi HTTP ${res.status}. ${t ? ("Chi tiết: "+t) : ""}` };
+      snowSystem = new THREE.Points(geometry, material);
+      scene.add(snowSystem);
     }
-    return { ok:true, msg:"Đã gửi Telegram ✅" };
-  }catch(e){
-    return { ok:false, msg:"Không gọi được Worker. Kiểm tra WORKER_ENDPOINT + HTTPS + CORS." };
-  }
-}
 
-function openNameModal(){
-  nameInput.value = "";
-  sendHint.textContent = "Sau khi bấm Gửi, web sẽ chấm điểm và gửi về Telegram.";
-  modalBack.style.display = "flex";
-  setTimeout(()=>nameInput.focus(), 30);
-}
-function closeNameModal(){
-  modalBack.style.display = "none";
-}
+    function updateSnow() {
+      if (!snowSystem) return;
+      snowSystem.visible = STATE.flags.snow;
+      if (!STATE.flags.snow) return;
 
-/* ========= actions ========= */
-function newAttempt(){
-  state.selections = {};
-  state.optionOrder = {};
-  state.submitted = false;
-  state.lastSubmitAt = null;
-  elShuffle.disabled = false;
+      const positions = snowSystem.geometry.attributes.position.array;
+      const userData = snowSystem.geometry.attributes.userData.array;
 
-  elResultCard.style.display = "none";
-  elResult.innerHTML = "";
+      for (let i = 0; i < CONFIG.particles.snowCount; i++) {
+        const fallSpeed = userData[i * 2];
+        positions[i * 3 + 1] -= fallSpeed;
 
-  clearState();
-  saveState();
-  render();
-  window.scrollTo({top:0,behavior:"smooth"});
-}
+        const swaySpeed = userData[i * 2 + 1];
+        positions[i * 3] += Math.sin(clock.elapsedTime * 2 + i) * swaySpeed * 0.1;
 
-function toggleShuffle(){
-  if(state.submitted) return;
-  state.shuffle = !state.shuffle;
-  state.optionOrder = {}; // tạo lại thứ tự hiển thị 1 lần cho lượt làm
-  elShuffle.textContent = state.shuffle ? "Đã trộn đáp án" : "Trộn đáp án";
-  saveState();
-  render();
-}
+        if (positions[i * 3 + 1] < -30) {
+          positions[i * 3 + 1] = 30;
+          positions[i * 3] = THREE.MathUtils.randFloatSpread(100);
+          positions[i * 3 + 2] = THREE.MathUtils.randFloatSpread(60);
+        }
+      }
+      snowSystem.geometry.attributes.position.needsUpdate = true;
+    }
 
-async function submitFlow(){
-  // mở modal nhập tên
-  openNameModal();
-}
+    class Particle {
+      constructor(mesh, type, isDust = false) {
+        this.mesh = mesh;
+        this.type = type;
+        this.isDust = isDust;
 
-cancelSend.addEventListener("click", closeNameModal);
+        this.posTree = new THREE.Vector3();
+        this.posScatter = new THREE.Vector3();
+        this.baseScale = mesh.scale.x;
 
-confirmSend.addEventListener("click", async ()=>{
-  const name = nameInput.value.trim();
-  if(!name){
-    sendHint.textContent = "Bạn chưa nhập tên.";
-    return;
-  }
+        const speedMult = (type === 'PHOTO') ? 0.3 : 2.0;
+        this.spinSpeed = new THREE.Vector3(
+          (Math.random() - 0.5) * speedMult,
+          (Math.random() - 0.5) * speedMult,
+          (Math.random() - 0.5) * speedMult
+        );
 
-  confirmSend.disabled = true;
-  cancelSend.disabled = true;
-  sendHint.textContent = "Đang chấm điểm và gửi Telegram...";
+        this.calculatePositions();
+      }
 
-  // chấm điểm
-  const { correct, total, detail } = buildDetailText();
+      calculatePositions() {
+        if (this.type === 'PHOTO') {
+          this.posTree.set(0, 0, 0);
+          const rScatter = 10 + Math.random() * 14;
+          const theta = Math.random() * Math.PI * 2;
+          const phi = Math.acos(2 * Math.random() - 1);
+          this.posScatter.set(
+            rScatter * Math.sin(phi) * Math.cos(theta),
+            rScatter * Math.sin(phi) * Math.sin(theta),
+            rScatter * Math.cos(phi)
+          );
+          return;
+        }
 
-  // khóa bài
-  state.submitted = true;
-  state.lastSubmitAt = Date.now();
-  elShuffle.disabled = true;
-  saveState();
+        const h = CONFIG.particles.treeHeight;
+        const halfH = h / 2;
+        let t = Math.pow(Math.random(), 0.8);
+        const y = (t * h) - halfH;
 
-  // hiện kết quả
-  render();
-  showResult(correct, total);
+        let rMax = CONFIG.particles.treeRadius * (1.0 - t);
+        if (rMax < 0.5) rMax = 0.5;
 
-  // gửi Telegram
-  const r = await sendToTelegram(name, correct, total, detail);
-  sendHint.textContent = r.msg;
+        const angle = t * 50 * Math.PI + Math.random() * Math.PI;
+        const r = rMax * (0.8 + Math.random() * 0.4);
+        this.posTree.set(Math.cos(angle) * r, y, Math.sin(angle) * r);
 
-  closeNameModal();
-  confirmSend.disabled = false;
-  cancelSend.disabled = false;
+        let rScatter = this.isDust ? (12 + Math.random() * 20) : (9 + Math.random() * 14);
+        const theta = Math.random() * Math.PI * 2;
+        const phi = Math.acos(2 * Math.random() - 1);
+        this.posScatter.set(
+          rScatter * Math.sin(phi) * Math.cos(theta),
+          rScatter * Math.sin(phi) * Math.sin(theta),
+          rScatter * Math.cos(phi)
+        );
+      }
 
-  elResultCard.scrollIntoView({behavior:"smooth", block:"start"});
-});
+      update(dt, mode, focusTargetMesh) {
+        let target = this.posTree;
 
-/* ========= EVENTS ========= */
-elSubmit.addEventListener("click", submitFlow);
-elNew.addEventListener("click", newAttempt);
-elShuffle.addEventListener("click", toggleShuffle);
+        if (mode === 'SCATTER') target = this.posScatter;
+        else if (mode === 'FOCUS') {
+          if (this.mesh === focusTargetMesh) {
+            const desiredWorldPos = new THREE.Vector3(0, 2, 35);
+            const invMatrix = new THREE.Matrix4().copy(mainGroup.matrixWorld).invert();
+            target = desiredWorldPos.applyMatrix4(invMatrix);
+          } else target = this.posScatter;
+        }
 
-tabAll.addEventListener("click", ()=>{ state.filter="all"; saveState(); render(); });
-tabEx1.addEventListener("click", ()=>{ state.filter="ex1"; saveState(); render(); });
-tabEx3.addEventListener("click", ()=>{ state.filter="ex3"; saveState(); render(); });
-tabEx4.addEventListener("click", ()=>{ state.filter="ex4"; saveState(); render(); });
+        const lerpSpeed = (mode === 'FOCUS' && this.mesh === focusTargetMesh) ? 5.0 : 2.0;
+        this.mesh.position.lerp(target, lerpSpeed * dt);
 
-/* ========= INIT ========= */
-loadState();
-render();
+        if (mode === 'SCATTER') {
+          this.mesh.rotation.x += this.spinSpeed.x * dt;
+          this.mesh.rotation.y += this.spinSpeed.y * dt;
+          this.mesh.rotation.z += this.spinSpeed.z * dt;
+        } else if (mode === 'TREE') {
+          if (this.type === 'PHOTO') {
+            this.mesh.lookAt(0, this.mesh.position.y, 0);
+            this.mesh.rotateY(Math.PI);
+          } else {
+            this.mesh.rotation.x = THREE.MathUtils.lerp(this.mesh.rotation.x, 0, dt);
+            this.mesh.rotation.z = THREE.MathUtils.lerp(this.mesh.rotation.z, 0, dt);
+            this.mesh.rotation.y += 0.5 * dt;
+          }
+        }
 
-// nếu trước đó đã nộp bài thì hiện lại kết quả
-if(state.submitted){
-  const { correct, total } = buildDetailText();
-  showResult(correct, total);
-  elShuffle.disabled = true;
-}
-</script>
+        if (mode === 'FOCUS' && this.mesh === focusTargetMesh) {
+          this.mesh.lookAt(camera.position);
+        }
+
+        // ✅ ảnh to hơn
+        let s = this.baseScale;
+        if (this.isDust) {
+          s = this.baseScale * (0.8 + 0.4 * Math.sin(clock.elapsedTime * 4 + this.mesh.id));
+          if (mode === 'TREE') s = 0;
+        } else if (mode === 'SCATTER' && this.type === 'PHOTO') {
+          s = this.baseScale * 3.2;
+        } else if (mode === 'FOCUS') {
+          if (this.mesh === focusTargetMesh) s = 5.6;
+          else s = this.baseScale * 1.0;
+        }
+
+        this.mesh.scale.lerp(new THREE.Vector3(s, s, s), 4 * dt);
+      }
+    }
+
+    function createParticles() {
+      const sphereGeo = new THREE.SphereGeometry(0.5, 32, 32);
+      const boxGeo = new THREE.BoxGeometry(0.55, 0.55, 0.55);
+      const curve = new THREE.CatmullRomCurve3([
+        new THREE.Vector3(0, -0.5, 0), new THREE.Vector3(0, 0.3, 0),
+        new THREE.Vector3(0.1, 0.5, 0), new THREE.Vector3(0.3, 0.4, 0)
+      ]);
+      const candyGeo = new THREE.TubeGeometry(curve, 16, 0.08, 8, false);
+
+      const goldMat = new THREE.MeshStandardMaterial({
+        color: CONFIG.colors.champagneGold,
+        metalness: 1.0, roughness: 0.1,
+        envMapIntensity: 2.0,
+        emissive: 0x443300,
+        emissiveIntensity: 0.35
+      });
+
+      const greenMat = new THREE.MeshStandardMaterial({
+        color: CONFIG.colors.deepGreen,
+        metalness: 0.2, roughness: 0.85,
+        emissive: 0x002200,
+        emissiveIntensity: 0.2
+      });
+
+      const redMat = new THREE.MeshPhysicalMaterial({
+        color: CONFIG.colors.accentRed,
+        metalness: 0.3, roughness: 0.2, clearcoat: 1.0,
+        emissive: 0x330000
+      });
+
+      const candyMat = new THREE.MeshStandardMaterial({ map: caneTexture, roughness: 0.4 });
+
+      for (let i = 0; i < CONFIG.particles.count; i++) {
+        const rand = Math.random();
+        let mesh, type;
+
+        if (rand < 0.40) { mesh = new THREE.Mesh(boxGeo, greenMat); type = 'BOX'; }
+        else if (rand < 0.70) { mesh = new THREE.Mesh(boxGeo, goldMat); type = 'GOLD_BOX'; }
+        else if (rand < 0.92) { mesh = new THREE.Mesh(sphereGeo, goldMat); type = 'GOLD_SPHERE'; }
+        else if (rand < 0.97) { mesh = new THREE.Mesh(sphereGeo, redMat); type = 'RED'; }
+        else { mesh = new THREE.Mesh(candyGeo, candyMat); type = 'CANE'; }
+
+        const s = 0.4 + Math.random() * 0.5;
+        mesh.scale.set(s, s, s);
+        mesh.rotation.set(Math.random() * 6, Math.random() * 6, Math.random() * 6);
+
+        mainGroup.add(mesh);
+        particleSystem.push(new Particle(mesh, type, false));
+      }
+
+      // Star
+      const starShape = new THREE.Shape();
+      const points = 5, outerRadius = 1.5, innerRadius = 0.7;
+      for (let i = 0; i < points * 2; i++) {
+        const angle = (i * Math.PI) / points + Math.PI / 2;
+        const r = (i % 2 === 0) ? outerRadius : innerRadius;
+        const x = Math.cos(angle) * r;
+        const y = Math.sin(angle) * r;
+        if (i === 0) starShape.moveTo(x, y);
+        else starShape.lineTo(x, y);
+      }
+      starShape.closePath();
+
+      const starGeo = new THREE.ExtrudeGeometry(starShape, {
+        depth: 0.4, bevelEnabled: true, bevelThickness: 0.1, bevelSize: 0.1, bevelSegments: 2
+      });
+      starGeo.center();
+
+      const starMat = new THREE.MeshStandardMaterial({
+        color: 0xffdd88,
+        emissive: 0xffaa00,
+        emissiveIntensity: 1.15,
+        metalness: 1.0, roughness: 0
+      });
+
+      const star = new THREE.Mesh(starGeo, starMat);
+      star.position.set(0, CONFIG.particles.treeHeight / 2 + 1.2, 0);
+      mainGroup.add(star);
+
+      mainGroup.add(photoMeshGroup);
+    }
+
+    function createDust() {
+      const geo = new THREE.TetrahedronGeometry(0.08, 0);
+      const mat = new THREE.MeshBasicMaterial({ color: 0xffeebb, transparent: true, opacity: 0.8 });
+
+      for (let i = 0; i < CONFIG.particles.dustCount; i++) {
+        const mesh = new THREE.Mesh(geo, mat);
+        mesh.scale.setScalar(0.5 + Math.random());
+        mainGroup.add(mesh);
+        particleSystem.push(new Particle(mesh, 'DUST', true));
+      }
+    }
+
+    // ✅ Ảnh to hơn
+    function addPhotoToScene(texture) {
+      const frameGeo = new THREE.BoxGeometry(1.4, 1.4, 0.05);
+      const frameMat = new THREE.MeshStandardMaterial({
+        color: CONFIG.colors.champagneGold, metalness: 1.0, roughness: 0.1,
+        emissive: 0x332200, emissiveIntensity: 0.25
+      });
+      const frame = new THREE.Mesh(frameGeo, frameMat);
+
+      let width = 1.85;
+      let height = 1.85;
+
+      if (texture.image) {
+        const aspect = texture.image.width / texture.image.height;
+        if (aspect > 1) height = width / aspect;
+        else width = height * aspect;
+      }
+
+      const photoGeo = new THREE.PlaneGeometry(width, height);
+      const photoMat = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide });
+      const photo = new THREE.Mesh(photoGeo, photoMat);
+      photo.position.z = 0.04;
+
+      const group = new THREE.Group();
+      group.add(frame);
+      group.add(photo);
+
+      frame.scale.set(width / 1.2, height / 1.2, 1);
+
+      const s = 1.15;
+      group.scale.set(s, s, s);
+
+      photoMeshGroup.add(group);
+      particleSystem.push(new Particle(group, 'PHOTO', false));
+
+      updatePhotoLayout();
+    }
+
+    function updatePhotoLayout() {
+      const photos = particleSystem.filter(p => p.type === 'PHOTO');
+      const count = photos.length;
+      if (!count) return;
+
+      const h = CONFIG.particles.treeHeight * 0.9;
+      const bottomY = -h / 2;
+      const stepY = h / count;
+      const loops = 3;
+
+      photos.forEach((p, i) => {
+        const y = bottomY + stepY * i + stepY / 2;
+        const fullH = CONFIG.particles.treeHeight;
+        const normalizedH = (y + fullH / 2) / fullH;
+
+        let rMax = CONFIG.particles.treeRadius * (1.0 - normalizedH);
+        if (rMax < 1.0) rMax = 1.0;
+
+        const r = rMax + 4.8; // ✅ đẩy ảnh ra ngoài đẹp hơn
+        const angle = normalizedH * Math.PI * 2 * loops + (Math.PI / 4);
+
+        p.posTree.set(Math.cos(angle) * r, y, Math.sin(angle) * r);
+      });
+    }
+
+    function loadPredefinedImages() {
+      const loader = new THREE.TextureLoader();
+      CONFIG.preload.images.forEach(url => {
+        loader.load(url, (t) => { t.colorSpace = THREE.SRGBColorSpace; addPhotoToScene(t); });
+      });
+
+      if (CONFIG.preload.autoScanLocal) {
+        for (let i = 1; i <= CONFIG.preload.scanCount; i++) {
+          const jpg = `./images/(${i}).jpg`;
+          const png = `./images/(${i}).png`;
+          loader.load(
+            jpg,
+            (t) => { t.colorSpace = THREE.SRGBColorSpace; addPhotoToScene(t); },
+            undefined,
+            () => loader.load(png, (t) => { t.colorSpace = THREE.SRGBColorSpace; addPhotoToScene(t); })
+          );
+        }
+      }
+    }
+
+    // ✨ Fairy lights
+    function createFairyLights() {
+      const count = 520;
+      const positions = new Float32Array(count * 3);
+      const colors = new Float32Array(count * 3);
+
+      const h = CONFIG.particles.treeHeight * 0.98;
+      const halfH = h / 2;
+
+      for (let i = 0; i < count; i++) {
+        const t = i / (count - 1);
+        const y = t * h - halfH;
+
+        let rMax = CONFIG.particles.treeRadius * (1.0 - t);
+        rMax = Math.max(rMax, 0.6);
+
+        const loops = 10.5;
+        const angle = t * Math.PI * 2 * loops;
+
+        const r = rMax * 1.02;
+
+        positions[i * 3 + 0] = Math.cos(angle) * r;
+        positions[i * 3 + 1] = y;
+        positions[i * 3 + 2] = Math.sin(angle) * r;
+
+        const isRed = (i % 7 === 0);
+        colors[i * 3 + 0] = 1.0;
+        colors[i * 3 + 1] = isRed ? 0.25 : 0.85;
+        colors[i * 3 + 2] = isRed ? 0.18 : 0.35;
+      }
+
+      const geo = new THREE.BufferGeometry();
+      geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+      const mat = new THREE.PointsMaterial({
+        size: 0.22,
+        vertexColors: true,
+        transparent: true,
+        opacity: 0.95,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false
+      });
+
+      lightsMesh = new THREE.Points(geo, mat);
+      mainGroup.add(lightsMesh);
+    }
+
+    function updateFairyLights(dt) {
+      if (!lightsMesh) return;
+      const t = clock.elapsedTime;
+      lightsMesh.material.opacity = 0.72 + 0.22 * Math.sin(t * 2.2);
+      lightsMesh.rotation.y += 0.12 * dt;
+    }
+
+    // ✨ Garland tube spiral (kim tuyến vàng)
+    function createGarland() {
+      const h = CONFIG.particles.treeHeight * 0.98;
+      const halfH = h / 2;
+
+      const loops = 7.5;
+      const segments = 520;
+      const points = [];
+
+      for (let i = 0; i <= segments; i++) {
+        const t = i / segments;          // 0..1
+        const y = t * h - halfH;
+
+        // bán kính theo dạng cây
+        let rMax = CONFIG.particles.treeRadius * (1.0 - t);
+        rMax = Math.max(rMax, 0.65);
+
+        // garland nằm hơi ngoài bề mặt
+        const r = rMax * 1.07;
+
+        const angle = t * Math.PI * 2 * loops + Math.PI / 6;
+
+        points.push(new THREE.Vector3(
+          Math.cos(angle) * r,
+          y,
+          Math.sin(angle) * r
+        ));
+      }
+
+      const path = new THREE.CatmullRomCurve3(points);
+      const tubeGeo = new THREE.TubeGeometry(path, 900, 0.12, 10, false);
+
+      const garlandMat = new THREE.MeshPhysicalMaterial({
+        color: 0xffd37a,
+        metalness: 1.0,
+        roughness: 0.18,
+        clearcoat: 1.0,
+        clearcoatRoughness: 0.15,
+        emissive: 0x553300,
+        emissiveIntensity: 0.6
+      });
+
+      garlandMesh = new THREE.Mesh(tubeGeo, garlandMat);
+      garlandMesh.renderOrder = 2;
+      mainGroup.add(garlandMesh);
+    }
+
+    function updateGarland(dt) {
+      if (!garlandMesh) return;
+      const t = clock.elapsedTime;
+
+      // shimmer nhẹ (kim tuyến)
+      garlandMesh.material.emissiveIntensity = 0.55 + 0.25 * Math.sin(t * 2.6);
+
+      // xoay cực nhẹ
+      garlandMesh.rotation.y += 0.05 * dt;
+    }
+
+    // ------- Upload -------
+    function handleImageUpload(e) {
+      const files = e.target.files;
+      if (!files || !files.length) return;
+
+      Array.from(files).forEach(f => {
+        if (!f.type.startsWith('image/')) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          new THREE.TextureLoader().load(ev.target.result, (t) => {
+            t.colorSpace = THREE.SRGBColorSpace;
+            addPhotoToScene(t);
+          });
+        };
+        reader.readAsDataURL(f);
+      });
+
+      closeMenu();
+    }
+
+    // ------- Menu -------
+    function openMenu(){ menuPanel.classList.add('open'); menuBackdrop.classList.add('open'); }
+    function closeMenu(){ menuPanel.classList.remove('open'); menuBackdrop.classList.remove('open'); }
+    function toggleMenu(){ menuPanel.classList.contains('open') ? closeMenu() : openMenu(); }
+
+    // ------- Webcam / Mediapipe -------
+    async function initMediaPipe() {
+      if (!window.isSecureContext) throw new Error("Webcam needs HTTPS");
+
+      videoEl = document.getElementById('webcam');
+
+      const vision = await FilesetResolver.forVisionTasks(
+        "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/wasm"
+      );
+
+      handLandmarker = await HandLandmarker.createFromOptions(vision, {
+        baseOptions: {
+          modelAssetPath: `https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task`,
+          delegate: "GPU"
+        },
+        runningMode: "VIDEO",
+        numHands: 1
+      });
+
+      const constraints = { video: { width: { ideal: 640 }, height: { ideal: 480 }, frameRate: { ideal: 30 } } };
+      streamRef = await navigator.mediaDevices.getUserMedia(constraints);
+      videoEl.srcObject = streamRef;
+      await videoEl.play();
+
+      mediaReady = true;
+      webcamStatus.textContent = "Webcam: ON";
+      debugInfo.textContent = "Show hand...";
+      webcamPill.style.display = "flex";
+      webcamState.textContent = "ON";
+
+      requestAnimationFrame(predictWebcam);
+    }
+
+    function stopWebcamHard(){
+      STATE.flags.webcam = false;
+      mediaReady = false;
+      webcamState.textContent = "OFF";
+      webcamStatus.textContent = "Webcam: OFF";
+      debugInfo.textContent = "Closed";
+      webcamPill.style.display = "none";
+
+      if (streamRef) {
+        streamRef.getTracks().forEach(t => t.stop());
+        streamRef = null;
+      }
+      if (videoEl) {
+        videoEl.pause();
+        videoEl.srcObject = null;
+      }
+    }
+
+    function predictWebcam(){
+      if (!STATE.flags.webcam || !mediaReady || !handLandmarker || !videoEl) return;
+
+      if (videoEl.currentTime !== lastVideoTime) {
+        lastVideoTime = videoEl.currentTime;
+        const result = handLandmarker.detectForVideo(videoEl, performance.now());
+        processGestures(result);
+      }
+      requestAnimationFrame(predictWebcam);
+    }
+
+    function processGestures(result) {
+      if (result.landmarks && result.landmarks.length > 0) {
+        STATE.hand.detected = true;
+        const lm = result.landmarks[0];
+        STATE.hand.x = (lm[9].x - 0.5) * 2;
+        STATE.hand.y = (lm[9].y - 0.5) * 2;
+
+        const thumb = lm[4];
+        const index = lm[8];
+        const wrist = lm[0];
+        const middleMCP = lm[9];
+
+        const handSize = Math.hypot(middleMCP.x - wrist.x, middleMCP.y - wrist.y);
+        if (handSize < 0.02) return;
+
+        const tips = [lm[8], lm[12], lm[16], lm[20]];
+        let avgTipDist = 0;
+        tips.forEach(t => avgTipDist += Math.hypot(t.x - wrist.x, t.y - wrist.y));
+        avgTipDist /= 4;
+
+        const pinchDist = Math.hypot(thumb.x - index.x, thumb.y - index.y);
+        const extensionRatio = avgTipDist / handSize;
+        const pinchRatio = pinchDist / handSize;
+
+        debugInfo.textContent = `Ext:${extensionRatio.toFixed(2)} Pinch:${pinchRatio.toFixed(2)} Mode:${STATE.mode}`;
+
+        if (extensionRatio < 1.5) {
+          STATE.mode = 'TREE';
+          STATE.focusTarget = null;
+        } else if (pinchRatio < 0.35) {
+          if (STATE.mode !== 'FOCUS') {
+            STATE.mode = 'FOCUS';
+            const photos = particleSystem.filter(p => p.type === 'PHOTO');
+            if (photos.length) STATE.focusTarget = photos[Math.floor(Math.random() * photos.length)].mesh;
+          }
+        } else if (extensionRatio > 1.7) {
+          STATE.mode = 'SCATTER';
+          STATE.focusTarget = null;
+        }
+      } else {
+        STATE.hand.detected = false;
+        debugInfo.textContent = "No hand";
+      }
+    }
+
+    // ------- Events -------
+    function setupEvents(){
+      window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        composer.setSize(window.innerWidth, window.innerHeight);
+      });
+
+      document.getElementById('file-input').addEventListener('change', handleImageUpload);
+      document.getElementById('folder-input').addEventListener('change', handleImageUpload);
+
+      menuBtn.addEventListener('click', (e) => { e.stopPropagation(); toggleMenu(); });
+      menuBackdrop.addEventListener('click', closeMenu);
+      window.addEventListener('click', closeMenu);
+      menuPanel.addEventListener('click', (e) => e.stopPropagation());
+
+      document.getElementById('btn-snow').addEventListener('click', () => {
+        STATE.flags.snow = !STATE.flags.snow;
+        snowState.textContent = STATE.flags.snow ? "ON" : "OFF";
+      });
+
+      document.getElementById('btn-reset').addEventListener('click', () => resetView());
+
+      document.getElementById('btn-ui-toggle').addEventListener('click', () => toggleUI());
+
+      document.getElementById('btn-webcam-toggle').addEventListener('click', async () => {
+        if (STATE.flags.webcam) { stopWebcamHard(); closeMenu(); return; }
+        try {
+          STATE.flags.webcam = true;
+          await initMediaPipe();
+        } catch (e) {
+          STATE.flags.webcam = false;
+          webcamState.textContent = "OFF";
+          alert("Webcam cần HTTPS. Hãy chạy trên GitHub Pages / domain https.");
+        }
+        closeMenu();
+      });
+
+      document.getElementById('btn-webcam-close').addEventListener('click', stopWebcamHard);
+
+      window.addEventListener('keydown', (e) => {
+        const k = e.key.toLowerCase();
+        if (k === 'h') toggleUI();
+        if (k === 'r') resetView();
+        if (k === 'escape') closeMenu();
+      });
+    }
+
+    function toggleUI(){
+      STATE.flags.uiHidden = !STATE.flags.uiHidden;
+      document.getElementById('ui-layer').classList.toggle('ui-hidden', STATE.flags.uiHidden);
+      closeMenu();
+    }
+
+    function resetView(){
+      STATE.mode = 'TREE';
+      STATE.focusTarget = null;
+      STATE.rotation.x = 0;
+      STATE.rotation.y = 0;
+      closeMenu();
+    }
+
+    // ------- Animate -------
+    function animate() {
+      requestAnimationFrame(animate);
+      const dt = clock.getDelta();
+
+      if (STATE.mode === 'SCATTER' && STATE.hand.detected) {
+        const targetRotY = STATE.hand.x * Math.PI * 0.9;
+        const targetRotX = STATE.hand.y * Math.PI * 0.25;
+        STATE.rotation.y += (targetRotY - STATE.rotation.y) * 3.0 * dt;
+        STATE.rotation.x += (targetRotX - STATE.rotation.x) * 3.0 * dt;
+      } else {
+        if (STATE.mode === 'TREE') {
+          STATE.rotation.y += 0.3 * dt;
+          STATE.rotation.x += (0 - STATE.rotation.x) * 2.0 * dt;
+        } else {
+          STATE.rotation.y += 0.1 * dt;
+        }
+      }
+
+      mainGroup.rotation.y = STATE.rotation.y;
+      mainGroup.rotation.x = STATE.rotation.x;
+
+      particleSystem.forEach(p => p.update(dt, STATE.mode, STATE.focusTarget));
+
+      updateFairyLights(dt);
+      updateGarland(dt);
+      updateSnow();
+
+      composer.render();
+    }
+
+    init();
+  </script>
 </body>
 </html>
