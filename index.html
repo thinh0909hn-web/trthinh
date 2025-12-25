@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Luxury Christmas Tree — Slots</title>
+  <title>Luxury Christmas Tree</title>
 
   <style>
     :root{
@@ -12,7 +12,6 @@
       --gold2:#fceea7;
       --panel: rgba(10,10,10,0.62);
       --line: rgba(212,175,55,0.22);
-      --shadow: rgba(0,0,0,0.55);
       --txt: rgba(252,238,167,0.92);
       --muted: rgba(212,175,55,0.62);
     }
@@ -27,6 +26,7 @@
       font-family: 'Times New Roman', serif;
       touch-action: manipulation;
     }
+
     #canvas-container{ position:absolute; inset:0; z-index:1; }
 
     /* LOADER */
@@ -58,12 +58,8 @@
     }
     @keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
 
-    /* TOP HUD */
-    #ui{
-      position:absolute; inset:0;
-      z-index:10;
-      pointer-events:none;
-    }
+    /* HUD */
+    #ui{ position:absolute; inset:0; z-index:10; pointer-events:none; transition:.25s ease; }
     #topbar{
       position:absolute;
       top: calc(env(safe-area-inset-top, 0px) + 10px);
@@ -75,7 +71,6 @@
       gap:10px;
       pointer-events:none;
     }
-
     #title{
       pointer-events:none;
       margin:0;
@@ -96,15 +91,14 @@
       background-image: linear-gradient(to bottom, #fff, #eebb66);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+      opacity: .95;
     }
-
     #controls{
       pointer-events:auto;
       display:flex;
       gap:10px;
       align-items:center;
     }
-
     .icon-btn{
       width:46px; height:46px;
       border-radius:16px;
@@ -122,16 +116,12 @@
     }
     .icon-btn:active{ transform: translateY(1px) scale(0.985); }
 
-    .ham{
-      width:18px; height:14px;
-      position:relative;
-    }
-    .ham::before, .ham::after, .ham span{
+    .ham{ width:18px; height:14px; position:relative; }
+    .ham::before,.ham::after,.ham span{
       content:"";
       position:absolute; left:0; right:0;
-      height:2px;
+      height:2px; border-radius:2px;
       background: rgba(212,175,55,0.95);
-      border-radius:2px;
     }
     .ham::before{ top:0; }
     .ham span{ top:6px; }
@@ -164,6 +154,29 @@
       text-overflow: ellipsis;
     }
     #toast.show{ opacity:1; transform: translateY(0); }
+
+    /* MUSIC STATUS (auto-hide) */
+    #musicState{
+      position:absolute;
+      right: 12px;
+      top: calc(env(safe-area-inset-top, 0px) + 76px);
+      z-index:75;
+      pointer-events:none;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(212,175,55,0.18);
+      background: rgba(10,10,10,0.40);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 18px 60px rgba(0,0,0,0.25);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      font-size: 10px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: rgba(212,175,55,0.85);
+      opacity:.95;
+      transition: .2s ease;
+    }
+    #musicState.hidden{ opacity:0; transform: translateY(-6px); }
 
     /* MENU POPOVER */
     #menuBackdrop{
@@ -279,7 +292,7 @@
       box-shadow: 0 26px 95px rgba(0,0,0,0.6);
       overflow:hidden;
 
-      max-height: min(60vh, 640px);
+      max-height: min(62vh, 720px);
       transform: translateY(18px);
       opacity:0;
       pointer-events:none;
@@ -312,6 +325,7 @@
       justify-content:space-between;
       gap:10px;
       flex:0 0 auto;
+      touch-action: none;
     }
     .drawer-title{
       font-family:'Cinzel', serif;
@@ -322,7 +336,7 @@
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
-      max-width: 55vw;
+      max-width: 48vw;
       user-select:none;
     }
     .drawer-actions{
@@ -413,7 +427,6 @@
       border-radius: 14px;
       border: 1px solid rgba(212,175,55,0.18);
       background: rgba(0,0,0,0.18);
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.03);
       overflow:hidden;
       cursor:pointer;
       position:relative;
@@ -421,7 +434,7 @@
     }
     .slot.selected{
       border-color: rgba(212,175,55,0.78);
-      box-shadow: 0 0 0 2px rgba(212,175,55,0.18), inset 0 0 0 1px rgba(255,255,255,0.03);
+      box-shadow: 0 0 0 2px rgba(212,175,55,0.18);
     }
     .slot img{ width:100%; height:100%; object-fit:cover; display:block; }
     .slot .num{
@@ -472,28 +485,6 @@
       display:block;
       transform: scale(1.02);
     }
-    .thumb:hover{ border-color: rgba(212,175,55,0.45); }
-
-    #musicState{
-      position:absolute;
-      right: 12px;
-      top: calc(env(safe-area-inset-top, 0px) + 76px);
-      z-index:75;
-      pointer-events:none;
-      padding: 8px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(212,175,55,0.18);
-      background: rgba(10,10,10,0.40);
-      backdrop-filter: blur(10px);
-      box-shadow: 0 18px 60px rgba(0,0,0,0.25);
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
-      font-size: 10px;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      color: rgba(212,175,55,0.85);
-      opacity:.95;
-    }
-    .hidden{ display:none !important; }
   </style>
 
   <style>
@@ -511,6 +502,7 @@
 </head>
 
 <body>
+  <!-- AUTO MUSIC -->
   <audio id="bgm" src="https://files.catbox.moe/7ibpf5.mp3" preload="auto" loop playsinline></audio>
 
   <div id="loader">
@@ -532,7 +524,7 @@
     </div>
 
     <div id="toast"></div>
-    <div id="musicState">Music: LOADING…</div>
+    <div id="musicState">Music: loading…</div>
   </div>
 
   <div id="menuBackdrop"></div>
@@ -545,7 +537,7 @@
       <button class="btn" id="btnShuffle"><span>Shuffle</span><span class="pill">⇄</span></button>
     </div>
     <div class="menu-hint">
-      Tap slot trên cây để chọn, rồi tap ảnh trong Gallery để thay. Ảnh upload được tối ưu nét 2K + mipmaps.
+      Tap slot trên cây để chọn khung → mở Photos → tap ảnh để thay. Nhạc sẽ bật tiếng sau 1 lần chạm.
     </div>
   </div>
 
@@ -591,7 +583,7 @@
     import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
     // ===========================
-    // CONFIG (hi-res upload)
+    // CONFIG
     // ===========================
     const CONFIG = {
       colors: {
@@ -601,26 +593,25 @@
         deepGreen: 0x03180a,
         accentRed: 0x990000,
       },
-      tree: { height: 24, radius: 8 },
-      camera: { z: 50 },
-      ornaments: { count: 1500 },
-      snow: { count: 1000 },
-      slots: { count: 18, scale: 1.25, rOffset: 4.9, loops: 3.2 },
-      garland: { loops: 7.6, radiusMul: 1.07, tubeRadius: 0.13 },
-      lights: { count: 560, size: 0.23 },
+      tree: { height: 26, radius: 9.2 },          // ✅ đẹp hơn + to hơn
+      camera: { z: 52 },
+      ornaments: { count: 1600 },
+      snow: { count: 1100 },
+      slots: { count: 18, scale: 1.55, rOffset: 5.7, loops: 3.35 }, // ✅ ảnh to hơn
+      garland: { loops: 8.2, radiusMul: 1.09, tubeRadius: 0.14 },   // ✅ kim tuyến vàng
+      lights: { count: 650, size: 0.24 },
 
-      // ✅ chất lượng ảnh upload
       image: {
-        thumbSize: 320,         // gallery thumb
-        texMax: 2048,           // texture 2K (auto hạ nếu cần)
-        texMin: 1024            // fallback cho máy yếu
+        thumbSize: 320,
+        texMax: 2048,
+        texMin: 1024
       },
 
       preload: [
-        'https://images.unsplash.com/photo-1543589077-47d81606c1bf?q=80&w=1200',
-        'https://images.unsplash.com/photo-1576919228236-a097c32a5cd4?q=80&w=1200',
-        'https://images.unsplash.com/photo-1512389142860-9c449e58a543?q=80&w=1200',
-        'https://images.unsplash.com/photo-1482638588057-dce9509db949?q=80&w=1200'
+        'https://images.unsplash.com/photo-1543589077-47d81606c1bf?q=80&w=1400',
+        'https://images.unsplash.com/photo-1576919228236-a097c32a5cd4?q=80&w=1400',
+        'https://images.unsplash.com/photo-1512389142860-9c449e58a543?q=80&w=1400',
+        'https://images.unsplash.com/photo-1482638588057-dce9509db949?q=80&w=1400'
       ]
     };
 
@@ -629,12 +620,10 @@
       uiHidden: false,
       selectedSlot: -1,
       toastTimer: null,
-
       drawerDragging: false,
       drawerStartY: 0,
       drawerDY: 0,
-
-      music: { ready:false, playing:false, unmuted:false }
+      audioUnlocked: false
     };
 
     // ===========================
@@ -679,49 +668,55 @@
     }
 
     // ===========================
-    // MUSIC (iOS autoplay policy)
+    // MUSIC (no button, tap anywhere once)
     // ===========================
-    async function startMusicMuted(){
+    async function bootMusic(){
+      // try play with sound (mostly will be blocked)
       try{
-        bgm.volume = 0.95;
+        bgm.loop = true;
+        bgm.volume = 1.0;
+        bgm.muted = false;
+        await bgm.play();
+        musicState.textContent = "Music: PLAYING";
+        musicState.classList.add('hidden');
+        STATE.audioUnlocked = true;
+        return;
+      }catch(e){}
+
+      // try play muted (often allowed)
+      try{
+        bgm.loop = true;
+        bgm.volume = 1.0;
         bgm.muted = true;
         await bgm.play();
-        STATE.music.ready = true;
-        STATE.music.playing = true;
-        musicState.textContent = 'Music: READY (tap once for sound)';
+        musicState.textContent = "Tap anywhere to enable sound";
       }catch(e){
-        STATE.music.ready = false;
-        musicState.textContent = 'Music: TAP TO START';
+        musicState.textContent = "Tap anywhere to start music";
       }
-    }
 
-    async function unmuteMusicOnFirstGesture(){
-      if (STATE.music.unmuted) return;
-      try{
-        if (bgm.paused) await bgm.play();
-        bgm.muted = false;
-        bgm.volume = 0.95;
-        STATE.music.unmuted = true;
-        STATE.music.playing = true;
-        musicState.textContent = 'Music: PLAYING';
-        setTimeout(()=>{ musicState.classList.add('hidden'); }, 1200);
-      }catch(e){
-        musicState.textContent = 'Music: TAP AGAIN';
-      }
-    }
+      const unlock = async ()=>{
+        if (STATE.audioUnlocked) return;
+        try{
+          if (bgm.paused) await bgm.play();
+          bgm.muted = false;
+          bgm.volume = 1.0;
+          STATE.audioUnlocked = true;
 
-    function bindGlobalGestureForMusic(){
-      const handler = async () => {
-        await unmuteMusicOnFirstGesture();
-        if (STATE.music.unmuted){
-          window.removeEventListener('pointerdown', handler, true);
-          window.removeEventListener('touchstart', handler, true);
-          window.removeEventListener('keydown', handler, true);
+          musicState.textContent = "Music: PLAYING";
+          musicState.classList.add('hidden');
+          showToast("Nhạc đã bật 🔊");
+
+          window.removeEventListener('pointerdown', unlock, true);
+          window.removeEventListener('touchstart', unlock, true);
+          window.removeEventListener('keydown', unlock, true);
+        }catch(e){
+          showToast("Bị chặn âm thanh — chạm lại lần nữa");
         }
       };
-      window.addEventListener('pointerdown', handler, true);
-      window.addEventListener('touchstart', handler, true);
-      window.addEventListener('keydown', handler, true);
+
+      window.addEventListener('pointerdown', unlock, true);
+      window.addEventListener('touchstart', unlock, true);
+      window.addEventListener('keydown', unlock, true);
     }
 
     // ===========================
@@ -740,7 +735,6 @@
 
     const slotMeshes = []; // { group, frame, photo, assignedId, isEmpty, uiEl }
     const slotTargets = [];
-
     const gallery = [];    // { id, dataUrl, thumbUrl, texture }
     let idCounter = 1;
 
@@ -748,16 +742,16 @@
       const container = document.getElementById('canvas-container');
       scene = new THREE.Scene();
       scene.background = new THREE.Color(CONFIG.colors.bg);
-      scene.fog = new THREE.FogExp2(CONFIG.colors.fog, 0.015);
+      scene.fog = new THREE.FogExp2(CONFIG.colors.fog, 0.014);
 
       camera = new THREE.PerspectiveCamera(42, window.innerWidth/window.innerHeight, 0.1, 1000);
-      camera.position.set(0, 2, CONFIG.camera.z);
+      camera.position.set(0, 2.2, CONFIG.camera.z);
 
       renderer = new THREE.WebGLRenderer({ antialias:true, alpha:true, powerPreference:"high-performance" });
       renderer.setSize(window.innerWidth, window.innerHeight);
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       renderer.toneMapping = THREE.ReinhardToneMapping;
-      renderer.toneMappingExposure = 2.2;
+      renderer.toneMappingExposure = 2.25;
       container.appendChild(renderer.domElement);
 
       mainGroup = new THREE.Group();
@@ -770,23 +764,23 @@
     }
 
     function setupLights(){
-      scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+      scene.add(new THREE.AmbientLight(0xffffff, 0.62));
 
-      const inner = new THREE.PointLight(0xffaa00, 2.1, 24);
-      inner.position.set(0, 5, 0);
+      const inner = new THREE.PointLight(0xffaa00, 2.2, 26);
+      inner.position.set(0, 6, 0);
       mainGroup.add(inner);
 
-      const spotGold = new THREE.SpotLight(0xffcc66, 1200);
-      spotGold.position.set(30, 40, 40);
+      const spotGold = new THREE.SpotLight(0xffcc66, 1250);
+      spotGold.position.set(30, 44, 44);
       spotGold.angle = 0.5;
       spotGold.penumbra = 0.5;
       scene.add(spotGold);
 
-      const spotBlue = new THREE.SpotLight(0x6688ff, 820);
-      spotBlue.position.set(-30, 20, -30);
+      const spotBlue = new THREE.SpotLight(0x6688ff, 840);
+      spotBlue.position.set(-30, 22, -32);
       scene.add(spotBlue);
 
-      const fill = new THREE.DirectionalLight(0xffeebb, 0.9);
+      const fill = new THREE.DirectionalLight(0xffeebb, 0.95);
       fill.position.set(0, 0, 50);
       scene.add(fill);
     }
@@ -794,9 +788,9 @@
     function setupPost(){
       const renderPass = new RenderPass(scene, camera);
       const bloom = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
-      bloom.threshold = 0.62;
-      bloom.strength  = 0.7;
-      bloom.radius    = 0.58;
+      bloom.threshold = 0.60;
+      bloom.strength  = 0.78;
+      bloom.radius    = 0.60;
 
       composer = new EffectComposer(renderer);
       composer.addPass(renderPass);
@@ -819,11 +813,11 @@
 
       for (let i=0;i<CONFIG.snow.count;i++){
         vertices.push(
-          THREE.MathUtils.randFloatSpread(100),
-          THREE.MathUtils.randFloatSpread(60),
-          THREE.MathUtils.randFloatSpread(60)
+          THREE.MathUtils.randFloatSpread(110),
+          THREE.MathUtils.randFloatSpread(65),
+          THREE.MathUtils.randFloatSpread(70)
         );
-        velocities.push(Math.random()*0.2+0.1, Math.random()*0.05);
+        velocities.push(Math.random()*0.22+0.1, Math.random()*0.06);
       }
 
       geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
@@ -831,10 +825,10 @@
 
       const mat = new THREE.PointsMaterial({
         color: 0xffffff,
-        size: 0.42,
+        size: 0.44,
         map: snowTex,
         transparent:true,
-        opacity:0.8,
+        opacity:0.82,
         blending:THREE.AdditiveBlending,
         depthWrite:false
       });
@@ -856,20 +850,20 @@
         pos[i*3+1] -= fall;
 
         const sway = ud[i*2+1];
-        pos[i*3] += Math.sin(clock.elapsedTime*2 + i)*sway*0.1;
+        pos[i*3] += Math.sin(clock.elapsedTime*2 + i)*sway*0.11;
 
-        if (pos[i*3+1] < -30){
-          pos[i*3+1] = 30;
-          pos[i*3]   = THREE.MathUtils.randFloatSpread(100);
-          pos[i*3+2] = THREE.MathUtils.randFloatSpread(60);
+        if (pos[i*3+1] < -34){
+          pos[i*3+1] = 34;
+          pos[i*3]   = THREE.MathUtils.randFloatSpread(110);
+          pos[i*3+2] = THREE.MathUtils.randFloatSpread(70);
         }
       }
       snowSystem.geometry.attributes.position.needsUpdate = true;
     }
 
     function createTreeOrnaments(){
-      const sphereGeo = new THREE.SphereGeometry(0.5, 32, 32);
-      const boxGeo    = new THREE.BoxGeometry(0.55, 0.55, 0.55);
+      const sphereGeo = new THREE.SphereGeometry(0.52, 32, 32);
+      const boxGeo    = new THREE.BoxGeometry(0.6, 0.6, 0.6);
 
       const goldMat = new THREE.MeshStandardMaterial({
         color: CONFIG.colors.champagneGold,
@@ -877,13 +871,13 @@
         roughness: 0.1,
         envMapIntensity: 2.0,
         emissive: 0x443300,
-        emissiveIntensity: 0.35
+        emissiveIntensity: 0.36
       });
 
       const greenMat = new THREE.MeshStandardMaterial({
         color: CONFIG.colors.deepGreen,
         metalness: 0.25,
-        roughness: 0.85,
+        roughness: 0.9,
         emissive: 0x002200,
         emissiveIntensity: 0.22
       });
@@ -891,29 +885,29 @@
       const redMat = new THREE.MeshPhysicalMaterial({
         color: CONFIG.colors.accentRed,
         metalness: 0.35,
-        roughness: 0.18,
+        roughness: 0.16,
         clearcoat: 1.0,
         emissive: 0x330000
       });
 
       for (let i=0;i<CONFIG.ornaments.count;i++){
-        const t = Math.pow(Math.random(), 0.82);
+        const t = Math.pow(Math.random(), 0.80);
         const y = t*CONFIG.tree.height - CONFIG.tree.height/2;
 
         let rMax = CONFIG.tree.radius*(1.0 - t);
-        rMax = Math.max(rMax, 0.55);
+        rMax = Math.max(rMax, 0.6);
 
-        const angle = t*50*Math.PI + Math.random()*Math.PI;
-        const r = rMax*(0.8 + Math.random()*0.45);
+        const angle = t*58*Math.PI + Math.random()*Math.PI;
+        const r = rMax*(0.82 + Math.random()*0.45);
 
         const pick = Math.random();
         let mesh;
-        if (pick < 0.45) mesh = new THREE.Mesh(boxGeo, greenMat);
+        if (pick < 0.42) mesh = new THREE.Mesh(boxGeo, greenMat);
         else if (pick < 0.82) mesh = new THREE.Mesh(boxGeo, goldMat);
         else if (pick < 0.94) mesh = new THREE.Mesh(sphereGeo, goldMat);
         else mesh = new THREE.Mesh(sphereGeo, redMat);
 
-        const s = 0.36 + Math.random()*0.55;
+        const s = 0.36 + Math.random()*0.6;
         mesh.scale.set(s,s,s);
         mesh.position.set(Math.cos(angle)*r, y, Math.sin(angle)*r);
         mesh.rotation.set(Math.random()*6, Math.random()*6, Math.random()*6);
@@ -923,7 +917,7 @@
 
       // Star
       const starShape = new THREE.Shape();
-      const points = 5, outerRadius = 1.55, innerRadius = 0.72;
+      const points = 5, outerRadius = 1.72, innerRadius = 0.78;
       for (let i=0;i<points*2;i++){
         const a = (i*Math.PI)/points + Math.PI/2;
         const rr = (i%2===0)? outerRadius : innerRadius;
@@ -935,7 +929,7 @@
       starShape.closePath();
 
       const starGeo = new THREE.ExtrudeGeometry(starShape, {
-        depth: 0.42,
+        depth: 0.46,
         bevelEnabled:true,
         bevelThickness:0.1,
         bevelSize:0.1,
@@ -946,13 +940,13 @@
       const starMat = new THREE.MeshStandardMaterial({
         color: 0xffdd88,
         emissive: 0xffaa00,
-        emissiveIntensity: 1.2,
+        emissiveIntensity: 1.25,
         metalness:1.0,
         roughness:0
       });
 
       const star = new THREE.Mesh(starGeo, starMat);
-      star.position.set(0, CONFIG.tree.height/2 + 1.35, 0);
+      star.position.set(0, CONFIG.tree.height/2 + 1.55, 0);
       mainGroup.add(star);
     }
 
@@ -969,11 +963,11 @@
         const y = t*h - halfH;
 
         let rMax = CONFIG.tree.radius*(1.0 - t);
-        rMax = Math.max(rMax, 0.6);
+        rMax = Math.max(rMax, 0.7);
 
-        const loops = 10.8;
+        const loops = 12.0;
         const angle = t*Math.PI*2*loops;
-        const r = rMax*1.02;
+        const r = rMax*1.03;
 
         pos[i*3+0] = Math.cos(angle)*r;
         pos[i*3+1] = y;
@@ -981,8 +975,8 @@
 
         const red = (i%7===0);
         col[i*3+0] = 1.0;
-        col[i*3+1] = red ? 0.25 : 0.85;
-        col[i*3+2] = red ? 0.18 : 0.35;
+        col[i*3+1] = red ? 0.26 : 0.88;
+        col[i*3+2] = red ? 0.18 : 0.36;
       }
 
       const geo = new THREE.BufferGeometry();
@@ -993,7 +987,7 @@
         size: CONFIG.lights.size,
         vertexColors:true,
         transparent:true,
-        opacity:0.95,
+        opacity:0.96,
         blending:THREE.AdditiveBlending,
         depthWrite:false
       });
@@ -1005,22 +999,22 @@
     function updateFairyLights(dt){
       if (!lightsMesh) return;
       const t = clock.elapsedTime;
-      lightsMesh.material.opacity = 0.72 + 0.22*Math.sin(t*2.2);
-      lightsMesh.rotation.y += 0.12*dt;
+      lightsMesh.material.opacity = 0.74 + 0.22*Math.sin(t*2.2);
+      lightsMesh.rotation.y += 0.10*dt;
     }
 
     function createGarland(){
       const h = CONFIG.tree.height*0.98;
       const halfH = h/2;
 
-      const segments = 520;
+      const segments = 560;
       const points = [];
       for (let i=0;i<=segments;i++){
         const t = i/segments;
         const y = t*h - halfH;
 
         let rMax = CONFIG.tree.radius*(1.0 - t);
-        rMax = Math.max(rMax, 0.65);
+        rMax = Math.max(rMax, 0.75);
 
         const angle = t*Math.PI*2*CONFIG.garland.loops + Math.PI/6;
         const r = rMax * CONFIG.garland.radiusMul;
@@ -1029,16 +1023,16 @@
       }
 
       const path = new THREE.CatmullRomCurve3(points);
-      const tubeGeo = new THREE.TubeGeometry(path, 900, CONFIG.garland.tubeRadius, 10, false);
+      const tubeGeo = new THREE.TubeGeometry(path, 980, CONFIG.garland.tubeRadius, 12, false);
 
       const mat = new THREE.MeshPhysicalMaterial({
         color: 0xffd37a,
         metalness: 1.0,
-        roughness: 0.18,
+        roughness: 0.14,
         clearcoat: 1.0,
-        clearcoatRoughness: 0.15,
+        clearcoatRoughness: 0.12,
         emissive: 0x553300,
-        emissiveIntensity: 0.62
+        emissiveIntensity: 0.70
       });
 
       garlandMesh = new THREE.Mesh(tubeGeo, mat);
@@ -1049,12 +1043,12 @@
     function updateGarland(dt){
       if (!garlandMesh) return;
       const t = clock.elapsedTime;
-      garlandMesh.material.emissiveIntensity = 0.55 + 0.25*Math.sin(t*2.6);
-      garlandMesh.rotation.y += 0.05*dt;
+      garlandMesh.material.emissiveIntensity = 0.62 + 0.28*Math.sin(t*2.5);
+      garlandMesh.rotation.y += 0.04*dt;
     }
 
     // ===========================
-    // SLOT SYSTEM (3D + UI)
+    // SLOT SYSTEM
     // ===========================
     function computeSlotTargets(){
       slotTargets.length = 0;
@@ -1070,7 +1064,7 @@
         const nh = (y + fullH/2) / fullH;
 
         let rMax = CONFIG.tree.radius * (1.0 - nh);
-        rMax = Math.max(rMax, 1.0);
+        rMax = Math.max(rMax, 1.2);
 
         const r = rMax + CONFIG.slots.rOffset;
         const angle = nh*Math.PI*2*CONFIG.slots.loops + (Math.PI/4);
@@ -1083,7 +1077,6 @@
       const c = document.createElement('canvas');
       c.width = 512; c.height = 512;
       const g = c.getContext('2d');
-
       const grd = g.createLinearGradient(0,0,512,512);
       grd.addColorStop(0,'rgba(255,255,255,0.08)');
       grd.addColorStop(1,'rgba(0,0,0,0.22)');
@@ -1094,14 +1087,14 @@
       g.lineWidth = 10;
       g.strokeRect(22,22,468,468);
 
-      g.fillStyle = 'rgba(252,238,167,0.9)';
+      g.fillStyle = 'rgba(252,238,167,0.92)';
       g.font = 'bold 40px Cinzel, serif';
       g.textAlign = 'center';
       g.fillText('TAP SLOT', 256, 250);
 
       g.fillStyle = 'rgba(212,175,55,0.70)';
       g.font = '24px ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial';
-      g.fillText('to replace photo', 256, 300);
+      g.fillText('to replace', 256, 300);
 
       const tex = new THREE.CanvasTexture(c);
       tex.colorSpace = THREE.SRGBColorSpace;
@@ -1116,29 +1109,26 @@
         metalness: 1.0,
         roughness: 0.12,
         emissive: 0x332200,
-        emissiveIntensity: 0.28
+        emissiveIntensity: 0.30
       });
 
       for (let i=0;i<CONFIG.slots.count;i++){
         const group = new THREE.Group();
         group.userData.slotIndex = i;
 
-        const frameGeo = new THREE.BoxGeometry(1.6, 1.6, 0.065);
+        const frameGeo = new THREE.BoxGeometry(1.85, 1.85, 0.075);
         const frame = new THREE.Mesh(frameGeo, frameMat);
         frame.userData.slotIndex = i;
 
         const emptyTex = makeEmptyTexture();
-        const photoGeo = new THREE.PlaneGeometry(1.48, 1.48);
+        const photoGeo = new THREE.PlaneGeometry(1.70, 1.70);
         const photoMat = new THREE.MeshBasicMaterial({ map: emptyTex, side: THREE.DoubleSide });
         const photo = new THREE.Mesh(photoGeo, photoMat);
-        photo.position.z = 0.048;
+        photo.position.z = 0.055;
         photo.userData.slotIndex = i;
 
         group.add(frame);
         group.add(photo);
-
-        const s = CONFIG.slots.scale;
-        group.scale.set(s,s,s);
 
         group.position.copy(slotTargets[i]);
         group.lookAt(0, group.position.y, 0);
@@ -1146,12 +1136,7 @@
 
         mainGroup.add(group);
 
-        slotMeshes.push({
-          group, frame, photo,
-          assignedId: null,
-          isEmpty: true,
-          uiEl: null
-        });
+        slotMeshes.push({ group, frame, photo, assignedId:null, isEmpty:true, uiEl:null });
       }
     }
 
@@ -1199,9 +1184,7 @@
 
         slotMeshes[i].uiEl = div;
       }
-      for (let i=0;i<CONFIG.slots.count;i++){
-        updateSlotUI(i);
-      }
+      for (let i=0;i<slotMeshes.length;i++) updateSlotUI(i);
     }
 
     function highlightSelected(){
@@ -1209,10 +1192,11 @@
         const idx = Number(el.dataset.slot);
         el.classList.toggle('selected', idx===STATE.selectedSlot);
       });
+
       for (let i=0;i<slotMeshes.length;i++){
         const sel = i===STATE.selectedSlot;
-        const base = CONFIG.slots.scale;
-        slotMeshes[i].group.scale.setScalar(base*(sel?1.08:1.0));
+        const base = 1.0;
+        slotMeshes[i].group.scale.setScalar(base*(sel?1.06:1.0));
       }
     }
 
@@ -1237,7 +1221,6 @@
     function updateSlotUI(slotIndex){
       const ui = slotMeshes[slotIndex].uiEl;
       if (!ui) return;
-
       const img = ui.querySelector('img');
       const state = ui.querySelector('.state');
 
@@ -1253,7 +1236,6 @@
     }
 
     function applyTextureQuality(texture){
-      // ✅ FIX blur: mipmap + filters + anisotropy
       texture.colorSpace = THREE.SRGBColorSpace;
       texture.generateMipmaps = true;
       texture.minFilter = THREE.LinearMipmapLinearFilter;
@@ -1341,7 +1323,7 @@
     }
 
     // ===========================
-    // HI-RES UPLOAD PIPELINE
+    // HI-RES UPLOAD (net + ro)
     // ===========================
     async function fileToDataUrl(file){
       return await new Promise((resolve,reject)=>{
@@ -1353,9 +1335,8 @@
     }
 
     function getSafeTexMax(){
-      // ✅ iOS/máy yếu: hạ texMax để tránh crash
       const dpr = window.devicePixelRatio || 1;
-      const mem = navigator.deviceMemory || 4; // chrome android supports, iOS often undefined
+      const mem = navigator.deviceMemory || 4; // iOS often undefined
       const small = (mem && mem <= 2) || dpr >= 3;
       return small ? Math.max(CONFIG.image.texMin, 1536) : CONFIG.image.texMax;
     }
@@ -1368,8 +1349,6 @@
       const c = document.createElement('canvas');
       c.width = size; c.height = size;
       const ctx = c.getContext('2d');
-
-      // ✅ HIGH quality thumbnail
       ctx.imageSmoothingEnabled = true;
       ctx.imageSmoothingQuality = 'high';
 
@@ -1383,16 +1362,15 @@
       ctx.fillRect(0,0,size,size);
       ctx.drawImage(img, x, y, w, h);
 
-      return c.toDataURL('image/jpeg', 0.88);
+      return c.toDataURL('image/jpeg', 0.90);
     }
 
     async function dataUrlToHiResTexture(dataUrl){
-      // ✅ CORE FIX: create 2K texture via canvas (not thumb)
       const img = new Image();
       img.src = dataUrl;
       await img.decode();
 
-      const MAX = getSafeTexMax(); // 2048 or lower depending device
+      const MAX = getSafeTexMax();
       const maxDim = Math.max(img.width, img.height);
       const scale = Math.min(1, MAX / maxDim);
 
@@ -1406,7 +1384,6 @@
       const ctx = canvas.getContext('2d');
       ctx.imageSmoothingEnabled = true;
       ctx.imageSmoothingQuality = 'high';
-
       ctx.drawImage(img, 0, 0, w, h);
 
       const texture = new THREE.CanvasTexture(canvas);
@@ -1426,8 +1403,6 @@
       if (!arr.length) return;
 
       showToast(`Đang nạp ${arr.length} ảnh (hi-res)...`);
-
-      // ✅ nạp lần lượt để tránh spike bộ nhớ
       for (const f of arr){
         try{
           const dataUrl = await fileToDataUrl(f);
@@ -1509,6 +1484,7 @@
       closeMenu();
     }
 
+    // ✅ FIX drawer "lướt lên thoát không được": drag xuống head để đóng
     function setupDrawerDrag(){
       const start = (y)=>{
         if (!drawer.classList.contains('open')) return;
@@ -1527,7 +1503,7 @@
         if (!STATE.drawerDragging) return;
         STATE.drawerDragging = false;
         drawer.style.transition = '0.18s ease';
-        if (STATE.drawerDY > 90) closeDrawer();
+        if (STATE.drawerDY > 95) closeDrawer();
         else drawer.style.transform = 'translateY(0px)';
       };
 
@@ -1540,6 +1516,9 @@
       window.addEventListener('pointerup', end);
     }
 
+    // ===========================
+    // CLICK SLOT ON TREE
+    // ===========================
     function onCanvasPointerDown(e){
       if (menu.classList.contains('open')) return;
 
@@ -1624,9 +1603,11 @@
       requestAnimationFrame(animate);
       const dt = clock.getDelta();
 
-      mainGroup.rotation.y += 0.22*dt;
+      // gentle rotate
+      mainGroup.rotation.y += 0.20*dt;
       mainGroup.rotation.x += (0 - mainGroup.rotation.x) * 1.8*dt;
 
+      // slot face camera-ish
       for (let i=0;i<slotMeshes.length;i++){
         const g = slotMeshes[i].group;
         g.rotation.z = 0.02*Math.sin(clock.elapsedTime*0.8 + i);
@@ -1666,38 +1647,13 @@
       loaderEl.style.opacity = 0;
       setTimeout(()=>loaderEl.remove(), 800);
 
-      // music
-      bindGlobalGestureForMusic();
-      await (async ()=>{
-        try{
-          bgm.volume = 0.95;
-          bgm.muted = true;
-          await bgm.play();
-          musicState.textContent = 'Music: READY (tap once for sound)';
-        }catch(e){
-          musicState.textContent = 'Music: TAP TO START';
-        }
-      })();
+      // ✅ music (no button)
+      await bootMusic();
 
       animate();
     }
 
-    // Menu buttons
-    document.getElementById('btnSnow').addEventListener('click', ()=>{});
-    document.getElementById('btnReset').addEventListener('click', ()=>{});
-    document.getElementById('btnHideUI').addEventListener('click', ()=>{});
-    document.getElementById('btnShuffle').addEventListener('click', ()=>{});
-
-    // connect menu actions after init uses functions
-    document.getElementById('btnMenu').addEventListener('click', ()=>{});
-    document.getElementById('btnDrawer').addEventListener('click', ()=>{});
-
-    // Start
     init();
-  </script>
-
-  <script>
-    // Hook menu actions (outside module due to scope isolation is not needed; kept in module already.)
   </script>
 </body>
 </html>
